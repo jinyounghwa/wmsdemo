@@ -5,7 +5,7 @@ export default function LanguageToggle() {
   const { locale, setLocale } = useLanguage()
 
   return (
-    <div className="fixed right-5 top-4 z-[9999]">
+    <div className="fixed left-1/2 top-4 z-[9999] -translate-x-1/2">
       <div className="inline-flex items-center gap-1 rounded-xl border border-slate-700 bg-slate-900/90 p-1 shadow-lg backdrop-blur">
         <Languages className="h-4 w-4 text-slate-400 ml-2" />
         <button
