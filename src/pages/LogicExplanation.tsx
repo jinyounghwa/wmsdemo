@@ -5,7 +5,7 @@ import {
   RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing,
   CheckCircle2, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, LayoutDashboard, Home,
   ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History,
-  Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send
+  Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Scale, TrendingUp
 } from 'lucide-react'
 import Layout from '../components/Layout'
 import LanguageToggle from '../components/LanguageToggle'
@@ -788,18 +788,279 @@ const logicData: LogicItem[] = [
         desc: { ko: '주간, 월간 추이를 차트로 나타내어 창고 캐파 및 리스크 예측', en: 'Visualize weekly/monthly trends to estimate capacity and risk.' }
       }
     ]
+  },
+  {
+    id: 'slotting-optimization',
+    title: { ko: '슬로팅 최적화', en: 'Slotting Optimization' },
+    description: {
+      ko: '상품 회전율과 작업 빈도 기반으로 보관 위치를 재배치해 피킹 효율을 높입니다.',
+      en: 'Improves picking efficiency by relocating items based on turnover and handling frequency.'
+    },
+    icon: <MapPinned className="w-6 h-6" />,
+    color: 'text-violet-300',
+    bgColor: 'bg-violet-500/10',
+    steps: [
+      {
+        name: { ko: 'ABC 분석', en: 'ABC Analysis' },
+        desc: { ko: '출고 빈도 기준으로 SKU 우선순위를 분류합니다.', en: 'Classifies SKU priority based on outbound frequency.' }
+      },
+      {
+        name: { ko: '권장 위치 산출', en: 'Recommend Locations' },
+        desc: { ko: '상위 회전 SKU를 접근성 높은 구역으로 배치 제안합니다.', en: 'Recommends high-access zones for top-turnover SKUs.' }
+      }
+    ]
+  },
+  {
+    id: 'pick-strategy',
+    title: { ko: '피킹 전략', en: 'Pick Strategy' },
+    description: {
+      ko: '오더 특성에 따라 단품/배치/클러스터 피킹 전략을 선택하여 작업량을 최적화합니다.',
+      en: 'Optimizes workload by selecting single, batch, or cluster picking strategy per order profile.'
+    },
+    icon: <ListTodo className="w-6 h-6" />,
+    color: 'text-green-300',
+    bgColor: 'bg-green-500/10',
+    steps: [
+      {
+        name: { ko: '전략 선택', en: 'Select Strategy' },
+        desc: { ko: '수량, 납기, 동선 조건을 기준으로 피킹 방식을 결정합니다.', en: 'Chooses picking mode using quantity, due-time, and route conditions.' }
+      },
+      {
+        name: { ko: '작업 지시 생성', en: 'Generate Tasks' },
+        desc: { ko: '선택된 전략 기준으로 작업 지시와 우선순위를 생성합니다.', en: 'Generates task instructions and priorities according to chosen strategy.' }
+      }
+    ]
+  },
+  {
+    id: 'reverse-logistics',
+    title: { ko: '역물류', en: 'Reverse Logistics' },
+    description: {
+      ko: '회수, 재포장, 재판매 및 폐기까지 반품 후속 처리 흐름을 통합 관리합니다.',
+      en: 'Manages post-return flow including retrieval, repacking, resale, and disposal.'
+    },
+    icon: <ArrowLeftRight className="w-6 h-6" />,
+    color: 'text-amber-300',
+    bgColor: 'bg-amber-500/10',
+    steps: [
+      {
+        name: { ko: '회수 분류', en: 'Return Classification' },
+        desc: { ko: '반품 사유와 상태에 따라 재고 복구/수리/폐기 경로를 분기합니다.', en: 'Routes each return to restock, repair, or disposal by reason and condition.' }
+      },
+      {
+        name: { ko: '재투입 처리', en: 'Re-entry Processing' },
+        desc: { ko: '재판매 가능 재고를 가용 수량으로 되돌리고 이력을 남깁니다.', en: 'Restores resellable items to available stock with full trace history.' }
+      }
+    ]
+  },
+  {
+    id: 'catch-weight',
+    title: { ko: '중량 기반 재고 (Catch Weight)', en: 'Catch Weight' },
+    description: {
+      ko: '개수와 중량을 동시에 관리해야 하는 품목의 정산 정확도를 보장합니다.',
+      en: 'Ensures settlement accuracy for items managed by both unit count and variable weight.'
+    },
+    icon: <Scale className="w-6 h-6" />,
+    color: 'text-sky-300',
+    bgColor: 'bg-sky-500/10',
+    steps: [
+      {
+        name: { ko: '중량 계측', en: 'Weight Capture' },
+        desc: { ko: '입출고 시 실측 중량을 기록하고 기준 중량과 편차를 계산합니다.', en: 'Captures measured weight on transactions and calculates variance from standard weight.' }
+      },
+      {
+        name: { ko: '정산 반영', en: 'Settlement Reflection' },
+        desc: { ko: '중량 기준 금액을 계산해 청구/정산 데이터로 연동합니다.', en: 'Calculates weight-based amounts and links them to billing and settlement data.' }
+      }
+    ]
+  },
+  {
+    id: 'inventory-aging',
+    title: { ko: '재고 에이징', en: 'Inventory Aging' },
+    description: {
+      ko: '재고 체류일을 추적해 장기 적체 SKU를 식별하고 처분 우선순위를 설정합니다.',
+      en: 'Tracks inventory dwell time to identify slow-moving SKUs and set disposition priorities.'
+    },
+    icon: <CalendarClock className="w-6 h-6" />,
+    color: 'text-rose-300',
+    bgColor: 'bg-rose-500/10',
+    steps: [
+      {
+        name: { ko: '체류 버킷 집계', en: 'Aging Buckets' },
+        desc: { ko: '30/60/90일 구간별로 SKU 수량과 금액을 집계합니다.', en: 'Aggregates SKU quantity and value by 30/60/90-day buckets.' }
+      },
+      {
+        name: { ko: '대응 액션 연결', en: 'Action Routing' },
+        desc: { ko: '세일, 반품, 폐기 등 후속 처리 시나리오로 연계합니다.', en: 'Routes stale inventory to sale, return, or disposal scenarios.' }
+      }
+    ]
+  },
+  {
+    id: 'throughput-analytics',
+    title: { ko: '처리량 분석', en: 'Throughput Analytics' },
+    description: {
+      ko: '시간대/공정별 처리량을 분석해 병목 구간과 설비 가동률을 진단합니다.',
+      en: 'Analyzes throughput by time and process to diagnose bottlenecks and utilization.'
+    },
+    icon: <TrendingUp className="w-6 h-6" />,
+    color: 'text-cyan-300',
+    bgColor: 'bg-cyan-500/10',
+    steps: [
+      {
+        name: { ko: '공정 KPI 분석', en: 'Process KPI Analysis' },
+        desc: { ko: '입고, 피킹, 출고 단계별 건수와 소요 시간을 비교합니다.', en: 'Compares volume and elapsed time across inbound, picking, and outbound processes.' }
+      },
+      {
+        name: { ko: '병목 감지', en: 'Bottleneck Detection' },
+        desc: { ko: '처리율 저하 구간을 식별하고 개선 우선순위를 제시합니다.', en: 'Identifies low-throughput segments and proposes improvement priorities.' }
+      }
+    ]
+  },
+  {
+    id: 'warehouse-floor-map',
+    title: { ko: '창고 플로어 맵', en: 'Warehouse Floor Map' },
+    description: {
+      ko: '창고 레이아웃 기반으로 구역별 적재율과 작업 현황을 시각적으로 확인합니다.',
+      en: 'Visualizes zone-level occupancy and work status on a warehouse layout map.'
+    },
+    icon: <MapPinned className="w-6 h-6" />,
+    color: 'text-indigo-300',
+    bgColor: 'bg-indigo-500/10',
+    steps: [
+      {
+        name: { ko: '구역 상태 시각화', en: 'Zone Visualization' },
+        desc: { ko: '존별 재고 점유율과 혼잡도를 색상으로 표시합니다.', en: 'Displays occupancy and congestion by zone using color indicators.' }
+      },
+      {
+        name: { ko: '작업 동선 확인', en: 'Route Visibility' },
+        desc: { ko: '현재 진행 중인 작업 동선을 지도 위에 표시합니다.', en: 'Shows active work routes directly on the floor map.' }
+      }
+    ]
+  },
+  {
+    id: 'user-management',
+    title: { ko: '사용자 관리', en: 'User Management' },
+    description: {
+      ko: '계정, 역할(Role), 접근 권한을 중앙에서 통제하고 변경 이력을 관리합니다.',
+      en: 'Centrally controls accounts, roles, and permissions with change history tracking.'
+    },
+    icon: <Fingerprint className="w-6 h-6" />,
+    color: 'text-lime-300',
+    bgColor: 'bg-lime-500/10',
+    steps: [
+      {
+        name: { ko: '권한 정책 설정', en: 'Permission Policies' },
+        desc: { ko: '업무 역할별 메뉴 접근과 기능 실행 권한을 설정합니다.', en: 'Defines menu access and operation permissions by role.' }
+      },
+      {
+        name: { ko: '계정 라이프사이클', en: 'Account Lifecycle' },
+        desc: { ko: '생성/잠금/비활성화 등 계정 상태를 운영 정책에 맞게 관리합니다.', en: 'Manages account lifecycle states such as create, lock, and deactivate.' }
+      }
+    ]
+  },
+  {
+    id: 'integration-monitor',
+    title: { ko: '연동 모니터', en: 'Integration Monitor' },
+    description: {
+      ko: 'ERP, TMS, 택배사 API 등 외부 인터페이스 상태와 실패 건을 추적합니다.',
+      en: 'Tracks health and failed transactions for external integrations like ERP/TMS/carrier APIs.'
+    },
+    icon: <TrafficCone className="w-6 h-6" />,
+    color: 'text-orange-300',
+    bgColor: 'bg-orange-500/10',
+    steps: [
+      {
+        name: { ko: '연계 상태 점검', en: 'Integration Health Check' },
+        desc: { ko: '채널별 지연, 오류율, 마지막 성공 시각을 모니터링합니다.', en: 'Monitors latency, error rate, and last success time per interface.' }
+      },
+      {
+        name: { ko: '재처리 관리', en: 'Retry Handling' },
+        desc: { ko: '실패 메시지의 원인을 확인하고 재전송 작업을 수행합니다.', en: 'Analyzes failure causes and performs controlled resend actions.' }
+      }
+    ]
+  },
+  {
+    id: 'system-audit-log',
+    title: { ko: '시스템 감사 로그', en: 'System Audit Log' },
+    description: {
+      ko: '사용자 행위와 시스템 이벤트를 감사 로그로 보존해 추적성과 보안 준수성을 강화합니다.',
+      en: 'Preserves user actions and system events in audit logs to strengthen traceability and compliance.'
+    },
+    icon: <History className="w-6 h-6" />,
+    color: 'text-zinc-300',
+    bgColor: 'bg-zinc-500/10',
+    steps: [
+      {
+        name: { ko: '행위 로그 수집', en: 'Action Logging' },
+        desc: { ko: '주요 변경 작업의 사용자, 시간, 대상 데이터를 기록합니다.', en: 'Stores who, when, and what for critical change operations.' }
+      },
+      {
+        name: { ko: '감사 추적 조회', en: 'Audit Trace Query' },
+        desc: { ko: '조건 검색으로 이벤트를 필터링하고 조사용 증적을 확보합니다.', en: 'Filters events by conditions to produce evidence for investigation.' }
+      }
+    ]
   }
 ]
 
+const pageOrder = [
+  'dashboard',
+  'warehouse-floor-map',
+  'inbound',
+  'outbound',
+  'inventory',
+  'inventory-aging',
+  'item-registration',
+  'stock-control',
+  'catch-weight',
+  'returns',
+  'reverse-logistics',
+  'waves',
+  'pick-strategy',
+  'sla-monitor',
+  'cycle-count',
+  'master-data',
+  'location-management',
+  'slotting-optimization',
+  'putaway-replenishment',
+  'packing-dispatch',
+  'task-labor-management',
+  'lpn-equipment',
+  'billing',
+  'order-management',
+  'cross-docking',
+  'lot-batch-expiry',
+  'serial-tracking',
+  'yard-management',
+  'asn-scheduling',
+  'inventory-audit-trail',
+  'disposal-management',
+  'notification-center',
+  'system-configuration',
+  'user-management',
+  'integration-monitor',
+  'system-audit-log',
+  'multi-warehouse',
+  'kit-bom',
+  'quality-control',
+  'shipping-tms',
+  'operations-report',
+  'throughput-analytics'
+]
+
+const pageOrderSet = new Set(pageOrder)
+const orderedLogicData = [
+  ...pageOrder.map((id) => logicData.find((item) => item.id === id)).filter((item): item is LogicItem => Boolean(item)),
+  ...logicData.filter((item) => !pageOrderSet.has(item.id))
+]
+
 export default function LogicExplanation() {
-  const [activeTab, setActiveTab] = useState(logicData[0].id)
+  const [activeTab, setActiveTab] = useState(orderedLogicData[0].id)
   const { locale } = useLanguage()
 
-  const activeData = logicData.find(d => d.id === activeTab) || logicData[0]
+  const activeData = orderedLogicData.find(d => d.id === activeTab) || orderedLogicData[0]
 
   return (
     <Layout>
-      <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 min-h-full">
+      <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 min-h-full">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-700/50 pb-6">
           <div>
             <div className="flex items-center gap-3">
@@ -816,9 +1077,9 @@ export default function LogicExplanation() {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          <div className="w-full lg:w-72 flex-shrink-0 flex flex-col gap-2">
-            {logicData.map((item) => {
+        <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-stretch lg:h-[calc(100vh-220px)]">
+          <div className="w-full lg:w-72 flex-shrink-0 flex flex-col gap-2 lg:overflow-y-auto lg:pr-1">
+            {orderedLogicData.map((item) => {
               const isActive = activeTab === item.id
               return (
                 <button
@@ -844,7 +1105,7 @@ export default function LogicExplanation() {
             })}
           </div>
 
-          <div className="flex-1 w-full bg-[#1e293b] rounded-2xl border border-slate-700/50 p-6 md:p-10 shadow-2xl overflow-hidden relative min-h-[500px]">
+          <div className="flex-1 w-full bg-[#1e293b] rounded-2xl border border-slate-700/50 p-6 md:p-10 shadow-2xl overflow-hidden relative min-h-[500px] lg:min-h-0 lg:h-full">
             <div className={`absolute -top-20 -right-20 w-64 h-64 blur-[80px] rounded-full opacity-20 transition-colors duration-700 ${activeData.bgColor.replace('/10', '')}`} />
 
             <AnimatePresence mode="wait">
@@ -854,7 +1115,7 @@ export default function LogicExplanation() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="relative z-10"
+                className="relative z-10 lg:h-full lg:overflow-y-auto lg:pr-1"
               >
                 <div className="flex items-center gap-4 mb-8">
                   <div className={`p-4 rounded-xl ${activeData.bgColor} ${activeData.color} shadow-inner`}>
