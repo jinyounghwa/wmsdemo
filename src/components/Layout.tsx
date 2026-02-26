@@ -28,11 +28,11 @@ export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation()
   return (
     <div className="flex h-screen bg-[#0f172a] text-white">
-      <aside className="w-60 bg-[#1e293b] flex flex-col flex-shrink-0">
+      <aside className="w-60 bg-[#1e293b] flex flex-col flex-shrink-0 h-screen">
         <div className="p-6 border-b border-slate-700">
           <Link to="/" className="text-xl font-bold text-blue-400">WMS Demo</Link>
         </div>
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {navItems.map(item => (
             <Link
               key={item.path}
