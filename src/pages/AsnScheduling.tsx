@@ -12,7 +12,7 @@ export default function AsnScheduling() {
   const createAsn = useExtendedModulesStore((state) => state.createAsn)
   const updateAsnStatus = useExtendedModulesStore((state) => state.updateAsnStatus)
 
-  const [vendor, setVendor] = useState('삼성전자')
+  const [vendor, setVendor] = useState('무신사 스탠다드')
   const [eta, setEta] = useState(`${new Date().toISOString().slice(0, 10)} 14:00`)
   const [dock, setDock] = useState('RCV-02')
   const [sku, setSku] = useState('SKU-0001')

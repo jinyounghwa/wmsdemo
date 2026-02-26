@@ -4,6 +4,7 @@ import LanguageToggle from '../components/LanguageToggle'
 import { useOutboundStore } from '../store/outboundStore'
 import { usePackingStore } from '../store/packingStore'
 import { useInventoryStore } from '../store/inventoryStore'
+import { getFashionThumb } from '../utils/fashionImage'
 
 const statusStyle = {
   packing: 'text-amber-300 bg-amber-500/10 border border-amber-400/20',
@@ -17,6 +18,7 @@ export default function PackingDispatch() {
   const outboundOrders = useOutboundStore((state) => state.orders)
   const updateOutboundStatus = useOutboundStore((state) => state.updateStatus)
   const shipOrderAllocation = useInventoryStore((state) => state.shipOrderAllocation)
+  const inventoryItems = useInventoryStore((state) => state.items)
   const { packages, createPackage, increaseScanCount, updatePackage, updateStatus } = usePackingStore()
 
   const [selectedOrderId, setSelectedOrderId] = useState('')
@@ -26,11 +28,35 @@ export default function PackingDispatch() {
   const [route, setRoute] = useState('서울-북부')
   const [vehicleNo, setVehicleNo] = useState('88가1234')
   const [tab, setTab] = useState<'packing' | 'dispatch'>('packing')
+  const [selectedPackageId, setSelectedPackageId] = useState('')
+  const [scanChecklist, setScanChecklist] = useState<Record<string, Set<string>>>({})
 
   const packingCandidates = useMemo(
     () => outboundOrders.filter((order) => order.status === 'picking' || order.status === 'packing'),
     [outboundOrders],
   )
+
+  const selectedPackage = packages.find((pkg) => pkg.id === selectedPackageId)
+  const selectedOrder = outboundOrders.find((order) => order.id === selectedPackage?.orderId)
+
+  const consolidationOrders = useMemo(() => {
+    const group = selectedOrder?.consolidationGroup
+    if (!group) return selectedOrder ? [selectedOrder] : []
+    return outboundOrders.filter((order) => order.consolidationGroup === group)
+  }, [outboundOrders, selectedOrder])
+
+  const expectedSkus = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          consolidationOrders.flatMap((order) => order.items.map((item) => item.sku)),
+        ),
+      ),
+    [consolidationOrders],
+  )
+
+  const checkedSkus = scanChecklist[selectedPackageId] ?? new Set<string>()
+  const missingSkus = expectedSkus.filter((sku) => !checkedSkus.has(sku))
 
   return (
     <Layout>
@@ -40,7 +66,7 @@ export default function PackingDispatch() {
             <h1 className="text-2xl font-bold">포장 및 상차/배차 관리</h1>
             <LanguageToggle />
           </div>
-          <p className="text-slate-400 text-sm mt-1">바코드 재검수, 박스 할당, 상차 마감까지 독립 플로우로 운영합니다.</p>
+          <p className="text-slate-400 text-sm mt-1">바코드 재검수, 박스 할당, 상차 마감 + 합포장 누락 점검을 운영합니다.</p>
         </div>
 
         <div className="flex gap-1 bg-[#1e293b] rounded-lg p-1 border border-slate-700/50 w-fit">
@@ -83,56 +109,91 @@ export default function PackingDispatch() {
           </button>
         </div>
 
-        <div className="bg-[#1e293b] rounded-xl border border-slate-700/50 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-700 text-slate-400">
-                <th className="text-left px-4 py-3 font-medium">패키지</th>
-                <th className="text-left px-4 py-3 font-medium">오더/고객</th>
-                <th className="text-right px-4 py-3 font-medium">검수 스캔</th>
-                <th className="text-left px-4 py-3 font-medium">운송 정보</th>
-                <th className="text-left px-4 py-3 font-medium">상태</th>
-                <th className="text-center px-4 py-3 font-medium">액션</th>
-              </tr>
-            </thead>
-            <tbody>
-              {packages
-                .filter((pkg) => (tab === 'packing' ? pkg.status === 'packing' || pkg.status === 'packed' : true))
-                .map((pkg) => (
-                  <tr key={pkg.id} className="border-b border-slate-700/50">
-                    <td className="px-4 py-3 font-mono text-blue-400">{pkg.id}</td>
-                    <td className="px-4 py-3">{pkg.orderId} / {pkg.customer}</td>
-                    <td className="px-4 py-3 text-right">{pkg.scanCount} / {pkg.expectedScanCount}</td>
-                    <td className="px-4 py-3 text-slate-300">{pkg.carrier} · {pkg.trackingNo}<br />{pkg.dock} · {pkg.route} · {pkg.vehicleNo}</td>
-                    <td className="px-4 py-3"><span className={`text-xs px-2 py-1 rounded-full ${statusStyle[pkg.status]}`}>{pkg.status}</span></td>
-                    <td className="px-4 py-3 text-center space-x-1">
-                      <button onClick={() => increaseScanCount(pkg.id)} className="text-xs px-2 py-1.5 bg-slate-700 rounded-md">스캔</button>
-                      <button onClick={() => updateStatus(pkg.id, 'packed')} className="text-xs px-2 py-1.5 bg-blue-600 rounded-md">포장완료</button>
-                      <button onClick={() => updateStatus(pkg.id, 'staged')} className="text-xs px-2 py-1.5 bg-indigo-600 rounded-md">도크분류</button>
-                      <button
-                        onClick={() => {
-                          updatePackage(pkg.id, { route, vehicleNo })
-                          updateStatus(pkg.id, 'loaded')
-                        }}
-                        className="text-xs px-2 py-1.5 bg-emerald-600 rounded-md"
-                      >
-                        상차
-                      </button>
-                      <button
-                        onClick={() => {
-                          updateStatus(pkg.id, 'closed')
-                          updateOutboundStatus(pkg.orderId, 'shipped')
-                          shipOrderAllocation(pkg.orderId)
-                        }}
-                        className="text-xs px-2 py-1.5 bg-slate-600 rounded-md"
-                      >
-                        마감
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 bg-[#1e293b] rounded-xl border border-slate-700/50 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-700 text-slate-400">
+                  <th className="text-left px-4 py-3 font-medium">패키지</th>
+                  <th className="text-left px-4 py-3 font-medium">오더/고객</th>
+                  <th className="text-right px-4 py-3 font-medium">검수 스캔</th>
+                  <th className="text-left px-4 py-3 font-medium">운송 정보</th>
+                  <th className="text-left px-4 py-3 font-medium">상태</th>
+                  <th className="text-center px-4 py-3 font-medium">액션</th>
+                </tr>
+              </thead>
+              <tbody>
+                {packages
+                  .filter((pkg) => (tab === 'packing' ? pkg.status === 'packing' || pkg.status === 'packed' : true))
+                  .map((pkg) => {
+                    const order = outboundOrders.find((target) => target.id === pkg.orderId)
+                    return (
+                      <tr key={pkg.id} className={`border-b border-slate-700/50 ${selectedPackageId === pkg.id ? 'bg-slate-700/30' : ''}`}>
+                        <td className="px-4 py-3 font-mono text-blue-400 cursor-pointer" onClick={() => setSelectedPackageId(pkg.id)}>{pkg.id}</td>
+                        <td className="px-4 py-3">{pkg.orderId} / {pkg.customer}<br /><span className="text-xs text-slate-500">합포장: {order?.consolidationGroup ?? '-'}</span></td>
+                        <td className="px-4 py-3 text-right">{pkg.scanCount} / {pkg.expectedScanCount}</td>
+                        <td className="px-4 py-3 text-slate-300">{pkg.carrier} · {pkg.trackingNo}<br />{pkg.dock} · {pkg.route} · {pkg.vehicleNo}</td>
+                        <td className="px-4 py-3"><span className={`text-xs px-2 py-1 rounded-full ${statusStyle[pkg.status]}`}>{pkg.status}</span></td>
+                        <td className="px-4 py-3 text-center space-x-1">
+                          <button onClick={() => increaseScanCount(pkg.id)} className="text-xs px-2 py-1.5 bg-slate-700 rounded-md">스캔</button>
+                          <button onClick={() => updateStatus(pkg.id, 'packed')} className="text-xs px-2 py-1.5 bg-blue-600 rounded-md">포장완료</button>
+                          <button onClick={() => updateStatus(pkg.id, 'staged')} className="text-xs px-2 py-1.5 bg-indigo-600 rounded-md">도크분류</button>
+                          <button onClick={() => { updatePackage(pkg.id, { route, vehicleNo }); updateStatus(pkg.id, 'loaded') }} className="text-xs px-2 py-1.5 bg-emerald-600 rounded-md">상차</button>
+                          <button
+                            onClick={() => {
+                              if (selectedPackageId === pkg.id && missingSkus.length > 0) return
+                              updateStatus(pkg.id, 'closed')
+                              updateOutboundStatus(pkg.orderId, 'shipped')
+                              shipOrderAllocation(pkg.orderId)
+                            }}
+                            className="text-xs px-2 py-1.5 bg-slate-600 rounded-md"
+                          >
+                            마감
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="bg-[#1e293b] rounded-xl border border-slate-700/50 p-4 space-y-3">
+            <h3 className="text-sm font-semibold text-slate-300">합포장 누락 점검</h3>
+            {!selectedPackage ? (
+              <p className="text-xs text-slate-500">패키지를 선택하면 합포장 SKU 체크리스트가 표시됩니다.</p>
+            ) : (
+              <>
+                <p className="text-xs text-slate-400">패키지: {selectedPackage.id}</p>
+                <p className="text-xs text-slate-400">합포장 오더: {consolidationOrders.map((order) => order.id).join(', ') || '-'}</p>
+                <div className="space-y-2 max-h-64 overflow-auto">
+                  {expectedSkus.map((sku) => {
+                    const item = inventoryItems.find((inventoryItem) => inventoryItem.sku === sku)
+                    const checked = checkedSkus.has(sku)
+                    return (
+                      <label key={sku} className={`flex items-center gap-2 p-2 rounded border ${checked ? 'border-emerald-500/40 bg-emerald-500/10' : 'border-slate-700 bg-slate-800/60'}`}>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(e) => {
+                            const next = new Set(checkedSkus)
+                            e.target.checked ? next.add(sku) : next.delete(sku)
+                            setScanChecklist((prev) => ({ ...prev, [selectedPackage.id]: next }))
+                          }}
+                          className="accent-blue-500"
+                        />
+                        {item && <img src={getFashionThumb({ name: item.name, styleCode: item.styleCode, color: item.color })} className="w-10 h-8 rounded border border-slate-600" />}
+                        <span className="text-xs text-slate-300">{sku}</span>
+                      </label>
+                    )
+                  })}
+                </div>
+                <div className={`text-xs px-2 py-1.5 rounded border ${missingSkus.length > 0 ? 'text-red-300 border-red-500/30 bg-red-500/10' : 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10'}`}>
+                  {missingSkus.length > 0 ? `누락 SKU ${missingSkus.length}개: ${missingSkus.join(', ')}` : '누락 없음 - 합포장 검증 완료'}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </Layout>

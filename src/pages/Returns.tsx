@@ -11,6 +11,7 @@ import { usePartnerStore } from '../store/partnerStore'
 const statusLabel: Record<ReturnOrder['status'], string> = {
   requested: '반품접수',
   inspecting: '검수중',
+  rework: '수선/클리닝',
   restocked: '재고복귀',
   disposed: '폐기',
 }
@@ -18,6 +19,7 @@ const statusLabel: Record<ReturnOrder['status'], string> = {
 const statusStyle: Record<ReturnOrder['status'], string> = {
   requested: 'text-blue-400 bg-blue-400/10 border border-blue-400/20',
   inspecting: 'text-yellow-400 bg-yellow-400/10 border border-yellow-400/20',
+  rework: 'text-violet-300 bg-violet-500/10 border border-violet-500/20',
   restocked: 'text-green-400 bg-green-400/10 border border-green-400/20',
   disposed: 'text-red-400 bg-red-400/10 border border-red-400/20',
 }
@@ -64,7 +66,7 @@ export default function Returns() {
 
   const statusData = useMemo(
     () =>
-      (['requested', 'inspecting', 'restocked', 'disposed'] as ReturnOrder['status'][]).map((status) => ({
+      (['requested', 'inspecting', 'rework', 'restocked', 'disposed'] as ReturnOrder['status'][]).map((status) => ({
         name: statusLabel[status],
         value: orders.filter((order) => order.status === status).length,
       })),
@@ -124,6 +126,28 @@ export default function Returns() {
     setSelected(null)
   }
 
+  const routeToRework = (order: ReturnOrder) => {
+    updateStatus(order.id, 'rework', {
+      gradeReason: '수선/클리닝 대기존 이동',
+    })
+    setSelected(null)
+  }
+
+  const completeReworkToA = (order: ReturnOrder) => {
+    updateStatus(order.id, 'inspecting', {
+      grading: 'A',
+      gradeReason: '수선/클리닝 완료, A 승급',
+      hasContamination: false,
+    })
+    setSelected({
+      ...order,
+      status: 'inspecting',
+      grading: 'A',
+      gradeReason: '수선/클리닝 완료, A 승급',
+      hasContamination: false,
+    })
+  }
+
   return (
     <Layout>
       <div className="p-6 space-y-6">
@@ -141,7 +165,7 @@ export default function Returns() {
         </div>
 
         <div className="flex gap-2">
-          {['all', 'requested', 'inspecting', 'restocked', 'disposed'].map((status) => (
+          {['all', 'requested', 'inspecting', 'rework', 'restocked', 'disposed'].map((status) => (
             <button
               key={status}
               onClick={() => setStatusFilter(status as 'all' | ReturnOrder['status'])}
@@ -259,7 +283,7 @@ export default function Returns() {
                 <p className="text-xs text-slate-300">채널 {selected.channel ?? 'B2C'} · 스타일 {selected.styleCode ?? '-'} · 사이즈 {selected.size ?? '-'}</p>
                 <p className="text-xs text-slate-300">택 제거 {selected.hasTagRemoved ? 'Y' : 'N'} · 오염 {selected.hasContamination ? 'Y' : 'N'}</p>
               </div>
-              {(selected.status === 'requested' || selected.status === 'inspecting') && (
+              {(selected.status === 'requested' || selected.status === 'inspecting' || selected.status === 'rework') && (
                 <div className="space-y-2">
                   <p className="text-xs text-slate-400">등급 변경</p>
                   <div className="grid grid-cols-4 gap-2">
@@ -285,9 +309,15 @@ export default function Returns() {
                   </div>
                 </div>
               )}
-              {(selected.status === 'requested' || selected.status === 'inspecting') && (
+              {(selected.status === 'requested' || selected.status === 'inspecting' || selected.status === 'rework') && (
                 <div className="grid grid-cols-1 gap-2 pt-2">
                   <button onClick={() => setInspecting(selected)} className="py-2.5 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/30 rounded-lg">검수 시작</button>
+                  {(selected.grading === 'B' || selected.grading === 'C') && (
+                    <button onClick={() => routeToRework(selected)} className="py-2.5 bg-violet-500/20 hover:bg-violet-500/30 text-violet-300 border border-violet-500/30 rounded-lg">수선/클리닝 대기존 이동</button>
+                  )}
+                  {selected.status === 'rework' && (
+                    <button onClick={() => completeReworkToA(selected)} className="py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 rounded-lg">수선완료 후 A등급 상향</button>
+                  )}
                   <button onClick={() => setRestocked(selected)} disabled={(selected.grading ?? 'A') !== 'A'} className="py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg disabled:bg-slate-700 disabled:text-slate-400">재고 복귀 (A만)</button>
                   <button onClick={() => setDisposed(selected)} className="py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 rounded-lg">폐기 처리</button>
                 </div>

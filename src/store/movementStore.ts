@@ -47,7 +47,7 @@ export const useMovementStore = create<MovementStore>((set) => ({
     {
       id: 'PA-240226-001',
       sku: 'SKU-0001',
-      name: '갤럭시 버즈',
+      name: '남성 오버핏 후드티',
       qty: 120,
       sourceDock: 'RCV-01',
       targetLocation: 'A-01-01-01-01',
@@ -60,7 +60,7 @@ export const useMovementStore = create<MovementStore>((set) => ({
     {
       id: 'RP-240226-001',
       sku: 'SKU-0110',
-      name: '노브랜드 생수',
+      name: '스포츠 양말 3팩',
       qty: 400,
       forwardLocation: 'D-01-01-01-01',
       reserveLocation: 'D-05-03-02-01',

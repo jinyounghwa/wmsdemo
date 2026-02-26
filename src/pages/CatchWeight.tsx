@@ -3,9 +3,9 @@ import Layout from '../components/Layout';
 import LanguageToggle from '../components/LanguageToggle';
 
 const CATCH_WEIGHT_ITEMS = [
-  { id: 'MEAT-001', name: '프리미엄 한우 등심 (박스)', stdWeight: '20.0 kg', actualWeight: '21.4 kg', diff: '+1.4', status: '측정완료', uom: 'Box' },
-  { id: 'MEAT-002', name: '냉동 삼겹살 (박스)', stdWeight: '25.0 kg', actualWeight: '24.2 kg', diff: '-0.8', status: '측정완료', uom: 'Box' },
-  { id: 'FISH-001', name: '노르웨이 생연어 (마리)', stdWeight: '6.0 kg', actualWeight: '-', diff: '-', status: '대기중', uom: 'EA' },
+  { id: 'APP-001', name: '다운 패딩 박스', stdWeight: '20.0 kg', actualWeight: '21.4 kg', diff: '+1.4', status: '측정완료', uom: 'Box' },
+  { id: 'APP-002', name: '데님 자켓 박스', stdWeight: '25.0 kg', actualWeight: '24.2 kg', diff: '-0.8', status: '측정완료', uom: 'Box' },
+  { id: 'APP-003', name: '촬영 샘플 세트', stdWeight: '6.0 kg', actualWeight: '-', diff: '-', status: '대기중', uom: 'EA' },
 ];
 
 export default function CatchWeight() {
@@ -18,7 +18,7 @@ export default function CatchWeight() {
               <h1 className="text-2xl font-bold text-gray-900">Catch Weight 관리</h1>
               <LanguageToggle />
             </div>
-            <p className="text-sm text-gray-500 mt-1">식품/농수산물 등 표준 중량과 실측 중량(Catch Weight)이 상이한 품목의 입출고 실측을 기록합니다.</p>
+            <p className="text-sm text-gray-500 mt-1">의류 박스/세트 단위처럼 표준 중량과 실측 중량(Catch Weight)이 달라지는 출고 건을 기록합니다.</p>
           </div>
           <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
             <Scale className="w-4 h-4 mr-2" />
@@ -35,7 +35,7 @@ export default function CatchWeight() {
           <div className="lg:col-span-1 bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-center items-center">
              <div className="w-full flex justify-between text-sm text-gray-500 mb-2">
                <span>현재 측정 품목</span>
-               <span className="font-mono text-blue-600 font-bold">FISH-001</span>
+               <span className="font-mono text-blue-600 font-bold">APP-003</span>
              </div>
              <div className="bg-gray-900 w-full rounded-lg p-6 flex flex-col items-center justify-center my-4 overflow-hidden relative">
                <div className="absolute top-2 right-3 text-red-500 font-mono text-xs font-bold animate-pulse">REC</div>

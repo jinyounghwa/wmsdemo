@@ -6,6 +6,7 @@ import Layout from '../components/Layout'
 import LanguageToggle from '../components/LanguageToggle'
 import { InventoryItem } from '../data/mockInventory'
 import { useInventoryStore } from '../store/inventoryStore'
+import { getFashionThumb } from '../utils/fashionImage'
 
 const statusLabel: Record<string, string> = { normal: '정상', low: '부족', excess: '초과', defect: '불량' }
 const statusStyle: Record<string, string> = {
@@ -208,7 +209,7 @@ export default function Inventory() {
                 <thead>
                   <tr className="border-b border-slate-700 text-slate-400">
                     <th className="text-left px-5 py-4 font-medium">품목코드</th>
-                    <th className="text-left px-5 py-4 font-medium">품목명</th>
+                    <th className="text-left px-5 py-4 font-medium">품목/썸네일</th>
                     <th className="text-left px-5 py-4 font-medium">스타일</th>
                     <th className="text-left px-5 py-4 font-medium">컬러/사이즈</th>
                     <th className="text-left px-5 py-4 font-medium">시즌</th>
@@ -223,7 +224,12 @@ export default function Inventory() {
                   {filtered.map((item) => (
                     <tr key={item.sku} onClick={() => setSelectedItem(item)} className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors cursor-pointer">
                       <td className="px-5 py-4 font-mono text-blue-400 text-xs">{item.sku}</td>
-                      <td className="px-5 py-4 font-medium">{item.name}</td>
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-2">
+                          <img src={getFashionThumb(item)} className="w-12 h-9 rounded border border-slate-600" />
+                          <span className="font-medium">{item.name}</span>
+                        </div>
+                      </td>
                       <td className="px-5 py-4 text-slate-300">{item.styleCode ?? '-'}</td>
                       <td className="px-5 py-4 text-slate-300">{item.color ?? '-'} / {item.size ?? '-'}</td>
                       <td className="px-5 py-4 text-slate-300">{item.seasonCode ?? '-'}</td>
@@ -246,9 +252,10 @@ export default function Inventory() {
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filtered.map((item) => (
                 <div key={item.sku} onClick={() => setSelectedItem(item)} className="bg-[#1e293b] rounded-xl p-4 border border-slate-700/50 hover:border-blue-500/50 transition-all cursor-pointer">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <p className="font-semibold text-sm">{item.name}</p>
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <img src={getFashionThumb(item)} className="w-full h-24 object-cover rounded-lg border border-slate-600 mb-2" />
+                        <p className="font-semibold text-sm">{item.name}</p>
                       <p className="text-xs text-slate-500 font-mono mt-0.5">{item.sku}</p>
                     </div>
                     <span className={`text-xs px-2 py-0.5 rounded-full ${statusStyle[item.status]}`}>{statusLabel[item.status]}</span>

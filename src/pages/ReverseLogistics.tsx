@@ -4,8 +4,8 @@ import LanguageToggle from '../components/LanguageToggle';
 
 const RETURNS_DATA = [
   { rma: 'RMA-2026-0012', order: 'ORD-99120', customer: '홍길동', item: 'Nike Air Max', reason: '단순변심', status: '검수 대기', date: '2026-02-26' },
-  { rma: 'RMA-2026-0011', order: 'ORD-99115', customer: '김철수', item: 'Logitech Mouse', reason: '제품결함', status: '분류 중 (Refurbish)', date: '2026-02-25' },
-  { rma: 'RMA-2026-0010', order: 'ORD-99088', customer: '이영희', item: 'Samsung Monitor', reason: '파손', status: '폐기 대기', date: '2026-02-24' },
+  { rma: 'RMA-2026-0011', order: 'ORD-99115', customer: '김철수', item: '오버핏 코튼 셔츠', reason: '제품결함', status: '분류 중 (Refurbish)', date: '2026-02-25' },
+  { rma: 'RMA-2026-0010', order: 'ORD-99088', customer: '이영희', item: '울 블렌드 코트', reason: '파손', status: '폐기 대기', date: '2026-02-24' },
 ];
 
 export default function ReverseLogistics() {

@@ -236,8 +236,8 @@ export const useExtendedModulesStore = create<ExtendedModulesStore>((set, get) =
       receivedAt: today(),
       status: 'allocated',
       lines: [
-        { sku: 'SKU-0001', name: '갤럭시 버즈', qty: 3 },
-        { sku: 'SKU-0002', name: '무선충전기', qty: 1 },
+        { sku: 'SKU-0001', name: '남성 오버핏 후드티', qty: 3 },
+        { sku: 'SKU-0002', name: '여성 크롭 후드티', qty: 1 },
       ],
       shipments: ['SHP-240226-001'],
     },
@@ -279,7 +279,7 @@ export const useExtendedModulesStore = create<ExtendedModulesStore>((set, get) =
   asnNotices: [
     {
       id: 'ASN-240226-01',
-      vendor: '삼성전자',
+      vendor: '무신사 스탠다드',
       eta: `${today()} 10:30`,
       dock: 'RCV-01',
       status: 'scheduled',
@@ -322,7 +322,7 @@ export const useExtendedModulesStore = create<ExtendedModulesStore>((set, get) =
     {
       id: 'KIT-1',
       kitSku: 'KIT-1000',
-      kitName: '홈오피스 세트',
+      kitName: '트래블 데일리 세트',
       components: [
         { sku: 'SKU-0200', qty: 1 },
         { sku: 'SKU-0201', qty: 1 },
@@ -337,7 +337,7 @@ export const useExtendedModulesStore = create<ExtendedModulesStore>((set, get) =
       id: 'QC-001',
       refNo: 'PO-240226-100',
       samplingRate: 10,
-      criteria: '외관/기능/라벨',
+      criteria: '원단/봉제/라벨',
       result: 'hold',
       inspector: 'QC-A',
       inspectedAt: `${today()} 10:10`,

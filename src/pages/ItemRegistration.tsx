@@ -5,7 +5,7 @@ import Layout from '../components/Layout'
 import LanguageToggle from '../components/LanguageToggle'
 import { useInventoryStore } from '../store/inventoryStore'
 
-const categorySeed = ['전자부품', '생활용품', '식품', '의류/신발', '자동차부품']
+const categorySeed = ['의류/신발', '남성의류', '여성의류', '스포츠웨어', '잡화']
 const zoneOptions = ['A', 'B', 'C', 'D']
 const seasons = ['SS25', 'FW25', 'SS26', 'BASIC']
 const collections = ['PERFORMANCE', 'CITY FORMAL', 'URBAN', 'RUNNING', 'BASIC']

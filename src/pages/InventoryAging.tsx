@@ -3,10 +3,10 @@ import Layout from '../components/Layout';
 import LanguageToggle from '../components/LanguageToggle';
 
 const AGING_DATA = [
-  { item: 'SKU-A001', name: '프리미엄 무선 카비', category: '전자제품', stock: 120, avgDays: 15, group: '0-30일', value: '₩12,000,000' },
-  { item: 'SKU-B042', name: '여름용 린넨 셔츠', category: '의류', stock: 450, avgDays: 45, group: '31-60일', value: '₩13,500,000' },
-  { item: 'SKU-C105', name: '크리스마스 트리 1.5m', category: '시즌가구', stock: 85, avgDays: 110, group: '91-180일', value: '₩4,250,000', warning: true },
-  { item: 'SKU-C012', name: '구형 USB 2.0 허브', category: '액세서리', stock: 320, avgDays: 240, group: '180일 이상', value: '₩1,600,000', danger: true },
+  { item: 'SKU-A001', name: '울 블렌드 코트', category: '여성의류', stock: 120, avgDays: 15, group: '0-30일', value: '₩12,000,000' },
+  { item: 'SKU-B042', name: '여름용 린넨 셔츠', category: '남성의류', stock: 450, avgDays: 45, group: '31-60일', value: '₩13,500,000' },
+  { item: 'SKU-C105', name: 'FW 니트 머플러', category: '잡화', stock: 85, avgDays: 110, group: '91-180일', value: '₩4,250,000', warning: true },
+  { item: 'SKU-C012', name: '지난 시즌 경량 패딩', category: '아우터', stock: 320, avgDays: 240, group: '180일 이상', value: '₩1,600,000', danger: true },
 ];
 
 export default function InventoryAging() {
