@@ -15,7 +15,7 @@ export default function LanguageToggle() {
             locale === 'ko' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800'
           }`}
         >
-          한글
+          KO
         </button>
         <button
           type="button"
@@ -24,7 +24,7 @@ export default function LanguageToggle() {
             locale === 'en' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800'
           }`}
         >
-          ENG
+          EN
         </button>
       </div>
     </div>
