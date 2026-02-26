@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { BookText, CheckCircle2, LayoutList } from 'lucide-react'
 import Layout from '../components/Layout'
 import LanguageToggle from '../components/LanguageToggle'
@@ -241,6 +241,58 @@ const dashboardOverride = {
   ]
 }
 
+type GlossaryTerm = {
+  id: string
+  term: { ko: string; en: string }
+  definition: { ko: string; en: string }
+  example: { ko: string; en: string }
+  pages: string[]
+}
+
+const glossaryTerms: GlossaryTerm[] = [
+  { id: 'inbound', term: { ko: '입고 (Inbound)', en: 'Inbound' }, definition: { ko: '공급사 또는 외부로부터 재고가 창고로 들어오는 프로세스입니다.', en: 'The process where inventory enters the warehouse from suppliers or external sources.' }, example: { ko: '예: PO 기반으로 500 EA 입고 후 검수 완료 처리', en: 'Example: Receive 500 EA by PO and complete inspection.' }, pages: ['dashboard', 'inbound', 'asn-scheduling'] },
+  { id: 'outbound', term: { ko: '출고 (Outbound)', en: 'Outbound' }, definition: { ko: '고객 주문에 맞춰 재고를 피킹·패킹·출하하는 프로세스입니다.', en: 'The process of picking, packing, and shipping stock for customer orders.' }, example: { ko: '예: SO 생성 → 피킹 → 패킹 → 운송장 등록 후 출하', en: 'Example: Create SO -> Pick -> Pack -> Register tracking -> Ship.' }, pages: ['dashboard', 'outbound', 'shipping-tms'] },
+  { id: 'picking', term: { ko: '피킹 (Picking)', en: 'Picking' }, definition: { ko: '출고 지시에 따라 보관 위치에서 상품을 집품하는 작업입니다.', en: 'The operation of collecting items from storage locations based on outbound instructions.' }, example: { ko: '예: Zone A 선반에서 SKU 3종 20EA 집품', en: 'Example: Pick 20 EA across 3 SKUs from Zone A shelves.' }, pages: ['outbound', 'waves', 'pick-strategy', 'packing-dispatch'] },
+  { id: 'packing', term: { ko: '패킹 (Packing)', en: 'Packing' }, definition: { ko: '피킹된 상품을 박스/봉투에 포장하고 출하 단위를 확정하는 작업입니다.', en: 'The task of packing picked items into shipping units and finalizing shipment packages.' }, example: { ko: '예: 주문 2건 합포장 후 운송장 1건 발행', en: 'Example: Consolidate 2 orders into one package and issue one tracking number.' }, pages: ['outbound', 'packing-dispatch'] },
+  { id: 'allocation', term: { ko: '재고 예약 (Allocation)', en: 'Allocation' }, definition: { ko: '실출고 전에 특정 주문에 재고를 선점하여 중복 출고를 방지하는 처리입니다.', en: 'A reservation process that secures stock for a specific order before shipping.' }, example: { ko: '예: 출고대기 주문 3건에 120EA 예약', en: 'Example: Reserve 120 EA for three pending orders.' }, pages: ['outbound', 'waves', 'inventory'] },
+  { id: 'wave', term: { ko: '웨이브 (Wave)', en: 'Wave' }, definition: { ko: '여러 주문을 묶어 한 번에 피킹 지시하는 배치 단위입니다.', en: 'A batch unit that groups multiple orders into one picking run.' }, example: { ko: '예: 오전 10시 웨이브에 18개 주문 배치', en: 'Example: Batch 18 orders into the 10:00 AM wave.' }, pages: ['waves', 'pick-strategy', 'task-labor-management'] },
+  { id: 'goh', term: { ko: 'GOH (Garment on Hanger)', en: 'GOH (Garment on Hanger)' }, definition: { ko: '의류를 행거 상태로 보관/이송/피킹하는 패션 물류 방식입니다.', en: 'A fashion logistics mode where garments are stored, moved, and picked on hangers.' }, example: { ko: '예: GOH 전용 웨이브를 분리해 행거 라인으로 피킹', en: 'Example: Split a GOH wave and pick through the hanger line.' }, pages: ['pick-strategy', 'inventory', 'fashion-core'] },
+  { id: 'assortment', term: { ko: '어소트먼트/프리팩', en: 'Assortment/Prepack' }, definition: { ko: '사이즈 비율로 묶인 세트 단위를 하나의 바코드로 관리하는 방식입니다.', en: 'A ratio-pack method that manages size-set bundles under one barcode.' }, example: { ko: '예: S1/M2/L1 비율 세트 30팩 출고', en: 'Example: Ship 30 sets with S1/M2/L1 ratio.' }, pages: ['outbound', 'operations-report', 'fashion-core'] },
+  { id: 'consolidation', term: { ko: '합포장 (Consolidation)', en: 'Consolidation' }, definition: { ko: '여러 주문 또는 품목을 한 운송 단위로 묶어 출하하는 처리입니다.', en: 'The process of combining multiple orders/items into one shipment unit.' }, example: { ko: '예: 동일 고객 3개 주문을 1박스로 합포장', en: 'Example: Consolidate three orders for one customer into one box.' }, pages: ['outbound', 'packing-dispatch'] },
+  { id: 'vas', term: { ko: 'VAS (부가가치작업)', en: 'VAS (Value Added Service)' }, definition: { ko: '택부착, 다림질, 라벨교체 등 물류 부가서비스 작업입니다.', en: 'Value-added logistics tasks such as tag attachment, ironing, and relabeling.' }, example: { ko: '예: 택부착 120건, 다림질 45건 정산 반영', en: 'Example: Reflect billing for 120 tag tasks and 45 ironing tasks.' }, pages: ['billing', 'returns', 'operations-report'] },
+  { id: 'rma', term: { ko: 'RMA', en: 'RMA (Return Merchandise Authorization)' }, definition: { ko: '반품 승인/접수를 위한 식별 번호 및 반품 처리 단위입니다.', en: 'An identifier and process unit used for return authorization and intake.' }, example: { ko: '예: RMA-2026-018 접수 후 검수 시작', en: 'Example: Start inspection after receiving RMA-2026-018.' }, pages: ['returns', 'reverse-logistics'] },
+  { id: 'cycle-count', term: { ko: '실사 (Cycle Count)', en: 'Cycle Count' }, definition: { ko: '전체 재고를 멈추지 않고 구역 단위로 순환 실사하는 방식입니다.', en: 'A rotating count method by zone without stopping full operations.' }, example: { ko: '예: Zone C 월간 실사 후 오차 12EA 조정', en: 'Example: Adjust 12 EA variance after monthly count in Zone C.' }, pages: ['cycle-count', 'inventory-audit-trail'] },
+  { id: 'slotting', term: { ko: '슬로팅 (Slotting)', en: 'Slotting' }, definition: { ko: '상품 특성/회전율에 맞게 보관 위치를 최적화하는 작업입니다.', en: 'A process that optimizes storage locations by item profile and turnover.' }, example: { ko: '예: A급 회전 SKU를 전면 피킹존으로 재배치', en: 'Example: Relocate A-class fast movers to front picking zones.' }, pages: ['slotting-optimization', 'inventory'] },
+  { id: 'lpn', term: { ko: 'LPN', en: 'LPN (License Plate Number)' }, definition: { ko: '팔레트/토트 같은 물류 단위를 식별하는 고유 관리번호입니다.', en: 'A unique identifier for logistics units such as pallets and totes.' }, example: { ko: '예: LPN-00421 상태를 Stored에서 Picking으로 변경', en: 'Example: Change LPN-00421 status from Stored to Picking.' }, pages: ['lpn-equipment', 'task-labor-management'] },
+  { id: 'wcs', term: { ko: 'WCS', en: 'WCS (Warehouse Control System)' }, definition: { ko: '컨베이어/소터 등 자동화 설비를 제어·모니터링하는 시스템입니다.', en: 'A system that controls and monitors automation equipment like conveyors and sorters.' }, example: { ko: '예: 소터 라인 jam 이벤트 감지 후 알림 발송', en: 'Example: Detect sorter jam event and trigger alert.' }, pages: ['lpn-equipment', 'integration-monitor'] },
+  { id: 'cross-docking', term: { ko: '크로스도킹', en: 'Cross-Docking' }, definition: { ko: '입고 재고를 보관 없이 출고 도크로 바로 연결하는 운영 방식입니다.', en: 'An operation method that routes inbound stock directly to outbound docks.' }, example: { ko: '예: 오전 입고분을 오후 출고 웨이브에 즉시 연결', en: 'Example: Link morning inbound directly to afternoon outbound wave.' }, pages: ['cross-docking', 'asn-scheduling'] },
+  { id: 'fefo', term: { ko: 'FEFO', en: 'FEFO (First Expired, First Out)' }, definition: { ko: '유통기한이 빠른 재고를 우선 출고하는 정책입니다.', en: 'A policy that ships stock with earliest expiry first.' }, example: { ko: '예: 유통기한 2026-03-01 로트를 우선 할당', en: 'Example: Allocate lot expiring on 2026-03-01 first.' }, pages: ['lot-batch-expiry', 'outbound'] },
+  { id: 'tms', term: { ko: 'TMS', en: 'TMS (Transportation Management System)' }, definition: { ko: '출하 후 운송 경로·상태·인도 정보를 관리하는 시스템입니다.', en: 'A system that manages routes, shipment states, and delivery information after dispatch.' }, example: { ko: '예: manifested → inTransit → delivered 상태 추적', en: 'Example: Track manifested -> inTransit -> delivered states.' }, pages: ['shipping-tms', 'outbound'] },
+  { id: 'asn', term: { ko: 'ASN', en: 'ASN (Advance Shipment Notice)' }, definition: { ko: '공급사가 사전 전송하는 입고 예정 정보(라인/수량/ETA)입니다.', en: 'Advance inbound notice sent by suppliers with lines, quantities, and ETA.' }, example: { ko: '예: ASN 수신 후 도크 3번 슬롯 자동 배정', en: 'Example: Auto-assign Dock 3 slot after ASN intake.' }, pages: ['asn-scheduling', 'inbound'] },
+  { id: 'bom', term: { ko: 'BOM', en: 'BOM (Bill of Materials)' }, definition: { ko: '세트/KIT 상품을 구성하는 부품 목록과 소요량 정의입니다.', en: 'A definition of components and required quantities for set/KIT products.' }, example: { ko: '예: KIT 1개 생산에 A 2개, B 1개 소요', en: 'Example: Produce one KIT using A x2 and B x1.' }, pages: ['kit-bom', 'inventory'] },
+  { id: 'qc', term: { ko: 'QC', en: 'QC (Quality Control)' }, definition: { ko: '입고/반품 상품의 품질 판정을 위한 검사 관리입니다.', en: 'Inspection management for quality judgment of inbound/returned items.' }, example: { ko: '예: 샘플링 5% 검사 후 hold 판정', en: 'Example: Mark hold after 5% sampling inspection.' }, pages: ['quality-control', 'returns'] },
+  { id: 'putaway', term: { ko: '적치 (Put-away)', en: 'Put-away' }, definition: { ko: '입고된 재고를 지정 로케이션으로 이동해 저장 확정하는 작업입니다.', en: 'The operation of moving inbound stock to assigned storage locations.' }, example: { ko: '예: Receiving Dock 재고를 A-03-02 Bin으로 적치', en: 'Example: Put away receiving-dock stock to Bin A-03-02.' }, pages: ['putaway-replenishment', 'inbound', 'location-management'] },
+  { id: 'replenishment', term: { ko: '보충 (Replenishment)', en: 'Replenishment' }, definition: { ko: '피킹 구역 재고가 하한선 아래로 내려가면 보관구역에서 보충하는 작업입니다.', en: 'The task of replenishing forward picking stock from reserve when below threshold.' }, example: { ko: '예: Forward 잔량 8EA 발생 시 Reserve에서 40EA 보충', en: 'Example: Replenish 40 EA from reserve when forward drops to 8 EA.' }, pages: ['putaway-replenishment', 'inventory', 'pick-strategy'] },
+  { id: 'zone', term: { ko: 'Zone', en: 'Zone' }, definition: { ko: '창고를 운영 목적별로 구분한 최상위 보관/작업 구역입니다.', en: 'The top-level warehouse area segmented by operation purpose.' }, example: { ko: '예: Zone A는 피킹, Zone R은 보관 전용 운영', en: 'Example: Zone A for picking, Zone R for reserve storage.' }, pages: ['location-management', 'warehouse-floor-map', 'inventory'] },
+  { id: 'rack-bin', term: { ko: 'Rack/Bin', en: 'Rack/Bin' }, definition: { ko: '로케이션 계층에서 실제 보관 위치를 식별하는 단위입니다.', en: 'Units used to identify exact storage positions in location hierarchy.' }, example: { ko: '예: A-12-04 Bin에 SKU-1022 60EA 보관', en: 'Example: Store 60 EA of SKU-1022 in Bin A-12-04.' }, pages: ['location-management', 'inventory', 'cycle-count'] },
+  { id: 'on-hand', term: { ko: '현재고 (On-hand)', en: 'On-hand Stock' }, definition: { ko: '창고에 물리적으로 존재하는 총 재고 수량입니다.', en: 'The total physical stock quantity currently in the warehouse.' }, example: { ko: '예: 현재고 250EA, 예약 80EA, 가용 170EA', en: 'Example: On-hand 250 EA, allocated 80 EA, available 170 EA.' }, pages: ['inventory', 'dashboard', 'operations-report'] },
+  { id: 'safety-stock', term: { ko: '안전재고 (Safety Stock)', en: 'Safety Stock' }, definition: { ko: '수요 변동/지연 리스크를 대비해 유지하는 최소 재고 기준입니다.', en: 'A minimum stock threshold maintained against demand and delay risks.' }, example: { ko: '예: 안전재고 50EA 미만 시 자동 경보 생성', en: 'Example: Trigger alert when stock drops below 50 EA safety level.' }, pages: ['inventory', 'dashboard', 'sla-monitor'] },
+  { id: 'quarantine', term: { ko: '격리재고 (Quarantine)', en: 'Quarantine Stock' }, definition: { ko: '검수 미완료 또는 불량 의심 재고를 별도 분리해 보관하는 상태입니다.', en: 'A segregated stock state for uninspected or suspected defective items.' }, example: { ko: '예: 반품 오염품 12EA를 격리 로케이션으로 이동', en: 'Example: Move 12 contaminated return units to quarantine location.' }, pages: ['returns', 'quality-control', 'inventory'] },
+  { id: 'lead-time', term: { ko: '리드타임 (Lead Time)', en: 'Lead Time' }, definition: { ko: '주문/작업 지시부터 완료까지 걸리는 전체 소요 시간입니다.', en: 'The total elapsed time from order/task creation to completion.' }, example: { ko: '예: 출고 리드타임 평균 6.2시간 측정', en: 'Example: Measure average outbound lead time of 6.2 hours.' }, pages: ['throughput-analytics', 'dashboard', 'operations-report'] },
+  { id: 'dock', term: { ko: '도크 (Dock)', en: 'Dock' }, definition: { ko: '입출고 차량이 접안해 상하차를 수행하는 작업 포인트입니다.', en: 'A loading point where trucks berth for inbound/outbound handling.' }, example: { ko: '예: 도크 5번은 B2B 상차 전용으로 운영', en: 'Example: Operate Dock 5 exclusively for B2B loading.' }, pages: ['yard-management', 'packing-dispatch', 'asn-scheduling'] },
+  { id: 'dispatch', term: { ko: '상차/배차 (Dispatch)', en: 'Dispatch' }, definition: { ko: '포장 완료 화물을 차량에 적재하고 노선별로 출발시키는 단계입니다.', en: 'The stage of loading packed cargo and dispatching by route/vehicle.' }, example: { ko: '예: 서울 북부 노선 차량 2대 상차 마감', en: 'Example: Close loading for two trucks on Seoul North route.' }, pages: ['packing-dispatch', 'shipping-tms'] },
+  { id: '3pl', term: { ko: '3PL', en: '3PL (Third-Party Logistics)' }, definition: { ko: '화주사 물류를 외부 전문 물류사가 위탁 운영하는 서비스 모델입니다.', en: 'A service model where logistics is outsourced to a third-party provider.' }, example: { ko: '예: 화주사별 보관료/작업료 기준으로 월 정산 생성', en: 'Example: Generate monthly billing by client storage and handling rates.' }, pages: ['billing', 'operations-report', 'master-data'] },
+  { id: 'oms', term: { ko: 'OMS', en: 'OMS (Order Management System)' }, definition: { ko: '주문 접수, 상태 전이, 출고 연계를 관리하는 주문 시스템입니다.', en: 'An order system managing order intake, state transitions, and shipment linkage.' }, example: { ko: '예: OMS 주문 상태를 부분출고로 갱신', en: 'Example: Update OMS order status to partial shipment.' }, pages: ['order-management', 'outbound', 'integration-monitor'] },
+  { id: 'erp', term: { ko: 'ERP 연동', en: 'ERP Integration' }, definition: { ko: '기준정보/수불/정산 데이터를 ERP와 교환하는 인터페이스입니다.', en: 'An interface exchanging master, stock movement, and settlement data with ERP.' }, example: { ko: '예: 일 마감 후 재고수불 데이터를 ERP로 전송', en: 'Example: Send daily stock movement data to ERP after closing.' }, pages: ['integration-monitor', 'billing', 'operations-report'] },
+  { id: 'season-code', term: { ko: '시즌 코드 (Season Code)', en: 'Season Code' }, definition: { ko: '의류 상품을 시즌 단위(SS/FW 등)로 묶어 운영/분석하는 기준입니다.', en: 'A key used to operate and analyze apparel items by season (SS/FW, etc.).' }, example: { ko: '예: FW25 재고만 필터링해 소진율 분석', en: 'Example: Filter FW25 stock and analyze depletion rate.' }, pages: ['inventory', 'outbound', 'operations-report'] },
+  { id: 'collection', term: { ko: '컬렉션 (Collection)', en: 'Collection' }, definition: { ko: '시즌 내 라인업/기획군 단위로 스타일을 분류하는 패션 기준입니다.', en: 'A fashion grouping that classifies styles by lineup/theme within a season.' }, example: { ko: '예: Urban Casual 컬렉션 출고 비중 비교', en: 'Example: Compare outbound share of Urban Casual collection.' }, pages: ['inventory', 'operations-report', 'item-registration'] },
+  { id: 'grading', term: { ko: '반품 등급화 (Grading)', en: 'Return Grading' }, definition: { ko: '반품 상품 상태를 A/B/C/D로 분류해 후속 처리를 결정하는 절차입니다.', en: 'A process classifying returns into A/B/C/D grades to decide next actions.' }, example: { ko: '예: B등급은 수선 대기존, D등급은 폐기 처리', en: 'Example: Route grade B to repair queue and grade D to disposal.' }, pages: ['returns', 'reverse-logistics', 'operations-report'] },
+  { id: 'rework', term: { ko: '수선/클리닝 (Rework)', en: 'Rework (Repair/Clean)' }, definition: { ko: '오염 제거·다림질·부자재 교체 후 재판매 가능 상태로 복구하는 작업입니다.', en: 'A recovery task that restores items to resellable condition via cleaning/repair.' }, example: { ko: '예: C등급 반품을 수선 후 A등급으로 상향', en: 'Example: Upgrade grade C return to grade A after rework.' }, pages: ['returns', 'reverse-logistics', 'billing'] },
+  { id: 'photo-sample', term: { ko: '촬영 샘플 (Photo Sample)', en: 'Photo Sample' }, definition: { ko: '촬영/콘텐츠 제작용으로 일시 출고 후 회수·반납 관리하는 재고입니다.', en: 'Stock temporarily issued for content shooting and tracked through return cycle.' }, example: { ko: '예: 샘플 5벌 출고 후 3일 내 반납 확인', en: 'Example: Issue 5 sample pieces and confirm return within 3 days.' }, pages: ['outbound', 'returns', 'inventory'] },
+  { id: 'substitute-sku', term: { ko: '대체상품 (Substitute SKU)', en: 'Substitute SKU' }, definition: { ko: '원주문 SKU 부족 시 사전 합의된 대체 SKU로 출고하는 처리 방식입니다.', en: 'A process shipping an agreed substitute SKU when original stock is insufficient.' }, example: { ko: '예: 블랙 M 품절 시 네이비 M으로 대체 출고', en: 'Example: Substitute Navy M when Black M is out of stock.' }, pages: ['outbound', 'packing-dispatch', 'order-management'] },
+  { id: 'consolidation-check', term: { ko: '합포장 누락 점검', en: 'Consolidation Missing Check' }, definition: { ko: '합포장 대상 주문에서 누락 SKU를 출하 전 최종 검증하는 절차입니다.', en: 'A final validation step checking missing SKUs in consolidated shipments.' }, example: { ko: '예: 합포장 그룹 C-03에서 SKU 1건 누락 경보', en: 'Example: Missing-SKU alert detected in consolidation group C-03.' }, pages: ['packing-dispatch', 'outbound'] }
+]
+
 export default function PageDetailGuide() {
   const { locale } = useLanguage()
   const localize = (ko: string, en?: string) => {
@@ -275,6 +327,18 @@ export default function PageDetailGuide() {
   const activeData = useMemo(
     () => menuGuides.find((item) => item.id === activeTab) ?? menuGuides[0],
     [activeTab, menuGuides]
+  )
+  const relatedTerms = useMemo(
+    () => glossaryTerms.filter((term) => term.pages.includes(activeData.id)),
+    [activeData.id]
+  )
+  const [activeTermId, setActiveTermId] = useState<string>('')
+  useEffect(() => {
+    setActiveTermId(relatedTerms[0]?.id ?? glossaryTerms[0]?.id ?? '')
+  }, [activeData.id, relatedTerms])
+  const activeTerm = useMemo(
+    () => relatedTerms.find((term) => term.id === activeTermId) ?? relatedTerms[0] ?? glossaryTerms[0],
+    [activeTermId, relatedTerms]
   )
   const activeTitle = titleOverrideById[activeData.id] ?? {
     ko: activeData.title.ko.replace(/\s*\([^)]*\)\s*/g, '').trim(),
@@ -408,6 +472,57 @@ export default function PageDetailGuide() {
                     </div>
                   ))}
                 </div>
+              </section>
+
+              <section className="rounded-xl border border-cyan-500/30 bg-cyan-500/5 p-4">
+                <h3 className="text-sm font-semibold text-cyan-300">{locale === 'ko' ? '용어 해설 메뉴' : 'Terminology Guide'}</h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  {locale === 'ko'
+                    ? '현재 페이지와 연관된 WMS/의류 공통 핵심 용어를 선택하면 정의와 운영 예시를 확인할 수 있습니다.'
+                    : 'Select WMS/apparel cross-domain terms related to this page to review definitions and operational examples.'}
+                </p>
+
+                {relatedTerms.length === 0 ? (
+                  <p className="text-sm text-slate-300 mt-3">
+                    {locale === 'ko'
+                      ? '연관 용어가 아직 등록되지 않았습니다.'
+                      : 'No related terms are registered for this page yet.'}
+                  </p>
+                ) : (
+                  <div className="mt-3 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-3">
+                    <div className="rounded-lg border border-slate-700/60 bg-slate-900/40 p-2 space-y-1 max-h-64 overflow-y-auto">
+                      {relatedTerms.map((term) => (
+                        <button
+                          key={term.id}
+                          onClick={() => setActiveTermId(term.id)}
+                          className={`w-full text-left px-3 py-2 rounded-md border transition-colors ${
+                            activeTerm?.id === term.id
+                              ? 'border-cyan-500/50 bg-cyan-500/10 text-white'
+                              : 'border-transparent text-slate-300 hover:bg-slate-800/60'
+                          }`}
+                        >
+                          <p className="text-sm font-medium">{localize(term.term.ko, term.term.en)}</p>
+                        </button>
+                      ))}
+                    </div>
+
+                    {activeTerm && (
+                      <div className="rounded-lg border border-slate-700/60 bg-slate-900/40 p-4">
+                        <p className="text-sm font-semibold text-cyan-200">{localize(activeTerm.term.ko, activeTerm.term.en)}</p>
+                        <div className="mt-3 space-y-3">
+                          <div>
+                            <p className="text-xs text-slate-400">{locale === 'ko' ? '해설' : 'Definition'}</p>
+                            <p className="text-sm text-slate-200 mt-1 leading-relaxed">{localize(activeTerm.definition.ko, activeTerm.definition.en)}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-slate-400">{locale === 'ko' ? '예시' : 'Example'}</p>
+                            <p className="text-sm text-slate-200 mt-1 leading-relaxed">{localize(activeTerm.example.ko, activeTerm.example.en)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </section>
             </div>
           )}
