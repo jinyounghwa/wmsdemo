@@ -14,6 +14,7 @@ import MasterData from './pages/MasterData'
 import CycleCount from './pages/CycleCount'
 import OperationsReport from './pages/OperationsReport'
 import LogicExplanation from './pages/LogicExplanation'
+import PageDetailGuide from './pages/PageDetailGuide'
 import LocationManagement from './pages/LocationManagement'
 import PutawayReplenishment from './pages/PutawayReplenishment'
 import PackingDispatch from './pages/PackingDispatch'
@@ -84,6 +85,7 @@ function App() {
         <Route path="/cycle-count" element={<CycleCount />} />
         <Route path="/operations-report" element={<OperationsReport />} />
         <Route path="/logic-explanation" element={<LogicExplanation />} />
+        <Route path="/page-detail-guide" element={<PageDetailGuide />} />
         <Route path="/slotting-optimization" element={<SlottingOptimization />} />
         <Route path="/pick-strategy" element={<PickStrategy />} />
         <Route path="/reverse-logistics" element={<ReverseLogistics />} />

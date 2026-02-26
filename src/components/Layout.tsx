@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ReactNode } from 'react'
-import { LayoutDashboard, Package, Truck, ClipboardList, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History, Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Activity, Map as MapIcon, Users, Scale, Network, Pickaxe, Recycle, ShieldAlert, BarChart3, Clock } from 'lucide-react'
+import { LayoutDashboard, Package, Truck, ClipboardList, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History, Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Activity, Map as MapIcon, Users, Scale, Network, Pickaxe, Recycle, ShieldAlert, BarChart3, Clock, BookText } from 'lucide-react'
 
 const navItems = [
   { path: '/dashboard', label: '대시보드', icon: <LayoutDashboard size={20} /> },
@@ -46,6 +46,7 @@ const navItems = [
   { path: '/operations-report', label: '운영 리포트', icon: <FileChartColumnIncreasing size={20} /> },
   { path: '/throughput-analytics', label: '처리량 분석', icon: <Activity size={20} /> },
   { path: '/logic-explanation', label: '페이지 로직 설명', icon: <FileQuestion size={20} /> },
+  { path: '/page-detail-guide', label: '페이지 상세 설명', icon: <BookText size={20} /> },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {

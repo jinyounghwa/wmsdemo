@@ -49,6 +49,7 @@ const exactMap: Record<string, string> = {
   '배송/TMS 뷰': 'Shipping/TMS View',
   '운영 리포트': 'Operations Report',
   '페이지 로직 설명': 'Page Logic Guide',
+  '페이지 상세 설명': 'Page Detail Guide',
   '운영 대시보드': 'Operations Dashboard',
   '입고예정': 'Scheduled',
   '검수중': 'Inspecting',

@@ -23,6 +23,7 @@ React + TypeScript 기반 WMS(창고관리시스템) 데모 SPA입니다.
 - 프론트엔드 단독 데모(Mock 데이터/상태 기반)
 - 업무 시연 및 로직 검증에 초점
 - 실운영 연계 전 단계(백엔드 API, DB, 인증 연동 없음)
+- 자동 CI 파이프라인 없이 로컬 `build/lint` 기준으로 검증
 
 ## 2) 패션(의류) 특화 반영 내역
 
@@ -125,6 +126,7 @@ React + TypeScript 기반 WMS(창고관리시스템) 데모 SPA입니다.
 - 모든 주요 라우트의 처리 로직(입고/출고/재고/반품/확장 모듈)을 KO/EN으로 단계별 설명
 - 패션 특화 로직(어소트먼트, GOH 분리 웨이브, 수선 라우팅, 비주얼 피킹, 합포장 검증) 포함
 - 한/영 전환 로직(`LanguageProvider` + `DomI18nBridge` + 번역 맵) 동작 원리 포함
+- `한/영 전환 로직` 전용 탭으로 i18n 처리 흐름 별도 안내
 
 ## 3) 다국어(한/영) 전환 기준
 
@@ -214,6 +216,7 @@ npm run preview  # 빌드 산출물 로컬 미리보기
 | `/operations-report` | 운영 리포트 |
 | `/throughput-analytics` | 처리량 분석 |
 | `/logic-explanation` | 페이지 로직 설명 |
+| `/page-detail-guide` | 페이지 상세 설명 |
 
 ## 7) 데이터 모델 확장 (패션 관련)
 

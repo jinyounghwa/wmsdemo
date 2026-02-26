@@ -31,7 +31,7 @@ type LogicItem = {
   steps: LogicStep[]
 }
 
-const logicData: LogicItem[] = [
+export const logicData: LogicItem[] = [
   {
     id: 'landing',
     title: { ko: '랜딩 (Landing)', en: 'Landing' },
@@ -1123,7 +1123,7 @@ const pageOrder = [
 ]
 
 const pageOrderSet = new Set(pageOrder)
-const orderedLogicData = [
+export const orderedLogicData = [
   ...pageOrder.map((id) => logicData.find((item) => item.id === id)).filter((item): item is LogicItem => Boolean(item)),
   ...logicData.filter((item) => !pageOrderSet.has(item.id))
 ]
