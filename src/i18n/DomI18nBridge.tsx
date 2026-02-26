@@ -4,7 +4,13 @@ import { translateText } from './translations'
 
 const textOriginalMap = new WeakMap<Text, string>()
 
+function isInSkippedTree(node: Node): boolean {
+  const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement
+  return Boolean(el?.closest('[data-i18n-skip="true"]'))
+}
+
 function applyTranslationToTextNode(node: Text, locale: 'ko' | 'en') {
+  if (isInSkippedTree(node)) return
   const original = textOriginalMap.get(node) ?? node.nodeValue ?? ''
   if (!textOriginalMap.has(node)) {
     textOriginalMap.set(node, original)
@@ -17,6 +23,7 @@ function applyTranslationToTextNode(node: Text, locale: 'ko' | 'en') {
 }
 
 function applyTranslationToElementAttributes(el: Element, locale: 'ko' | 'en') {
+  if (isInSkippedTree(el)) return
   const htmlEl = el as HTMLElement
   const attrs = ['placeholder', 'title', 'aria-label']
 
@@ -38,6 +45,7 @@ function applyTranslationToElementAttributes(el: Element, locale: 'ko' | 'en') {
 }
 
 function translateSubtree(root: Node, locale: 'ko' | 'en') {
+  if (isInSkippedTree(root)) return
   if (root.nodeType === Node.TEXT_NODE) {
     applyTranslationToTextNode(root as Text, locale)
     return
@@ -51,7 +59,7 @@ function translateSubtree(root: Node, locale: 'ko' | 'en') {
   let current = walker.nextNode()
   while (current) {
     const parent = current.parentElement
-    if (parent && !['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(parent.tagName)) {
+    if (parent && !['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(parent.tagName) && !isInSkippedTree(current)) {
       applyTranslationToTextNode(current as Text, locale)
     }
     current = walker.nextNode()
@@ -64,7 +72,9 @@ function translateSubtree(root: Node, locale: 'ko' | 'en') {
   const elementWalker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT)
   let elNode = elementWalker.nextNode()
   while (elNode) {
-    applyTranslationToElementAttributes(elNode as Element, locale)
+    if (!isInSkippedTree(elNode)) {
+      applyTranslationToElementAttributes(elNode as Element, locale)
+    }
     elNode = elementWalker.nextNode()
   }
 }

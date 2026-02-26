@@ -248,6 +248,19 @@ export default function PageDetailGuide() {
     const base = (en && en.trim().length > 0 ? en : ko)
     return /[가-힣]/.test(base) ? translateText(base, 'en') : base
   }
+  const menuMetaById = useMemo(() => {
+    const ids = new Set([...Object.keys(pathById), ...Object.keys(titleOverrideById), ...Object.keys(domainById)])
+    return Object.fromEntries(
+      Array.from(ids).map((id) => [
+        id,
+        {
+          path: pathById[id],
+          title: titleOverrideById[id],
+          domain: domainById[id]
+        }
+      ])
+    ) as Record<string, { path?: string; title?: { ko: string; en: string }; domain?: { ko: string; en: string } }>
+  }, [])
 
   const menuGuides = useMemo(() => {
     const map = new Map(orderedLogicData.map((item) => [item.id, item]))
@@ -273,15 +286,16 @@ export default function PageDetailGuide() {
   const activeSteps = activeData.id === 'dashboard'
     ? dashboardOverride.steps
     : activeData.steps
-  const activePath = pathById[activeData.id] ?? `/${activeData.id}`
-  const activeDomain = domainById[activeData.id] ?? {
-    ko: 'Zustand 상태 + Mock 데이터 기반 화면 처리',
-    en: 'Screen handling based on Zustand state + mock data'
+  const activeMeta = menuMetaById[activeData.id]
+  const activePath = activeMeta?.path ?? '-'
+  const activeDomain = activeMeta?.domain ?? {
+    ko: '메타 정보 미정의',
+    en: 'Metadata not defined'
   }
 
   return (
     <Layout>
-      <div key={locale} className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 min-h-full">
+      <div key={locale} data-i18n-skip="true" className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 min-h-full">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-700/50 pb-6">
           <div>
             <div className="flex items-center gap-3">
@@ -307,6 +321,9 @@ export default function PageDetailGuide() {
             <div className="space-y-2">
               {menuGuides.map((item) => {
                 const isActive = item.id === activeTab
+                const itemMeta = menuMetaById[item.id]
+                const itemTitleKo = itemMeta?.title?.ko ?? titleOverrideById[item.id]?.ko ?? item.title.ko.replace(/\s*\([^)]*\)\s*/g, '').trim()
+                const itemTitleEn = itemMeta?.title?.en ?? titleOverrideById[item.id]?.en ?? item.title.en
                 return (
                   <button
                     key={item.id}
@@ -317,7 +334,7 @@ export default function PageDetailGuide() {
                         : 'bg-slate-800/30 border-slate-700/60 text-slate-300 hover:bg-slate-800/60 hover:text-white'
                     }`}
                   >
-                    <p className="text-sm font-semibold">{localize(titleOverrideById[item.id]?.ko ?? item.title.ko.replace(/\s*\([^)]*\)\s*/g, '').trim(), titleOverrideById[item.id]?.en ?? item.title.en)}</p>
+                    <p className="text-sm font-semibold">{localize(itemTitleKo, itemTitleEn)}</p>
                     <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">{localize(item.description.ko, item.description.en)}</p>
                   </button>
                 )
