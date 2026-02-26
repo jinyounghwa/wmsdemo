@@ -2,6 +2,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { AlertTriangle, AlertCircle, Clock, ArrowUp, ArrowDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { useInboundStore } from '../store/inboundStore'
 import { useOutboundStore } from '../store/outboundStore'
 import { useInventoryStore } from '../store/inventoryStore'
@@ -165,7 +166,10 @@ export default function Dashboard() {
     <Layout>
       <div className="p-6 space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">운영 대시보드</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold">운영 대시보드</h1>
+            <LanguageToggle />
+          </div>
           <p className="text-slate-400 text-sm mt-1">{today} 기준</p>
         </div>
 

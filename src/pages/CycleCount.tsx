@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { useInventoryStore } from '../store/inventoryStore'
 import { useCycleCountStore } from '../store/cycleCountStore'
 
@@ -29,7 +30,10 @@ export default function CycleCount() {
     <Layout>
       <div className="p-6 space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">재고 실사 관리</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold">재고 실사 관리</h1>
+            <LanguageToggle />
+          </div>
           <p className="text-slate-400 text-sm mt-1">Cycle Count 작업 생성 및 조정 반영</p>
         </div>
 

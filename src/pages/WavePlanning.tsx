@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { useOutboundStore } from '../store/outboundStore'
 import { useInventoryStore } from '../store/inventoryStore'
 import { useWaveStore } from '../store/waveStore'
@@ -63,7 +64,10 @@ export default function WavePlanning() {
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">웨이브 피킹</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">웨이브 피킹</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-slate-400 text-sm mt-1">출고대기 주문을 묶어 일괄 피킹 시작합니다.</p>
           </div>
           <button

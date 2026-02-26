@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { List, Grid, X, Plus } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { InventoryItem } from '../data/mockInventory'
 import { useInventoryStore } from '../store/inventoryStore'
 
@@ -65,7 +66,10 @@ export default function Inventory() {
         <div className="flex-1 p-6 space-y-6 overflow-auto">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold">재고 현황</h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold">재고 현황</h1>
+                <LanguageToggle />
+              </div>
               <p className="text-slate-400 text-sm mt-1">총 {items.length} SKU</p>
             </div>
             <button

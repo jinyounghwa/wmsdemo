@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ClipboardCheck, MoveRight, History } from 'lucide-react'
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { useInventoryStore } from '../store/inventoryStore'
 
 const typeLabel = {
@@ -53,7 +54,10 @@ export default function StockControl() {
     <Layout>
       <div className="p-6 space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">재고 통제</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold">재고 통제</h1>
+            <LanguageToggle />
+          </div>
           <p className="text-slate-400 text-sm mt-1">실사 조정, 로케이션 이동, 작업 이력을 관리합니다.</p>
         </div>
 

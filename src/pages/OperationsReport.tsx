@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { Download } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { useInboundStore } from '../store/inboundStore'
 import { useOutboundStore } from '../store/outboundStore'
 import { useReturnStore } from '../store/returnStore'
@@ -83,7 +84,10 @@ export default function OperationsReport() {
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">운영 리포트</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">운영 리포트</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-slate-400 text-sm mt-1">현재 운영 지표를 다운로드할 수 있습니다.</p>
           </div>
           <button onClick={exportCsv} className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm flex items-center gap-1.5">

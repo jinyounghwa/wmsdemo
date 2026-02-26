@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { usePartnerStore } from '../store/partnerStore'
 
 function Section({
@@ -54,7 +55,10 @@ export default function MasterData() {
     <Layout>
       <div className="p-6 space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">마스터 관리</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold">마스터 관리</h1>
+            <LanguageToggle />
+          </div>
           <p className="text-slate-400 text-sm mt-1">공급사, 고객사, 운송사를 관리합니다.</p>
         </div>
 

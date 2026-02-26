@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { X, Check, CheckCircle } from 'lucide-react'
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { useOutboundStore } from '../store/outboundStore'
 import { OutboundOrder } from '../data/mockOutbound'
 import { useInventoryStore } from '../store/inventoryStore'
@@ -103,7 +104,10 @@ export default function Outbound() {
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">출고 관리</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">출고 관리</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-slate-400 text-sm mt-1">총 {orders.length}건</p>
           </div>
           <button

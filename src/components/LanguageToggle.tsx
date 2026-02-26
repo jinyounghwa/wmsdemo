@@ -1,13 +1,17 @@
 import { Languages } from 'lucide-react'
 import { useLanguage } from '../i18n/LanguageContext'
 
-export default function LanguageToggle() {
+type LanguageToggleProps = {
+  mode?: 'inline' | 'floating-right'
+}
+
+export default function LanguageToggle({ mode = 'inline' }: LanguageToggleProps) {
   const { locale, setLocale } = useLanguage()
 
   return (
-    <div className="fixed left-1/2 top-4 z-[9999] -translate-x-1/2">
-      <div className="inline-flex items-center gap-1 rounded-xl border border-slate-700 bg-slate-900/90 p-1 shadow-lg backdrop-blur">
-        <Languages className="h-4 w-4 text-slate-400 ml-2" />
+    <div className={mode === 'floating-right' ? 'fixed right-5 top-4 z-[9999]' : ''}>
+      <div className={`inline-flex items-center gap-1 rounded-xl border p-1 ${mode === 'floating-right' ? 'border-slate-700 bg-slate-900/90 shadow-lg backdrop-blur' : 'border-slate-600/70 bg-slate-800/70'}`}>
+        <Languages className="h-4 w-4 text-slate-400 ml-1.5" />
         <button
           type="button"
           onClick={() => setLocale('ko')}

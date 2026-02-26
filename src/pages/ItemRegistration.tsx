@@ -2,6 +2,7 @@ import { FormEvent, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Save } from 'lucide-react'
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { useInventoryStore } from '../store/inventoryStore'
 
 const categorySeed = ['전자부품', '생활용품', '식품', '의류/신발', '자동차부품']
@@ -99,7 +100,10 @@ export default function ItemRegistration() {
       <div className="p-6 space-y-6 max-w-3xl">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">품목 등록</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">품목 등록</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-slate-400 text-sm mt-1">신규 SKU를 마스터에 등록합니다.</p>
           </div>
           <button

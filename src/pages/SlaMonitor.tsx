@@ -1,4 +1,5 @@
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { useInboundStore } from '../store/inboundStore'
 import { useOutboundStore } from '../store/outboundStore'
 import { useReturnStore } from '../store/returnStore'
@@ -123,7 +124,10 @@ export default function SlaMonitor() {
     <Layout>
       <div className="p-6 space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">SLA 모니터</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold">SLA 모니터</h1>
+            <LanguageToggle />
+          </div>
           <p className="text-slate-400 text-sm mt-1">{today} 기준 지연 건을 자동 감시합니다.</p>
         </div>
 

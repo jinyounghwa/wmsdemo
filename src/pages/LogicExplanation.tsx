@@ -6,6 +6,7 @@ import {
   CheckCircle2
 } from 'lucide-react'
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { useLanguage } from '../i18n/LanguageContext'
 
 type LocaleText = {
@@ -317,9 +318,12 @@ export default function LogicExplanation() {
       <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 min-h-full">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-700/50 pb-6">
           <div>
-            <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 tracking-tight">
-              {locale === 'ko' ? '시스템 로직 플로우' : 'System Logic Flow'}
-            </h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 tracking-tight">
+                {locale === 'ko' ? '시스템 로직 플로우' : 'System Logic Flow'}
+              </h1>
+              <LanguageToggle />
+            </div>
             <p className="text-slate-400 mt-2 text-sm leading-relaxed max-w-2xl">
               {locale === 'ko'
                 ? 'WMS 데모 어플리케이션이 데이터를 어떻게 처리하고 메뉴 간 트랜잭션이 상호작용하는지 정리한 인터랙티브 가이드입니다. 좌측 탭을 선택하여 각 모듈의 동작 방식을 확인하세요.'

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Plus, Trash2, X } from 'lucide-react'
 import Layout from '../components/Layout'
+import LanguageToggle from '../components/LanguageToggle'
 import { useInboundStore } from '../store/inboundStore'
 import { InboundOrder } from '../data/mockInbound'
 import { useInventoryStore } from '../store/inventoryStore'
@@ -98,7 +99,10 @@ export default function Inbound() {
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">입고 관리</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">입고 관리</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-slate-400 text-sm mt-1">총 {orders.length}건</p>
           </div>
           <button

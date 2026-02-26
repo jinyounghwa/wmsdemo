@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { LayoutDashboard, Package, Truck, ClipboardList, Import, CheckSquare, MapPin, Send, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion } from 'lucide-react'
+import LanguageToggle from '../components/LanguageToggle'
 
 const features = [
   {
@@ -122,6 +123,7 @@ const techs = [
 export default function Landing() {
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <LanguageToggle mode="floating-right" />
       {/* Nav */}
       <nav className="absolute top-0 left-0 right-0 z-50 bg-transparent">
         <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
