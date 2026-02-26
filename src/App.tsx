@@ -34,6 +34,16 @@ import MultiWarehouse from './pages/MultiWarehouse'
 import KitBomManagement from './pages/KitBomManagement'
 import QualityControl from './pages/QualityControl'
 import ShippingTms from './pages/ShippingTms'
+import SlottingOptimization from './pages/SlottingOptimization'
+import PickStrategy from './pages/PickStrategy'
+import ReverseLogistics from './pages/ReverseLogistics'
+import CatchWeight from './pages/CatchWeight'
+import InventoryAging from './pages/InventoryAging'
+import ThroughputAnalytics from './pages/ThroughputAnalytics'
+import WarehouseFloorMap from './pages/WarehouseFloorMap'
+import UserManagement from './pages/UserManagement'
+import IntegrationMonitor from './pages/IntegrationMonitor'
+import SystemAuditLog from './pages/SystemAuditLog'
 
 function App() {
   return (
@@ -74,6 +84,16 @@ function App() {
         <Route path="/cycle-count" element={<CycleCount />} />
         <Route path="/operations-report" element={<OperationsReport />} />
         <Route path="/logic-explanation" element={<LogicExplanation />} />
+        <Route path="/slotting-optimization" element={<SlottingOptimization />} />
+        <Route path="/pick-strategy" element={<PickStrategy />} />
+        <Route path="/reverse-logistics" element={<ReverseLogistics />} />
+        <Route path="/catch-weight" element={<CatchWeight />} />
+        <Route path="/inventory-aging" element={<InventoryAging />} />
+        <Route path="/throughput-analytics" element={<ThroughputAnalytics />} />
+        <Route path="/warehouse-floor-map" element={<WarehouseFloorMap />} />
+        <Route path="/user-management" element={<UserManagement />} />
+        <Route path="/integration-monitor" element={<IntegrationMonitor />} />
+        <Route path="/system-audit-log" element={<SystemAuditLog />} />
         <Route path="*" element={<Landing />} />
       </Routes>
     </BrowserRouter>

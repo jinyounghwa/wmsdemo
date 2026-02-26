@@ -1,20 +1,27 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ReactNode } from 'react'
-import { LayoutDashboard, Package, Truck, ClipboardList, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History, Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send } from 'lucide-react'
+import { LayoutDashboard, Package, Truck, ClipboardList, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History, Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Activity, Map as MapIcon, Users, Scale, Network, Pickaxe, Recycle, ShieldAlert, BarChart3, Clock } from 'lucide-react'
+import LanguageToggle from './LanguageToggle'
 
 const navItems = [
   { path: '/dashboard', label: '대시보드', icon: <LayoutDashboard size={20} /> },
+  { path: '/warehouse-floor-map', label: '창고 레이아웃 맵', icon: <MapIcon size={20} /> },
   { path: '/inbound', label: '입고 관리', icon: <Package size={20} /> },
   { path: '/outbound', label: '출고 관리', icon: <Truck size={20} /> },
   { path: '/inventory', label: '재고 현황', icon: <ClipboardList size={20} /> },
+  { path: '/inventory-aging', label: '재고 에이징 분석', icon: <Clock size={20} /> },
   { path: '/items/new', label: '품목 등록', icon: <Plus size={20} /> },
   { path: '/stock-control', label: '재고 통제', icon: <SlidersHorizontal size={20} /> },
+  { path: '/catch-weight', label: 'Catch Weight 관리', icon: <Scale size={20} /> },
   { path: '/returns', label: '반품 관리', icon: <RotateCcw size={20} /> },
+  { path: '/reverse-logistics', label: '역물류 및 반품 상세', icon: <Recycle size={20} /> },
   { path: '/waves', label: '웨이브 피킹', icon: <Layers size={20} /> },
+  { path: '/pick-strategy', label: '피킹 전략 관리', icon: <Pickaxe size={20} /> },
   { path: '/sla-monitor', label: 'SLA 모니터', icon: <Siren size={20} /> },
   { path: '/cycle-count', label: '재고 실사', icon: <ScanLine size={20} /> },
   { path: '/master-data', label: '마스터 관리', icon: <Database size={20} /> },
   { path: '/location-management', label: '로케이션 관리', icon: <MapPinned size={20} /> },
+  { path: '/slotting-optimization', label: '슬로팅 최적화', icon: <BarChart3 size={20} /> },
   { path: '/putaway-replenishment', label: '적치/보충 관리', icon: <Move3D size={20} /> },
   { path: '/packing-dispatch', label: '포장/상차 관리', icon: <PackageCheck size={20} /> },
   { path: '/task-labor-management', label: '작업/작업자 통제', icon: <ListTodo size={20} /> },
@@ -30,16 +37,22 @@ const navItems = [
   { path: '/disposal-management', label: '반출/폐기 관리', icon: <Trash2 size={20} /> },
   { path: '/notification-center', label: '알림/이벤트 센터', icon: <BellRing size={20} /> },
   { path: '/system-configuration', label: '시스템 설정', icon: <Settings size={20} /> },
+  { path: '/user-management', label: '사용자/권한 관리', icon: <Users size={20} /> },
+  { path: '/integration-monitor', label: 'API 연동 모니터링', icon: <Network size={20} /> },
+  { path: '/system-audit-log', label: '감사 로그', icon: <ShieldAlert size={20} /> },
   { path: '/multi-warehouse', label: '멀티 창고', icon: <Building2 size={20} /> },
   { path: '/kit-bom', label: 'KIT/BOM 관리', icon: <Wrench size={20} /> },
   { path: '/quality-control', label: 'QC/품질 관리', icon: <ShieldCheck size={20} /> },
   { path: '/shipping-tms', label: '배송/TMS 뷰', icon: <Send size={20} /> },
   { path: '/operations-report', label: '운영 리포트', icon: <FileChartColumnIncreasing size={20} /> },
+  { path: '/throughput-analytics', label: '처리량 분석', icon: <Activity size={20} /> },
   { path: '/logic-explanation', label: '페이지 로직 설명', icon: <FileQuestion size={20} /> },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation()
+  const showFloatingToggle = location.pathname !== '/'
+
   return (
     <div className="flex h-screen bg-[#0f172a] text-white">
       <aside className="w-60 bg-[#1e293b] flex flex-col flex-shrink-0 h-screen">
@@ -63,7 +76,28 @@ export default function Layout({ children }: { children: ReactNode }) {
           ))}
         </nav>
       </aside>
-      <main className="flex-1 overflow-auto">{children}</main>
+      <main className="flex-1 overflow-auto bg-[#0f172a] text-slate-100
+        [&_.bg-slate-50]:!bg-[#0f172a]
+        [&_.bg-white]:!bg-[#1e293b]
+        [&_.text-gray-900]:!text-white
+        [&_.text-gray-800]:!text-slate-100
+        [&_.text-gray-700]:!text-slate-200
+        [&_.text-gray-600]:!text-slate-300
+        [&_.text-gray-500]:!text-slate-400
+        [&_.text-gray-400]:!text-slate-500
+        [&_.border-gray-50]:!border-slate-800
+        [&_.border-gray-100]:!border-slate-700
+        [&_.border-gray-200]:!border-slate-700
+        [&_.border-gray-300]:!border-slate-600
+        [&_.hover\\:bg-gray-50:hover]:!bg-slate-800
+        [&_.hover\\:bg-gray-50\\/50:hover]:!bg-slate-800
+        [&_.hover\\:bg-gray-100:hover]:!bg-slate-700
+        [&_input]:!bg-slate-800 [&_input]:!text-slate-100 [&_input]:!border-slate-600
+        [&_select]:!bg-slate-800 [&_select]:!text-slate-100 [&_select]:!border-slate-600
+      ">
+        {showFloatingToggle && <LanguageToggle mode="floating-right" />}
+        {children}
+      </main>
     </div>
   )
 }
