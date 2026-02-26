@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Package, Truck, ClipboardList, Plus, SlidersHorizontal,
   RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing,
-  CheckCircle2
+  CheckCircle2, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, LayoutDashboard, Home
 } from 'lucide-react'
 import Layout from '../components/Layout'
 import LanguageToggle from '../components/LanguageToggle'
@@ -30,6 +30,48 @@ type LogicItem = {
 }
 
 const logicData: LogicItem[] = [
+  {
+    id: 'landing',
+    title: { ko: '랜딩 (Landing)', en: 'Landing' },
+    description: {
+      ko: '전체 WMS 모듈로 이동하기 위한 시작 화면으로, 기능 소개와 핵심 링크를 제공합니다.',
+      en: 'Entry screen to access all WMS modules, with feature highlights and key links.'
+    },
+    icon: <Home className="w-6 h-6" />,
+    color: 'text-slate-200',
+    bgColor: 'bg-slate-400/10',
+    steps: [
+      {
+        name: { ko: '모듈 안내', en: 'Module Overview' },
+        desc: { ko: '입고/출고/재고/통제 모듈의 역할을 요약하여 사용자 진입을 돕습니다.', en: 'Summarizes inbound/outbound/inventory/control modules for quick onboarding.' }
+      },
+      {
+        name: { ko: '빠른 이동', en: 'Quick Navigation' },
+        desc: { ko: '주요 화면으로 즉시 진입할 수 있도록 라우팅 링크를 제공합니다.', en: 'Provides routing links for immediate access to major screens.' }
+      }
+    ]
+  },
+  {
+    id: 'dashboard',
+    title: { ko: '대시보드 (Dashboard)', en: 'Dashboard' },
+    description: {
+      ko: '입고/출고/재고/실사/반품 데이터를 KPI와 차트로 통합 모니터링합니다.',
+      en: 'Monitors inbound/outbound/inventory/cycle/returns with integrated KPI cards and charts.'
+    },
+    icon: <LayoutDashboard className="w-6 h-6" />,
+    color: 'text-sky-400',
+    bgColor: 'bg-sky-400/10',
+    steps: [
+      {
+        name: { ko: 'KPI 집계', en: 'KPI Aggregation' },
+        desc: { ko: '오늘 입출고, 전체 SKU, 처리대기를 실시간 집계합니다.', en: 'Aggregates today inbound/outbound, total SKU, and pending workload in real time.' }
+      },
+      {
+        name: { ko: '알림 연동', en: 'Alert Integration' },
+        desc: { ko: '저재고 및 SLA 지연 데이터를 묶어 우선 대응 대상을 제공합니다.', en: 'Combines low-stock and SLA delay signals into prioritized alerts.' }
+      }
+    ]
+  },
   {
     id: 'inbound',
     title: { ko: '입고 관리 (Inbound)', en: 'Inbound Management' },
@@ -277,6 +319,152 @@ const logicData: LogicItem[] = [
       {
         name: { ko: '의존성 자동 연결', en: 'Automatic Dependency Binding' },
         desc: { ko: '마스터 데이터에서 항목을 추가하면 발주, 수주, 출하 생성 패널의 드롭다운에 즉시 반영', en: 'New master items are immediately reflected in PO/SO/shipment dropdowns.' }
+      }
+    ]
+  },
+  {
+    id: 'location-management',
+    title: { ko: '로케이션 관리 (Location)', en: 'Location Management' },
+    description: {
+      ko: 'Zone/Aisle/Rack/Level/Bin 계층 단위로 로케이션을 생성하고 용량 제약을 관리합니다.',
+      en: 'Creates location hierarchy by Zone/Aisle/Rack/Level/Bin and controls capacity constraints.'
+    },
+    icon: <MapPinned className="w-6 h-6" />,
+    color: 'text-fuchsia-400',
+    bgColor: 'bg-fuchsia-400/10',
+    steps: [
+      {
+        name: { ko: '계층 생성', en: 'Hierarchy Creation' },
+        desc: { ko: 'Zone부터 Bin까지 고유 로케이션 코드를 생성합니다.', en: 'Generates unique location code from Zone to Bin.' }
+      },
+      {
+        name: { ko: '용량 통제', en: 'Capacity Control' },
+        desc: { ko: '체적(CBM), 중량(KG), 사용속성(피킹/보관)을 관리합니다.', en: 'Controls volume (CBM), weight (KG), and usage type (forward/reserve).' }
+      },
+      {
+        name: { ko: '보관 제한', en: 'Storage Restriction' },
+        desc: { ko: 'SKU별 보관 불가 로케이션을 지정하여 품질/안전 규칙을 적용합니다.', en: 'Applies quality/safety rules by blocking SKU storage per location.' }
+      }
+    ]
+  },
+  {
+    id: 'putaway-replenishment',
+    title: { ko: '적치/보충 관리 (Put-away & Replenishment)', en: 'Put-away & Replenishment' },
+    description: {
+      ko: 'Receiving Dock의 적치와 Forward 하한 보충을 작업 지시 단위로 운영합니다.',
+      en: 'Operates receiving put-away and forward replenishment as task instructions.'
+    },
+    icon: <Move3D className="w-6 h-6" />,
+    color: 'text-lime-400',
+    bgColor: 'bg-lime-400/10',
+    steps: [
+      {
+        name: { ko: '적치 지시', en: 'Put-away Instruction' },
+        desc: { ko: '입고장 재고를 최적 로케이션으로 이동시키는 작업을 생성합니다.', en: 'Creates tasks to move receiving stock into optimal locations.' }
+      },
+      {
+        name: { ko: '보충 지시', en: 'Replenishment Instruction' },
+        desc: { ko: 'Forward 재고가 하한선 미달일 때 Reserve에서 보충 작업을 발행합니다.', en: 'Issues reserve-to-forward replenishment when forward stock hits the threshold.' }
+      },
+      {
+        name: { ko: '할당/완료', en: 'Assignment/Completion' },
+        desc: { ko: '작업자 할당 후 완료 처리로 작업 큐를 닫습니다.', en: 'Closes task queue with assignee allocation and completion.' }
+      }
+    ]
+  },
+  {
+    id: 'packing-dispatch',
+    title: { ko: '포장/상차 관리 (Packing & Dispatch)', en: 'Packing & Dispatch' },
+    description: {
+      ko: '피킹 이후 포장 검수부터 도크 분류, 상차 마감까지 독립 프로세스로 처리합니다.',
+      en: 'Runs post-picking flow from packing validation to dock staging and dispatch closure.'
+    },
+    icon: <PackageCheck className="w-6 h-6" />,
+    color: 'text-green-400',
+    bgColor: 'bg-green-400/10',
+    steps: [
+      {
+        name: { ko: '패키지 생성', en: 'Package Creation' },
+        desc: { ko: '출고 오더를 포장 단위로 생성하고 박스 타입/송장 정보를 지정합니다.', en: 'Creates package units from outbound orders with box and tracking info.' }
+      },
+      {
+        name: { ko: '바코드 검수', en: 'Barcode Verification' },
+        desc: { ko: '스캔 수량을 누적해 오더 수량과 일치 여부를 확인합니다.', en: 'Accumulates scan count to verify match with order quantity.' }
+      },
+      {
+        name: { ko: '상차 마감', en: 'Loading Closure' },
+        desc: { ko: '도크/노선/차량 기준으로 상차 후 출고 확정 및 재고 차감을 수행합니다.', en: 'Finalizes shipment and stock deduction after dock/route/vehicle loading.' }
+      }
+    ]
+  },
+  {
+    id: 'task-labor-management',
+    title: { ko: '작업/작업자 통제 (Task & Labor)', en: 'Task & Labor Management' },
+    description: {
+      ko: '웨이브, 적치, 보충, 실사 작업을 큐로 통합하고 작업자/장비에 배정합니다.',
+      en: 'Unifies wave/put-away/replenishment/count tasks into a queue and assigns workers/equipment.'
+    },
+    icon: <ListTodo className="w-6 h-6" />,
+    color: 'text-orange-300',
+    bgColor: 'bg-orange-400/10',
+    steps: [
+      {
+        name: { ko: '작업 큐 적재', en: 'Queue Intake' },
+        desc: { ko: '유형/참조번호/기한 기준으로 작업 지시를 생성합니다.', en: 'Creates work instructions by type, reference number, and due date.' }
+      },
+      {
+        name: { ko: '인력/장비 할당', en: 'Labor/Equipment Assignment' },
+        desc: { ko: 'PDA/지게차 등 장비와 작업자를 매칭하여 실행 가능 상태로 만듭니다.', en: 'Matches workers with devices/forklifts and makes tasks executable.' }
+      },
+      {
+        name: { ko: '상태 전이', en: 'State Transition' },
+        desc: { ko: 'Queued → Assigned → In Progress → Done 흐름으로 작업 통제를 표준화합니다.', en: 'Standardizes control via Queued -> Assigned -> In Progress -> Done flow.' }
+      }
+    ]
+  },
+  {
+    id: 'lpn-equipment',
+    title: { ko: 'LPN/설비 연동 (LPN & WCS)', en: 'LPN & Equipment Integration' },
+    description: {
+      ko: '팔레트/토트 단위 LPN 위치 추적과 WCS 설비 이벤트 모니터링을 제공합니다.',
+      en: 'Provides pallet/tote-level LPN tracking and WCS equipment event monitoring.'
+    },
+    icon: <Container className="w-6 h-6" />,
+    color: 'text-cyan-300',
+    bgColor: 'bg-cyan-500/10',
+    steps: [
+      {
+        name: { ko: 'LPN 생성', en: 'LPN Creation' },
+        desc: { ko: '용기 타입, SKU, 수량, 초기 위치 기준으로 LPN을 등록합니다.', en: 'Registers LPN by container type, SKU, quantity, and initial location.' }
+      },
+      {
+        name: { ko: '위치/상태 추적', en: 'Location/Status Tracking' },
+        desc: { ko: 'Receiving/Stored/Picking/Shipping 상태 전이와 위치 이동을 추적합니다.', en: 'Tracks location moves and status transitions across receiving/stored/picking/shipping.' }
+      },
+      {
+        name: { ko: 'WCS 이벤트', en: 'WCS Events' },
+        desc: { ko: '컨베이어/소터 라인의 정상·경고·장애 이벤트를 기록합니다.', en: 'Records normal/warn/error events from conveyor/sorter lines.' }
+      }
+    ]
+  },
+  {
+    id: 'billing',
+    title: { ko: '정산 관리 (Billing)', en: 'Billing Management' },
+    description: {
+      ko: '3PL 기준 화주사 단가 정책을 관리하고 월별 청구 데이터를 생성합니다.',
+      en: 'Manages 3PL customer tariff policies and generates monthly billing datasets.'
+    },
+    icon: <ReceiptText className="w-6 h-6" />,
+    color: 'text-emerald-300',
+    bgColor: 'bg-emerald-500/10',
+    steps: [
+      {
+        name: { ko: '단가 정책', en: 'Rate Policy' },
+        desc: { ko: '보관료, 입출고 작업료, 부자재 비용을 화주별로 등록합니다.', en: 'Registers storage, inbound/outbound handling, and packaging rates by customer.' }
+      },
+      {
+        name: { ko: '월 정산 생성', en: 'Monthly Bill Generation' },
+        desc: { ko: '팔렛트-일/CBM-일/작업 건수를 입력해 청구 총액을 산출합니다.', en: 'Calculates monthly total amount from pallet-day/CBM-day and operation counts.' }
       }
     ]
   },
