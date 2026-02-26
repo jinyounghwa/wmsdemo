@@ -120,6 +120,12 @@ React + TypeScript 기반 WMS(창고관리시스템) 데모 SPA입니다.
 - VAS 매출 KPI
 - CSV 다운로드 제공
 
+### 2.11 페이지 로직 설명 가이드
+- 화면: `/logic-explanation`
+- 모든 주요 라우트의 처리 로직(입고/출고/재고/반품/확장 모듈)을 KO/EN으로 단계별 설명
+- 패션 특화 로직(어소트먼트, GOH 분리 웨이브, 수선 라우팅, 비주얼 피킹, 합포장 검증) 포함
+- 한/영 전환 로직(`LanguageProvider` + `DomI18nBridge` + 번역 맵) 동작 원리 포함
+
 ## 3) 다국어(한/영) 전환 기준
 
 - 전역 언어 토글: `LanguageProvider` + `LanguageToggle`

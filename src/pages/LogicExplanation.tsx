@@ -4,7 +4,7 @@ import {
   Package, Truck, ClipboardList, Plus, SlidersHorizontal,
   RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing,
   CheckCircle2, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, LayoutDashboard, Home,
-  ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History,
+  ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History, Languages,
   Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Scale, TrendingUp
 } from 'lucide-react'
 import Layout from '../components/Layout'
@@ -1000,6 +1000,31 @@ const logicData: LogicItem[] = [
     ]
   },
   {
+    id: 'i18n-bilingual',
+    title: { ko: '한/영 전환 로직', en: 'KO/EN Switching Logic' },
+    description: {
+      ko: '전역 언어 상태와 DOM 번역 브릿지를 결합해 페이지 전환 없이 한/영 UI를 동기화합니다.',
+      en: 'Synchronizes KO/EN UI without page reload by combining global locale state and DOM translation bridge.'
+    },
+    icon: <Languages className="w-6 h-6" />,
+    color: 'text-cyan-200',
+    bgColor: 'bg-cyan-500/10',
+    steps: [
+      {
+        name: { ko: '전역 Locale 상태', en: 'Global Locale State' },
+        desc: { ko: 'LanguageProvider가 locale을 관리하고 localStorage/HTML lang 속성과 동기화합니다.', en: 'LanguageProvider manages locale and syncs with localStorage and HTML lang attributes.' }
+      },
+      {
+        name: { ko: 'DOM 자동 번역', en: 'DOM Auto Translation' },
+        desc: { ko: 'DomI18nBridge가 MutationObserver로 변경된 노드를 감시해 텍스트/placeholder/title을 즉시 번역합니다.', en: 'DomI18nBridge watches changed nodes via MutationObserver and translates text/placeholder/title instantly.' }
+      },
+      {
+        name: { ko: '패션 용어 우선 매핑', en: 'Fashion-Term Priority Mapping' },
+        desc: { ko: 'Assortment, Prepack, GOH, Consolidation, Repair/Clean 등 도메인 용어를 exactMap과 properNouns로 우선 치환합니다.', en: 'Prioritizes domain terms like Assortment, Prepack, GOH, Consolidation, and Repair/Clean through exactMap and properNouns.' }
+      }
+    ]
+  },
+  {
     id: 'fashion-core',
     title: { ko: '패션 특화 코어 로직', en: 'Fashion Core Logic' },
     description: {
@@ -1029,6 +1054,22 @@ const logicData: LogicItem[] = [
       {
         name: { ko: '반품 등급화와 반품률 분석', en: 'Return Grading & Return-Rate Analytics' },
         desc: { ko: 'A/B/C/폐기 등급, 택 제거/오염 검수값을 기록하고 스타일/사이즈/채널 반품률을 추적합니다.', en: 'Stores A/B/C/disposal grade with tag/contamination checks and tracks return rates by style/size/channel.' }
+      },
+      {
+        name: { ko: '어소트먼트/프리팩 출고', en: 'Assortment/Prepack Outbound' },
+        desc: { ko: '사이즈 비율 세트를 바코드 단위로 출고하거나, 필요 시 까대기 후 단품 출고로 전환합니다.', en: 'Ships ratio packs by set barcode or explodes them into single-piece outbound when required.' }
+      },
+      {
+        name: { ko: 'GOH 웨이브 분리', en: 'GOH Wave Split' },
+        desc: { ko: '행거(GOH) SKU와 평적(Flat) SKU를 분리 웨이브로 생성해 피킹 동선과 설비 충돌을 줄입니다.', en: 'Splits hanger (GOH) and flat SKUs into separate waves to reduce route and equipment conflicts.' }
+      },
+      {
+        name: { ko: '수선/클리닝 라우팅', en: 'Repair/Clean Routing' },
+        desc: { ko: '반품 B/C 등급은 수선 대기존으로 이동 후 완료 시 A등급 상향 및 재고 복귀 흐름을 수행합니다.', en: 'Routes return grade B/C to repair queue, then upgrades to grade A and restores stock after completion.' }
+      },
+      {
+        name: { ko: '비주얼 피킹 & 합포장 검증', en: 'Visual Picking & Consolidation Validation' },
+        desc: { ko: '썸네일 기반 SKU 확인과 합포장 그룹 누락 체크로 오피킹 및 누락 출고를 차단합니다.', en: 'Prevents wrong-pick and missing shipment through thumbnail-based SKU checks and consolidation validation.' }
       }
     ]
   }
@@ -1040,6 +1081,7 @@ const pageOrder = [
   'inbound',
   'outbound',
   'inventory',
+  'i18n-bilingual',
   'fashion-core',
   'inventory-aging',
   'item-registration',
