@@ -998,6 +998,39 @@ const logicData: LogicItem[] = [
         desc: { ko: '조건 검색으로 이벤트를 필터링하고 조사용 증적을 확보합니다.', en: 'Filters events by conditions to produce evidence for investigation.' }
       }
     ]
+  },
+  {
+    id: 'fashion-core',
+    title: { ko: '패션 특화 코어 로직', en: 'Fashion Core Logic' },
+    description: {
+      ko: '의류 WMS 전용 기능(매트릭스 SKU, 시즌, 채널 분기, VAS, 반품 등급)을 통합한 도메인 로직입니다.',
+      en: 'Domain flow for apparel WMS including matrix SKU, season, channel split, VAS, and return grading.'
+    },
+    icon: <TrendingUp className="w-6 h-6" />,
+    color: 'text-pink-300',
+    bgColor: 'bg-pink-500/10',
+    steps: [
+      {
+        name: { ko: '스타일-컬러-사이즈 매트릭스', en: 'Style-Color-Size Matrix' },
+        desc: { ko: '품목 등록에서 스타일/컬러/사이즈 조합으로 SKU를 일괄 생성하고 사이즈 런 템플릿을 적용합니다.', en: 'Bulk-generates SKU combinations by style/color/size with size-run templates at item registration.' }
+      },
+      {
+        name: { ko: '시즌/컬렉션 재고 흐름', en: 'Season/Collection Stock Flow' },
+        desc: { ko: 'SS/FW 시즌코드로 입출고와 현재고를 묶어 소진율/이월률 KPI를 계산합니다.', en: 'Groups inbound/outbound/on-hand by SS/FW season code to calculate depletion and carry-over KPIs.' }
+      },
+      {
+        name: { ko: 'B2B vs B2C 출고 분기', en: 'B2B vs B2C Outbound Split' },
+        desc: { ko: 'B2B는 패킹리스트/박스단위, B2C는 낱개 택배로 출고 단계와 검증 조건을 분기합니다.', en: 'Splits outbound conditions: B2B with packing-list/carton flow, B2C with parcel-item flow.' }
+      },
+      {
+        name: { ko: 'VAS 지시 및 정산', en: 'VAS Execution & Billing' },
+        desc: { ko: '택부착/다림질/기프트랩 작업 건수를 청구 단가와 연결해 VAS 매출을 별도 계산합니다.', en: 'Links tag/ironing/gift-wrap task counts with tariff rules to calculate VAS revenue separately.' }
+      },
+      {
+        name: { ko: '반품 등급화와 반품률 분석', en: 'Return Grading & Return-Rate Analytics' },
+        desc: { ko: 'A/B/C/폐기 등급, 택 제거/오염 검수값을 기록하고 스타일/사이즈/채널 반품률을 추적합니다.', en: 'Stores A/B/C/disposal grade with tag/contamination checks and tracks return rates by style/size/channel.' }
+      }
+    ]
   }
 ]
 
@@ -1007,6 +1040,7 @@ const pageOrder = [
   'inbound',
   'outbound',
   'inventory',
+  'fashion-core',
   'inventory-aging',
   'item-registration',
   'stock-control',

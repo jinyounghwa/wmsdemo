@@ -30,6 +30,10 @@ const priorityStyle: Record<string, string> = {
 }
 
 const priorityLabel: Record<string, string> = { high: '높음', normal: '보통', low: '낮음' }
+const channelStyle: Record<string, string> = {
+  B2B: 'text-indigo-300 bg-indigo-500/10 border border-indigo-500/20',
+  B2C: 'text-cyan-300 bg-cyan-500/10 border border-cyan-500/20',
+}
 export default function Outbound() {
   const { orders, addOrder, cancelOrder, updateStatus } = useOutboundStore()
   const customers = usePartnerStore((state) => state.customers)
@@ -53,6 +57,11 @@ export default function Outbound() {
   const [newQty, setNewQty] = useState(1)
   const [newDate, setNewDate] = useState(new Date().toISOString().slice(0, 10))
   const [newPriority, setNewPriority] = useState<'high' | 'normal' | 'low'>('normal')
+  const [newChannel, setNewChannel] = useState<'B2B' | 'B2C'>('B2C')
+  const [newSeasonCode, setNewSeasonCode] = useState('SS25')
+  const [newPreAllocatedQty, setNewPreAllocatedQty] = useState(0)
+  const [newPhotoSample, setNewPhotoSample] = useState(false)
+  const [packingListChecked, setPackingListChecked] = useState(false)
   const [reserveError, setReserveError] = useState('')
 
   const tabs = ['all', 'pending', 'picking', 'packing', 'shipped', 'canceled']
@@ -74,6 +83,7 @@ export default function Outbound() {
     setTrackingNum(`KR${Date.now().toString().slice(-10)}`)
     setCarrier(carriers[0] ?? '')
     setReserveError('')
+    setPackingListChecked(order.requiresPackingList ? false : true)
   }
 
   const handleAddOrder = () => {
@@ -89,6 +99,11 @@ export default function Outbound() {
       id: orderId,
       customer: newCustomer,
       items: [{ sku: item.sku, name: item.name, qty: newQty, location: `${item.zone}-${item.rack}-${item.bin}` }],
+      channel: newChannel,
+      seasonCode: newSeasonCode,
+      preAllocatedQty: newPreAllocatedQty > 0 ? newPreAllocatedQty : undefined,
+      isPhotoSample: newPhotoSample,
+      requiresPackingList: newChannel === 'B2B',
       requestDate: newDate,
       priority: newPriority,
       status: 'pending',
@@ -122,11 +137,13 @@ export default function Outbound() {
         </div>
 
         {/* KPI Mini */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           {[
             { label: '출고대기', value: kpi.pending, color: 'text-blue-400' },
             { label: '피킹 진행중', value: kpi.picking, color: 'text-yellow-400' },
             { label: '출하완료', value: kpi.shipped, color: 'text-green-400' },
+            { label: 'B2B', value: orders.filter((order) => order.channel === 'B2B').length, color: 'text-indigo-300' },
+            { label: 'B2C', value: orders.filter((order) => (order.channel ?? 'B2C') === 'B2C').length, color: 'text-cyan-300' },
           ].map((k) => (
             <div key={k.label} className="bg-[#1e293b] rounded-xl p-4 border border-slate-700/50 text-center">
               <p className={`text-2xl font-bold ${k.color}`}>{k.value}</p>
@@ -155,6 +172,7 @@ export default function Outbound() {
               <tr className="border-b border-slate-700 text-slate-400">
                 <th className="text-left px-5 py-4 font-medium">수주번호</th>
                 <th className="text-left px-5 py-4 font-medium">고객사</th>
+                <th className="text-left px-5 py-4 font-medium">채널</th>
                 <th className="text-right px-5 py-4 font-medium">품목수</th>
                 <th className="text-right px-5 py-4 font-medium">총수량</th>
                 <th className="text-left px-5 py-4 font-medium">요청출고일</th>
@@ -171,6 +189,11 @@ export default function Outbound() {
                 >
                   <td className="px-5 py-4 font-mono text-blue-400">{order.id}</td>
                   <td className="px-5 py-4">{order.customer}</td>
+                  <td className="px-5 py-4">
+                    <span className={`text-xs px-2 py-1 rounded-full ${channelStyle[order.channel ?? 'B2C']}`}>
+                      {order.channel ?? 'B2C'}
+                    </span>
+                  </td>
                   <td className="px-5 py-4 text-right">{order.items.length}종</td>
                   <td className="px-5 py-4 text-right">{order.items.reduce((s, it) => s + it.qty, 0)} EA</td>
                   <td className="px-5 py-4 text-slate-400">{order.requestDate}</td>
@@ -210,6 +233,12 @@ export default function Outbound() {
               <div>
                 <h2 className="text-lg font-bold">{selectedOrder.id}</h2>
                 <p className="text-slate-400 text-sm">{selectedOrder.customer} · {selectedOrder.requestDate}</p>
+                <p className="text-xs text-slate-500 mt-1">
+                  채널 {selectedOrder.channel ?? 'B2C'}
+                  {selectedOrder.seasonCode ? ` · 시즌 ${selectedOrder.seasonCode}` : ''}
+                  {selectedOrder.preAllocatedQty ? ` · 사전배분 ${selectedOrder.preAllocatedQty}EA` : ''}
+                  {selectedOrder.isPhotoSample ? ' · 촬영샘플' : ''}
+                </p>
               </div>
               <button onClick={() => setSelectedOrder(null)} className="text-slate-400 hover:text-white transition-colors">
                 <X className="w-5 h-5" />
@@ -284,6 +313,11 @@ export default function Outbound() {
               {selectedOrder.status === 'picking' && (
                 <>
                   <h3 className="font-semibold">패킹 확인</h3>
+                  {selectedOrder.channel === 'B2B' && (
+                    <div className="text-xs text-indigo-300 bg-indigo-500/10 border border-indigo-500/30 rounded-lg px-3 py-2">
+                      B2B 출고는 박스 단위 집계 및 패킹리스트 첨부가 필수입니다.
+                    </div>
+                  )}
                   <div className="space-y-3">
                     <div>
                       <label className="text-sm text-slate-400 mb-1 block">포장 박스 수</label>
@@ -307,6 +341,17 @@ export default function Outbound() {
               {selectedOrder.status === 'packing' && (
                 <>
                   <h3 className="font-semibold">출하 처리</h3>
+                  {selectedOrder.requiresPackingList && (
+                    <label className="flex items-center gap-2 text-sm text-slate-300">
+                      <input
+                        type="checkbox"
+                        checked={packingListChecked}
+                        onChange={(e) => setPackingListChecked(e.target.checked)}
+                        className="accent-blue-500"
+                      />
+                      패킹리스트 출력/첨부 완료
+                    </label>
+                  )}
                   <div className="space-y-3">
                     <div>
                       <label className="text-sm text-slate-400 mb-1 block">운송사</label>
@@ -321,6 +366,10 @@ export default function Outbound() {
                   </div>
                   <button
                     onClick={() => {
+                      if (selectedOrder.requiresPackingList && !packingListChecked) {
+                        setReserveError('B2B 출고는 패킹리스트 첨부 확인이 필요합니다.')
+                        return
+                      }
                       const hasReservation = allocations.some(
                         (allocation) => allocation.orderId === selectedOrder.id && allocation.status === 'reserved',
                       )
@@ -409,6 +458,17 @@ export default function Outbound() {
                 </select>
               </div>
               <div>
+                <label className="text-sm text-slate-400 mb-1 block">출고 채널</label>
+                <select
+                  value={newChannel}
+                  onChange={(e) => setNewChannel(e.target.value as 'B2B' | 'B2C')}
+                  className="w-full px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white outline-none focus:border-blue-500"
+                >
+                  <option value="B2C">B2C (온라인 낱개)</option>
+                  <option value="B2B">B2B (도매/박스)</option>
+                </select>
+              </div>
+              <div>
                 <label className="text-sm text-slate-400 mb-1 block">품목 선택</label>
                 <select
                   value={newSku}
@@ -432,6 +492,36 @@ export default function Outbound() {
                   className="w-full px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white outline-none focus:border-blue-500"
                 />
               </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-sm text-slate-400 mb-1 block">시즌 코드</label>
+                  <input
+                    type="text"
+                    value={newSeasonCode}
+                    onChange={(e) => setNewSeasonCode(e.target.value.toUpperCase())}
+                    className="w-full px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-slate-400 mb-1 block">사전 배분(EA)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={newPreAllocatedQty}
+                    onChange={(e) => setNewPreAllocatedQty(Number(e.target.value))}
+                    className="w-full px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+              <label className="flex items-center gap-2 text-sm text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={newPhotoSample}
+                  onChange={(e) => setNewPhotoSample(e.target.checked)}
+                  className="accent-blue-500"
+                />
+                촬영용 샘플 출고
+              </label>
               <div>
                 <label className="text-sm text-slate-400 mb-1 block">요청 출고일</label>
                 <input

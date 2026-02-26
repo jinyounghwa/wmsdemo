@@ -6,6 +6,13 @@ export interface ReturnOrder {
   qty: number
   reason: string
   requestDate: string
+  channel?: 'B2B' | 'B2C'
+  styleCode?: string
+  size?: string
+  grading?: 'A' | 'B' | 'C' | 'D'
+  gradeReason?: string
+  hasTagRemoved?: boolean
+  hasContamination?: boolean
   status: 'requested' | 'inspecting' | 'restocked' | 'disposed'
 }
 
@@ -18,6 +25,11 @@ export const mockReturnOrders: ReturnOrder[] = [
     qty: 5,
     reason: '단순 변심',
     requestDate: '2026-02-26',
+    channel: 'B2C',
+    grading: 'A',
+    gradeReason: '재판매 가능',
+    hasTagRemoved: false,
+    hasContamination: false,
     status: 'requested',
   },
   {
@@ -28,6 +40,12 @@ export const mockReturnOrders: ReturnOrder[] = [
     qty: 2,
     reason: '사이즈 불만족',
     requestDate: '2026-02-25',
+    channel: 'B2C',
+    styleCode: 'SNKR-270',
+    size: '270',
+    grading: 'B',
+    gradeReason: '착용 흔적',
+    hasTagRemoved: true,
     status: 'inspecting',
   },
   {
@@ -38,6 +56,9 @@ export const mockReturnOrders: ReturnOrder[] = [
     qty: 3,
     reason: '포장 훼손',
     requestDate: '2026-02-24',
+    channel: 'B2B',
+    grading: 'A',
+    gradeReason: '외포장만 훼손',
     status: 'restocked',
   },
   {
@@ -48,6 +69,13 @@ export const mockReturnOrders: ReturnOrder[] = [
     qty: 1,
     reason: '제품 불량',
     requestDate: '2026-02-23',
+    channel: 'B2C',
+    styleCode: 'NB-990V5',
+    size: '260',
+    grading: 'D',
+    gradeReason: '오염/파손',
+    hasTagRemoved: true,
+    hasContamination: true,
     status: 'disposed',
   },
 ]

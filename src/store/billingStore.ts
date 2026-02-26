@@ -7,6 +7,9 @@ export interface BillingRule {
   inboundFee: number
   outboundFee: number
   packagingFee: number
+  vasTagFee: number
+  vasIronFee: number
+  vasGiftWrapFee: number
 }
 
 export interface BillingRecord {
@@ -18,6 +21,10 @@ export interface BillingRecord {
   inboundCount: number
   outboundCount: number
   packagingCount: number
+  vasTagCount: number
+  vasIronCount: number
+  vasGiftWrapCount: number
+  vasAmount: number
   totalAmount: number
 }
 
@@ -33,7 +40,15 @@ const calcTotal = (rule: BillingRule, payload: Omit<BillingRecord, 'id' | 'total
   payload.cbmDays * rule.cbmStorageRate +
   payload.inboundCount * rule.inboundFee +
   payload.outboundCount * rule.outboundFee +
-  payload.packagingCount * rule.packagingFee
+  payload.packagingCount * rule.packagingFee +
+  payload.vasTagCount * rule.vasTagFee +
+  payload.vasIronCount * rule.vasIronFee +
+  payload.vasGiftWrapCount * rule.vasGiftWrapFee
+
+const calcVasAmount = (rule: BillingRule, payload: Omit<BillingRecord, 'id' | 'totalAmount'>) =>
+  payload.vasTagCount * rule.vasTagFee +
+  payload.vasIronCount * rule.vasIronFee +
+  payload.vasGiftWrapCount * rule.vasGiftWrapFee
 
 export const useBillingStore = create<BillingStore>((set, get) => ({
   rules: [
@@ -44,6 +59,9 @@ export const useBillingStore = create<BillingStore>((set, get) => ({
       inboundFee: 1800,
       outboundFee: 2200,
       packagingFee: 400,
+      vasTagFee: 120,
+      vasIronFee: 450,
+      vasGiftWrapFee: 700,
     },
   ],
   records: [],
@@ -65,6 +83,7 @@ export const useBillingStore = create<BillingStore>((set, get) => ({
           {
             ...payload,
             id: `BL-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
+            vasAmount: calcVasAmount(rule, payload),
             totalAmount: calcTotal(rule, payload),
           },
           ...state.records,
