@@ -1,5 +1,6 @@
 import { ArrowRightLeft, BarChart3, Map as MapIcon, RefreshCw, Layers } from 'lucide-react';
 import Layout from '../components/Layout';
+import LanguageToggle from '../components/LanguageToggle';
 
 const MOCK_SLOTTING_RECOMMENDATIONS = [
   { id: 'REC-001', sku: 'LAPTOP-PRO-15', currentLoc: 'D-12-04 (Low)', recommendedLoc: 'A-01-02 (High)', reason: '출고 빈도 300% 증가', confidence: 98, score: +24 },
@@ -14,7 +15,10 @@ export default function SlottingOptimization() {
       <div className="p-6 space-y-6 bg-slate-50 min-h-full">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">슬로팅 최적화</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-gray-900">슬로팅 최적화</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-sm text-gray-500 mt-1">ABC 분석 및 출고 패턴 기반으로 로케이션 재배치를 제안합니다.</p>
           </div>
           <div className="flex space-x-2">

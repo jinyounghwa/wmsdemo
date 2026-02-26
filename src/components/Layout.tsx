@@ -1,7 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ReactNode } from 'react'
 import { LayoutDashboard, Package, Truck, ClipboardList, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History, Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Activity, Map as MapIcon, Users, Scale, Network, Pickaxe, Recycle, ShieldAlert, BarChart3, Clock } from 'lucide-react'
-import LanguageToggle from './LanguageToggle'
 
 const navItems = [
   { path: '/dashboard', label: '대시보드', icon: <LayoutDashboard size={20} /> },
@@ -51,7 +50,6 @@ const navItems = [
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation()
-  const showFloatingToggle = location.pathname !== '/'
 
   return (
     <div className="flex h-screen bg-[#0f172a] text-white">
@@ -95,7 +93,6 @@ export default function Layout({ children }: { children: ReactNode }) {
         [&_input]:!bg-slate-800 [&_input]:!text-slate-100 [&_input]:!border-slate-600
         [&_select]:!bg-slate-800 [&_select]:!text-slate-100 [&_select]:!border-slate-600
       ">
-        {showFloatingToggle && <LanguageToggle mode="floating-right" />}
         {children}
       </main>
     </div>

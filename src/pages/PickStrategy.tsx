@@ -1,5 +1,6 @@
 import { CheckCircle, GripHorizontal, Users, Map, Settings } from 'lucide-react';
 import Layout from '../components/Layout';
+import LanguageToggle from '../components/LanguageToggle';
 
 const STRATEGIES = [
   { id: '웨이브 피킹', desc: '주문들을 그룹화하여 한 번의 동선으로 여러 주문을 동시 피킹', status: '사용중', active: true, icon: LayersIcon },
@@ -24,7 +25,10 @@ export default function PickStrategy() {
       <div className="p-6 space-y-6 bg-slate-50 min-h-full">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">피킹 전략 관리</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-gray-900">피킹 전략 관리</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-sm text-gray-500 mt-1">창고 조건에 맞는 피킹 방식을 설정하고 동선 최적화 룰을 정의합니다.</p>
           </div>
           <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">

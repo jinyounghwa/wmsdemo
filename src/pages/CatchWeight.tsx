@@ -1,5 +1,6 @@
 import { Scale, Save, AlertCircle, FileDigit } from 'lucide-react';
 import Layout from '../components/Layout';
+import LanguageToggle from '../components/LanguageToggle';
 
 const CATCH_WEIGHT_ITEMS = [
   { id: 'MEAT-001', name: '프리미엄 한우 등심 (박스)', stdWeight: '20.0 kg', actualWeight: '21.4 kg', diff: '+1.4', status: '측정완료', uom: 'Box' },
@@ -13,7 +14,10 @@ export default function CatchWeight() {
       <div className="p-6 space-y-6 bg-slate-50 min-h-full">
          <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Catch Weight 관리</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-gray-900">Catch Weight 관리</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-sm text-gray-500 mt-1">식품/농수산물 등 표준 중량과 실측 중량(Catch Weight)이 상이한 품목의 입출고 실측을 기록합니다.</p>
           </div>
           <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">

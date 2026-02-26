@@ -1,5 +1,6 @@
 import { CalendarDays, AlertTriangle, Filter, Download } from 'lucide-react';
 import Layout from '../components/Layout';
+import LanguageToggle from '../components/LanguageToggle';
 
 const AGING_DATA = [
   { item: 'SKU-A001', name: '프리미엄 무선 카비', category: '전자제품', stock: 120, avgDays: 15, group: '0-30일', value: '₩12,000,000' },
@@ -14,7 +15,10 @@ export default function InventoryAging() {
       <div className="p-6 space-y-6 bg-slate-50 min-h-full">
          <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">재고 에이징 분석 (Inventory Aging)</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-gray-900">재고 에이징 분석 (Inventory Aging)</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-sm text-gray-500 mt-1">입고일 기준으로 재고가 창고에 체류한 기간을 분석하여 악성/장기 체류 재고를 식별합니다.</p>
           </div>
           <div className="flex space-x-2">

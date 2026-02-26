@@ -1,5 +1,6 @@
 import { RefreshCcw, Search, ShieldAlert, CheckCircle2, RotateCcw, PackageSearch } from 'lucide-react';
 import Layout from '../components/Layout';
+import LanguageToggle from '../components/LanguageToggle';
 
 const RETURNS_DATA = [
   { rma: 'RMA-2026-0012', order: 'ORD-99120', customer: '홍길동', item: 'Nike Air Max', reason: '단순변심', status: '검수 대기', date: '2026-02-26' },
@@ -13,7 +14,10 @@ export default function ReverseLogistics() {
       <div className="p-6 space-y-6 bg-slate-50 min-h-full">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">역물류 및 반품 상세</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-gray-900">역물류 및 반품 상세</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-sm text-gray-500 mt-1">도착한 반품의 상태 검수(Grade), 리퍼비시 분류, 재고 편입 또는 폐기 프로세스를 관리합니다.</p>
           </div>
           <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">

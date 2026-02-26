@@ -1,5 +1,6 @@
 import { History, Search, Filter, Download, UserCheck, ShieldCheck, Settings } from 'lucide-react';
 import Layout from '../components/Layout';
+import LanguageToggle from '../components/LanguageToggle';
 
 const MOCK_AUDIT_LOGS = [
   { id: 'AL-1094', time: '2026-02-26 15:42:11', user: '김민수 (ms.kim)', action: '권한 변경', target: '최동현 (dh.choi)', details: '역할을 "피커"에서 "검수자"로 변경', ip: '192.168.1.101', type: 'security' },
@@ -26,7 +27,10 @@ export default function SystemAuditLog() {
       <div className="space-y-6 p-6 bg-slate-50 min-h-full">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">감사 로그</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-gray-900">감사 로그</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-sm text-gray-500 mt-1">보안 및 컴플라이언스를 위한 시스템 레벨의 모든 접속 이력과 변경 기록입니다.</p>
           </div>
           <div className="flex space-x-2">

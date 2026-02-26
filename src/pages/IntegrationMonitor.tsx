@@ -1,5 +1,6 @@
 import { Activity, Server, RefreshCw, AlertCircle, CheckCircle2, Search, ArrowRight } from 'lucide-react';
 import Layout from '../components/Layout';
+import LanguageToggle from '../components/LanguageToggle';
 
 const MOCK_SYSTEMS = [
   { id: 'sys_erp', name: 'SAP ERP', type: 'ERP', status: '연결됨', uptime: '99.9%', latency: '45ms', lastSync: '1분 전' },
@@ -22,7 +23,10 @@ export default function IntegrationMonitor() {
       <div className="space-y-6 p-6 bg-slate-50 min-h-full">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">API 연동 모니터링</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-gray-900">API 연동 모니터링</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-sm text-gray-500 mt-1">외부 시스템(ERP, OMS, TMS, WCS) 연동 상태 및 API 호출 로그를 실시간으로 확인합니다.</p>
           </div>
           <div className="flex space-x-2">

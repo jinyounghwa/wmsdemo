@@ -1,6 +1,7 @@
 import { Activity, BarChart, Clock, TrendingUp, Users } from 'lucide-react';
 import { ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import Layout from '../components/Layout';
+import LanguageToggle from '../components/LanguageToggle';
 
 const HOURLY_DATA = [
   { time: '08:00', 입고: 40, 출고: 24, 피킹: 120 },
@@ -21,7 +22,10 @@ export default function ThroughputAnalytics() {
        <div className="p-6 space-y-6 bg-slate-50 min-h-full">
          <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">처리량 분석 (Throughput Analytics)</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-gray-900">처리량 분석 (Throughput Analytics)</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-sm text-gray-500 mt-1">시간대별, 작업자별, 구역별 물동량 처리율(Uph)과 병목 현상을 분석합니다.</p>
           </div>
           <div className="flex space-x-2">

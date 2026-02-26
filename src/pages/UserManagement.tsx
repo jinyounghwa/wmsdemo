@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Shield, Edit, Trash2, Plus, Search, Filter } from 'lucide-react';
 import Layout from '../components/Layout';
+import LanguageToggle from '../components/LanguageToggle';
 
 const MOCK_USERS = [
   { id: 'USR001', name: '김민수', email: 'ms.kim@demo.com', role: '시스템 관리자', warehouses: ['전체 (All)'], status: '활성', lastLogin: '2026-02-26 14:30' },
@@ -18,7 +19,10 @@ export default function UserManagement() {
       <div className="space-y-6 p-6 bg-slate-50 min-h-full">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">사용자 및 권한 관리</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-gray-900">사용자 및 권한 관리</h1>
+              <LanguageToggle />
+            </div>
             <p className="text-sm text-gray-500 mt-1">시스템 사용자 계정과 창고별 접근 권한을 관리합니다.</p>
           </div>
           <div className="flex space-x-2">
