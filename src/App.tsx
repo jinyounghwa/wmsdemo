@@ -14,6 +14,12 @@ import MasterData from './pages/MasterData'
 import CycleCount from './pages/CycleCount'
 import OperationsReport from './pages/OperationsReport'
 import LogicExplanation from './pages/LogicExplanation'
+import LocationManagement from './pages/LocationManagement'
+import PutawayReplenishment from './pages/PutawayReplenishment'
+import PackingDispatch from './pages/PackingDispatch'
+import TaskLaborManagement from './pages/TaskLaborManagement'
+import LpnEquipment from './pages/LpnEquipment'
+import Billing from './pages/Billing'
 
 function App() {
   return (
@@ -31,6 +37,12 @@ function App() {
         <Route path="/waves" element={<WavePlanning />} />
         <Route path="/sla-monitor" element={<SlaMonitor />} />
         <Route path="/master-data" element={<MasterData />} />
+        <Route path="/location-management" element={<LocationManagement />} />
+        <Route path="/putaway-replenishment" element={<PutawayReplenishment />} />
+        <Route path="/packing-dispatch" element={<PackingDispatch />} />
+        <Route path="/task-labor-management" element={<TaskLaborManagement />} />
+        <Route path="/lpn-equipment" element={<LpnEquipment />} />
+        <Route path="/billing" element={<Billing />} />
         <Route path="/cycle-count" element={<CycleCount />} />
         <Route path="/operations-report" element={<OperationsReport />} />
         <Route path="/logic-explanation" element={<LogicExplanation />} />

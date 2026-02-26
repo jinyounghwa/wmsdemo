@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ReactNode } from 'react'
-import { LayoutDashboard, Package, Truck, ClipboardList, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion } from 'lucide-react'
+import { LayoutDashboard, Package, Truck, ClipboardList, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText } from 'lucide-react'
 
 const navItems = [
   { path: '/dashboard', label: '대시보드', icon: <LayoutDashboard size={20} /> },
@@ -14,6 +14,12 @@ const navItems = [
   { path: '/sla-monitor', label: 'SLA 모니터', icon: <Siren size={20} /> },
   { path: '/cycle-count', label: '재고 실사', icon: <ScanLine size={20} /> },
   { path: '/master-data', label: '마스터 관리', icon: <Database size={20} /> },
+  { path: '/location-management', label: '로케이션 관리', icon: <MapPinned size={20} /> },
+  { path: '/putaway-replenishment', label: '적치/보충 관리', icon: <Move3D size={20} /> },
+  { path: '/packing-dispatch', label: '포장/상차 관리', icon: <PackageCheck size={20} /> },
+  { path: '/task-labor-management', label: '작업/작업자 통제', icon: <ListTodo size={20} /> },
+  { path: '/lpn-equipment', label: 'LPN/설비 연동', icon: <Container size={20} /> },
+  { path: '/billing', label: '정산 관리', icon: <ReceiptText size={20} /> },
   { path: '/operations-report', label: '운영 리포트', icon: <FileChartColumnIncreasing size={20} /> },
   { path: '/logic-explanation', label: '페이지 로직 설명', icon: <FileQuestion size={20} /> },
 ]
