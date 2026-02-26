@@ -76,6 +76,51 @@
   - 화주별 보관/입출고/부자재 단가 설정
   - 월별 청구 데이터 생성
 
+- 주문 관리(OMS View)
+  - 주문 접수~완료 라이프사이클 상태 추적
+  - 주문 단위와 출고 단위(분할출고) 매핑
+
+- 크로스도킹(Cross-Docking)
+  - 입고 후 적치 없이 출고 도크 직행 처리
+
+- 로트/배치/유통기한
+  - 로트/배치/유통기한 추적
+  - 유통기한 임박 경고, FEFO 우선 피킹
+
+- 시리얼 넘버 추적
+  - 개체 단위 시리얼 등록/상태 관리
+
+- 야드 관리(Yard Management)
+  - 트럭 도착 예약, 도크 도어 스케줄, 대기시간 관리
+
+- 입고 예약/ASN
+  - ASN 수신, ETA/도크 슬롯 예약
+
+- 재고 감사 이력(Inventory Audit Trail)
+  - SKU별 이동/조정/작업자 이벤트 타임라인
+
+- 반출/폐기 관리
+  - 폐기 요청/승인/완료 프로세스
+
+- 알림/이벤트 센터
+  - 읽음/미읽음 관리
+  - 이벤트 조건/수신자 기반 알림 룰 설정
+
+- 시스템 설정(System Configuration)
+  - 창고 기본정보, 단위, 바코드, 자동채번, 연동 모드 설정
+
+- 멀티 창고 관리
+  - 창고별 재고 조회, 창고 간 Transfer
+
+- KIT/BOM 관리
+  - KIT 구성/BOM 등록, 조립 작업지시
+
+- QC/품질 관리
+  - 검사기준/샘플링/판정(pass/fail/hold) 및 이력
+
+- 배송/TMS 뷰
+  - 출고 후 운송장 매핑 및 배송 상태 추적
+
 - 운영 리포트(Operations Report)
   - KPI 요약, 이력 조회, CSV 다운로드
 
@@ -102,6 +147,20 @@
 - `/task-labor-management` 작업/작업자 통제
 - `/lpn-equipment` LPN/설비 연동
 - `/billing` 정산 관리
+- `/order-management` 주문 관리
+- `/cross-docking` 크로스도킹
+- `/lot-batch-expiry` 로트/배치/유통기한
+- `/serial-tracking` 시리얼 넘버 추적
+- `/yard-management` 야드 관리
+- `/asn-scheduling` 입고 예약/ASN
+- `/inventory-audit-trail` 재고 감사 이력
+- `/disposal-management` 반출/폐기 관리
+- `/notification-center` 알림/이벤트 센터
+- `/system-configuration` 시스템 설정
+- `/multi-warehouse` 멀티 창고 관리
+- `/kit-bom` KIT/BOM 관리
+- `/quality-control` QC/품질 관리
+- `/shipping-tms` 배송/TMS 뷰
 - `/operations-report` 운영 리포트
 - `/logic-explanation` 페이지 로직 설명
 

@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Package, Truck, ClipboardList, Plus, SlidersHorizontal,
   RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing,
-  CheckCircle2, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, LayoutDashboard, Home
+  CheckCircle2, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, LayoutDashboard, Home,
+  ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History,
+  Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send
 } from 'lucide-react'
 import Layout from '../components/Layout'
 import LanguageToggle from '../components/LanguageToggle'
@@ -465,6 +467,300 @@ const logicData: LogicItem[] = [
       {
         name: { ko: '월 정산 생성', en: 'Monthly Bill Generation' },
         desc: { ko: '팔렛트-일/CBM-일/작업 건수를 입력해 청구 총액을 산출합니다.', en: 'Calculates monthly total amount from pallet-day/CBM-day and operation counts.' }
+      }
+    ]
+  },
+  {
+    id: 'order-management',
+    title: { ko: '주문 관리 (OMS)', en: 'Order Management (OMS)' },
+    description: {
+      ko: '주문 접수부터 재고확인, 출고분할, 주문완료까지 주문 라이프사이클을 추적합니다.',
+      en: 'Tracks order lifecycle from intake and stock-check to split shipment and completion.'
+    },
+    icon: <ShoppingCart className="w-6 h-6" />,
+    color: 'text-sky-300',
+    bgColor: 'bg-sky-500/10',
+    steps: [
+      {
+        name: { ko: '주문 상태 전이', en: 'Order Lifecycle States' },
+        desc: { ko: '접수 → 재고확인 → 지시배분 → 부분출고 → 완료 상태를 관리합니다.', en: 'Manages states from received to inventory checked, allocation, partial shipment, and completion.' }
+      },
+      {
+        name: { ko: '주문-출고 매핑', en: 'Order-Shipment Mapping' },
+        desc: { ko: '합포장/분할출고 시 주문 단위와 출고 단위의 관계를 추적합니다.', en: 'Tracks relationship between order units and shipment units for merge/split scenarios.' }
+      }
+    ]
+  },
+  {
+    id: 'cross-docking',
+    title: { ko: '크로스도킹', en: 'Cross-Docking' },
+    description: {
+      ko: '입고 재고를 적치 없이 출고 도크로 직행시키는 운영을 관리합니다.',
+      en: 'Manages flow that sends inbound goods directly to shipping docks without put-away.'
+    },
+    icon: <ArrowLeftRight className="w-6 h-6" />,
+    color: 'text-lime-300',
+    bgColor: 'bg-lime-500/10',
+    steps: [
+      {
+        name: { ko: '입고-출고 연결', en: 'Inbound-Outbound Link' },
+        desc: { ko: '입고 레퍼런스와 출고 레퍼런스를 작업 단위로 결합합니다.', en: 'Pairs inbound and outbound references into cross-dock tasks.' }
+      },
+      {
+        name: { ko: '도크 간 이동', en: 'Dock-to-Dock Move' },
+        desc: { ko: 'Receiving Dock에서 Shipping Dock으로 즉시 이동 상태를 통제합니다.', en: 'Controls immediate movement from receiving dock to shipping dock.' }
+      }
+    ]
+  },
+  {
+    id: 'lot-batch-expiry',
+    title: { ko: '로트/배치/유통기한', en: 'Lot/Batch/Expiry' },
+    description: {
+      ko: '유통기한 임박 알림과 FEFO 피킹 우선순위 기반으로 재고를 관리합니다.',
+      en: 'Manages stock with near-expiry alerts and FEFO picking priorities.'
+    },
+    icon: <CalendarClock className="w-6 h-6" />,
+    color: 'text-amber-300',
+    bgColor: 'bg-amber-500/10',
+    steps: [
+      {
+        name: { ko: '로트 재고 등록', en: 'Lot Inventory Registration' },
+        desc: { ko: 'SKU별 로트번호/배치번호/유통기한/수량을 기록합니다.', en: 'Records lot number, batch number, expiry date, and quantity by SKU.' }
+      },
+      {
+        name: { ko: 'FEFO 출고', en: 'FEFO Allocation' },
+        desc: { ko: '유통기한이 가장 빠른 로트부터 우선 피킹합니다.', en: 'Allocates picks from lots with the earliest expiry first.' }
+      }
+    ]
+  },
+  {
+    id: 'serial-tracking',
+    title: { ko: '시리얼 추적', en: 'Serial Tracking' },
+    description: {
+      ko: '개별 상품 시리얼의 상태와 위치를 입고부터 출고까지 추적합니다.',
+      en: 'Tracks individual serial status and location from inbound to outbound.'
+    },
+    icon: <Fingerprint className="w-6 h-6" />,
+    color: 'text-teal-300',
+    bgColor: 'bg-teal-500/10',
+    steps: [
+      {
+        name: { ko: '시리얼 등록', en: 'Serial Registration' },
+        desc: { ko: '입고 시점에 시리얼을 생성/등록합니다.', en: 'Registers serial numbers at inbound stage.' }
+      },
+      {
+        name: { ko: '상태 이력', en: 'Status History' },
+        desc: { ko: '재고/예약/출고/반품 상태 변경을 개체 단위로 기록합니다.', en: 'Records stock, allocation, shipment, and return transitions per serial.' }
+      }
+    ]
+  },
+  {
+    id: 'yard-management',
+    title: { ko: '야드 관리', en: 'Yard Management' },
+    description: {
+      ko: '차량 도착 예약, 야드 대기, 도크 도어 스케줄을 운영합니다.',
+      en: 'Operates truck appointments, yard waiting control, and dock door scheduling.'
+    },
+    icon: <TrafficCone className="w-6 h-6" />,
+    color: 'text-orange-300',
+    bgColor: 'bg-orange-500/10',
+    steps: [
+      {
+        name: { ko: '도착 예약', en: 'Appointment Booking' },
+        desc: { ko: '차량/운송사/시간대/도어를 예약합니다.', en: 'Books truck, carrier, time slot, and dock door.' }
+      },
+      {
+        name: { ko: '대기시간 통제', en: 'Waiting Time Control' },
+        desc: { ko: '야드 대기시간을 모니터링하고 병목을 완화합니다.', en: 'Monitors yard waiting time and mitigates congestion.' }
+      }
+    ]
+  },
+  {
+    id: 'asn-scheduling',
+    title: { ko: 'ASN/입고예약', en: 'ASN/Inbound Scheduling' },
+    description: {
+      ko: '공급사 ASN 수신 후 ETA와 입고 도크를 예약해 입고 분산을 실행합니다.',
+      en: 'Receives supplier ASN and schedules ETA/dock to spread inbound load.'
+    },
+    icon: <ClipboardClock className="w-6 h-6" />,
+    color: 'text-violet-300',
+    bgColor: 'bg-violet-500/10',
+    steps: [
+      {
+        name: { ko: 'ASN 접수', en: 'ASN Intake' },
+        desc: { ko: '사전출하통보 라인과 수량을 등록합니다.', en: 'Registers advance shipment notice lines and quantities.' }
+      },
+      {
+        name: { ko: '도크 배정', en: 'Dock Assignment' },
+        desc: { ko: 'ETA 기준으로 도크와 시간 슬롯을 배정합니다.', en: 'Assigns dock/time slots based on ETA.' }
+      }
+    ]
+  },
+  {
+    id: 'inventory-audit-trail',
+    title: { ko: '재고 감사이력', en: 'Inventory Audit Trail' },
+    description: {
+      ko: 'SKU 이동/조정 이벤트를 작업자와 함께 감사 타임라인으로 제공합니다.',
+      en: 'Provides SKU movement/adjustment events in audit timeline with actor traceability.'
+    },
+    icon: <History className="w-6 h-6" />,
+    color: 'text-slate-200',
+    bgColor: 'bg-slate-500/10',
+    steps: [
+      {
+        name: { ko: '이벤트 수집', en: 'Event Collection' },
+        desc: { ko: '이동 전/후 위치, 수량, 작업자를 기록합니다.', en: 'Collects from/to location, quantity, and actor for each event.' }
+      },
+      {
+        name: { ko: '감사 조회', en: 'Audit Query' },
+        desc: { ko: 'SKU별 타임라인 조회로 감사요건을 충족합니다.', en: 'Meets audit requirements through SKU timeline queries.' }
+      }
+    ]
+  },
+  {
+    id: 'disposal-management',
+    title: { ko: '반출/폐기 관리', en: 'Disposal Management' },
+    description: {
+      ko: '불량/만료 재고의 폐기 요청, 승인, 완료 프로세스를 분리 운영합니다.',
+      en: 'Separates disposal request, approval, and completion flow for defective/expired stock.'
+    },
+    icon: <Trash2 className="w-6 h-6" />,
+    color: 'text-rose-300',
+    bgColor: 'bg-rose-500/10',
+    steps: [
+      {
+        name: { ko: '폐기 요청', en: 'Disposal Request' },
+        desc: { ko: '사유와 수량을 첨부해 폐기요청을 생성합니다.', en: 'Creates disposal requests with reason and quantity.' }
+      },
+      {
+        name: { ko: '승인/마감', en: 'Approval/Closure' },
+        desc: { ko: '승인 후 실제 폐기 완료 상태로 마감합니다.', en: 'Approves and closes requests as disposed.' }
+      }
+    ]
+  },
+  {
+    id: 'notification-center',
+    title: { ko: '알림/이벤트 센터', en: 'Notification Center' },
+    description: {
+      ko: '알림 룰 정의와 읽음/미읽음 관리를 한 화면에서 제공합니다.',
+      en: 'Provides notification rule definition and read/unread management in one screen.'
+    },
+    icon: <BellRing className="w-6 h-6" />,
+    color: 'text-yellow-300',
+    bgColor: 'bg-yellow-500/10',
+    steps: [
+      {
+        name: { ko: '룰 설정', en: 'Rule Setup' },
+        desc: { ko: '이벤트 타입/조건/수신자를 정의합니다.', en: 'Defines event type, condition, and recipients.' }
+      },
+      {
+        name: { ko: '알림 상태관리', en: 'Alert State Control' },
+        desc: { ko: '읽음/미읽음과 심각도별 알림을 추적합니다.', en: 'Tracks read/unread and severity-based notifications.' }
+      }
+    ]
+  },
+  {
+    id: 'system-configuration',
+    title: { ko: '시스템 설정', en: 'System Configuration' },
+    description: {
+      ko: '창고 기본정보와 단위/바코드/채번/연동 설정을 통합 관리합니다.',
+      en: 'Centralizes warehouse profile and unit/barcode/numbering/integration settings.'
+    },
+    icon: <Settings className="w-6 h-6" />,
+    color: 'text-indigo-300',
+    bgColor: 'bg-indigo-500/10',
+    steps: [
+      {
+        name: { ko: '운영 파라미터', en: 'Operation Parameters' },
+        desc: { ko: '창고코드, 운영시간, 단위 체계를 설정합니다.', en: 'Configures warehouse code, operation hours, and unit systems.' }
+      },
+      {
+        name: { ko: '인터페이스 모드', en: 'Interface Mode' },
+        desc: { ko: 'Mock/API 연동 모드를 전환합니다.', en: 'Switches between mock and API integration modes.' }
+      }
+    ]
+  },
+  {
+    id: 'multi-warehouse',
+    title: { ko: '멀티 창고 관리', en: 'Multi-Warehouse' },
+    description: {
+      ko: '복수 센터의 재고를 조회하고 창고 간 Transfer를 관리합니다.',
+      en: 'Views stock across multiple centers and manages inter-warehouse transfers.'
+    },
+    icon: <Building2 className="w-6 h-6" />,
+    color: 'text-emerald-300',
+    bgColor: 'bg-emerald-500/10',
+    steps: [
+      {
+        name: { ko: '창고별 재고', en: 'Stock by Warehouse' },
+        desc: { ko: '동일 SKU의 센터별 재고를 비교합니다.', en: 'Compares same SKU quantities across centers.' }
+      },
+      {
+        name: { ko: '센터 간 이동', en: 'Transfer Between Centers' },
+        desc: { ko: '요청/이동중/수령 상태로 Transfer를 추적합니다.', en: 'Tracks transfer orders by requested/in-transit/received states.' }
+      }
+    ]
+  },
+  {
+    id: 'kit-bom',
+    title: { ko: 'KIT/BOM 관리', en: 'KIT/BOM Management' },
+    description: {
+      ko: '세트 상품 BOM과 조립 작업지시를 통해 조립재고를 운영합니다.',
+      en: 'Operates assembled inventory with kit BOM and assembly work orders.'
+    },
+    icon: <Wrench className="w-6 h-6" />,
+    color: 'text-cyan-300',
+    bgColor: 'bg-cyan-500/10',
+    steps: [
+      {
+        name: { ko: 'BOM 구성', en: 'BOM Composition' },
+        desc: { ko: 'KIT SKU에 구성품 SKU와 소요량을 정의합니다.', en: 'Defines component SKUs and required quantities under KIT SKU.' }
+      },
+      {
+        name: { ko: '조립 지시', en: 'Assembly Orders' },
+        desc: { ko: '조립 작업 상태를 queued/assembling/completed로 관리합니다.', en: 'Controls assembly status as queued, assembling, and completed.' }
+      }
+    ]
+  },
+  {
+    id: 'quality-control',
+    title: { ko: 'QC/품질 관리', en: 'Quality Control' },
+    description: {
+      ko: '샘플링 검사 기준과 판정(pass/fail/hold)을 전용 화면에서 관리합니다.',
+      en: 'Manages sampling criteria and pass/fail/hold decisions in a dedicated QC view.'
+    },
+    icon: <ShieldCheck className="w-6 h-6" />,
+    color: 'text-fuchsia-300',
+    bgColor: 'bg-fuchsia-500/10',
+    steps: [
+      {
+        name: { ko: '검사 기준 설정', en: 'Inspection Criteria' },
+        desc: { ko: '샘플링 비율과 검사 항목을 정의합니다.', en: 'Defines sampling rate and inspection items.' }
+      },
+      {
+        name: { ko: '판정 기록', en: 'Result Logging' },
+        desc: { ko: '검사 결과와 검사자를 이력으로 보존합니다.', en: 'Stores inspection results and inspector history.' }
+      }
+    ]
+  },
+  {
+    id: 'shipping-tms',
+    title: { ko: '배송/TMS 뷰', en: 'Shipping/TMS View' },
+    description: {
+      ko: '출고 후 운송장 매핑과 배송 상태(inTransit/delivered)를 추적합니다.',
+      en: 'Tracks post-shipment tracking mapping and delivery states (inTransit/delivered).'
+    },
+    icon: <Send className="w-6 h-6" />,
+    color: 'text-blue-300',
+    bgColor: 'bg-blue-500/10',
+    steps: [
+      {
+        name: { ko: '운송 레코드 생성', en: 'Create Shipping Record' },
+        desc: { ko: '오더/출고/운송장 정보를 매핑하여 등록합니다.', en: 'Registers mapping among order, shipment, and tracking data.' }
+      },
+      {
+        name: { ko: '배송 상태 추적', en: 'Delivery Tracking' },
+        desc: { ko: 'manifested → inTransit → delivered 상태 전이를 관리합니다.', en: 'Manages manifested to inTransit to delivered transitions.' }
       }
     ]
   },

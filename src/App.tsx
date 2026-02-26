@@ -20,6 +20,20 @@ import PackingDispatch from './pages/PackingDispatch'
 import TaskLaborManagement from './pages/TaskLaborManagement'
 import LpnEquipment from './pages/LpnEquipment'
 import Billing from './pages/Billing'
+import OrderManagement from './pages/OrderManagement'
+import CrossDocking from './pages/CrossDocking'
+import LotBatchExpiry from './pages/LotBatchExpiry'
+import SerialTracking from './pages/SerialTracking'
+import YardManagement from './pages/YardManagement'
+import AsnScheduling from './pages/AsnScheduling'
+import InventoryAuditTrail from './pages/InventoryAuditTrail'
+import DisposalManagement from './pages/DisposalManagement'
+import NotificationCenter from './pages/NotificationCenter'
+import SystemConfiguration from './pages/SystemConfiguration'
+import MultiWarehouse from './pages/MultiWarehouse'
+import KitBomManagement from './pages/KitBomManagement'
+import QualityControl from './pages/QualityControl'
+import ShippingTms from './pages/ShippingTms'
 
 function App() {
   return (
@@ -43,6 +57,20 @@ function App() {
         <Route path="/task-labor-management" element={<TaskLaborManagement />} />
         <Route path="/lpn-equipment" element={<LpnEquipment />} />
         <Route path="/billing" element={<Billing />} />
+        <Route path="/order-management" element={<OrderManagement />} />
+        <Route path="/cross-docking" element={<CrossDocking />} />
+        <Route path="/lot-batch-expiry" element={<LotBatchExpiry />} />
+        <Route path="/serial-tracking" element={<SerialTracking />} />
+        <Route path="/yard-management" element={<YardManagement />} />
+        <Route path="/asn-scheduling" element={<AsnScheduling />} />
+        <Route path="/inventory-audit-trail" element={<InventoryAuditTrail />} />
+        <Route path="/disposal-management" element={<DisposalManagement />} />
+        <Route path="/notification-center" element={<NotificationCenter />} />
+        <Route path="/system-configuration" element={<SystemConfiguration />} />
+        <Route path="/multi-warehouse" element={<MultiWarehouse />} />
+        <Route path="/kit-bom" element={<KitBomManagement />} />
+        <Route path="/quality-control" element={<QualityControl />} />
+        <Route path="/shipping-tms" element={<ShippingTms />} />
         <Route path="/cycle-count" element={<CycleCount />} />
         <Route path="/operations-report" element={<OperationsReport />} />
         <Route path="/logic-explanation" element={<LogicExplanation />} />
