@@ -1,17 +1,231 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
 import { Maximize2, Minimize2, Search, LocateFixed, Move3D } from 'lucide-react'
 import Layout from '../components/Layout'
 import LanguageToggle from '../components/LanguageToggle'
 
+type ViewMode = 'occupancy' | 'temperature' | 'activity'
+
+type Rack = {
+  id: string
+  x: number
+  z: number
+  occupancy: number
+  zone: 'ambient' | 'chilled' | 'frozen'
+}
+
+const RACKS: Rack[] = [
+  { id: 'A1', x: -13, z: -4.5, occupancy: 0.65, zone: 'ambient' },
+  { id: 'A2', x: -8, z: -4.5, occupancy: 0.95, zone: 'ambient' },
+  { id: 'A3', x: -3, z: -4.5, occupancy: 0.68, zone: 'ambient' },
+  { id: 'A4', x: 2, z: -4.5, occupancy: 0.2, zone: 'ambient' },
+  { id: 'A5', x: 7, z: -4.5, occupancy: 0.62, zone: 'ambient' },
+  { id: 'B1', x: -13, z: 3.5, occupancy: 0.1, zone: 'ambient' },
+  { id: 'B2', x: -8, z: 3.5, occupancy: 0.45, zone: 'ambient' },
+  { id: 'B3', x: -3, z: 3.5, occupancy: 1.0, zone: 'ambient' },
+  { id: 'B4', x: 2, z: 3.5, occupancy: 0.45, zone: 'chilled' },
+  { id: 'B5', x: 7, z: 3.5, occupancy: 0.45, zone: 'frozen' },
+]
+
+function occupancyHex(occupancy: number) {
+  if (occupancy >= 0.9) return '#ef4444'
+  if (occupancy >= 0.6) return '#f59e0b'
+  return '#22c55e'
+}
+
+function temperatureHex(zone: Rack['zone']) {
+  if (zone === 'frozen') return '#2563eb'
+  if (zone === 'chilled') return '#38bdf8'
+  return '#fb923c'
+}
+
+function activityLevel(rack: Rack) {
+  if (rack.id === 'A2' || rack.id === 'B3') return 'high'
+  if (rack.id === 'A3' || rack.id === 'B4' || rack.id === 'A5') return 'medium'
+  return 'low'
+}
+
+function activityHex(level: 'high' | 'medium' | 'low') {
+  if (level === 'high') return '#ef4444'
+  if (level === 'medium') return '#f59e0b'
+  return '#22c55e'
+}
+
+function rackColor(rack: Rack, viewMode: ViewMode) {
+  if (viewMode === 'occupancy') return occupancyHex(rack.occupancy)
+  if (viewMode === 'temperature') return temperatureHex(rack.zone)
+  return activityHex(activityLevel(rack))
+}
+
+function rackEmissive(rack: Rack, viewMode: ViewMode) {
+  if (viewMode === 'activity') {
+    const level = activityLevel(rack)
+    if (level === 'high') return '#ef4444'
+    if (level === 'medium') return '#f59e0b'
+    return '#14532d'
+  }
+  if (viewMode === 'temperature') {
+    if (rack.zone === 'frozen') return '#1d4ed8'
+    if (rack.zone === 'chilled') return '#0ea5e9'
+    return '#ea580c'
+  }
+  return '#0b1220'
+}
+
+function sceneTint(viewMode: ViewMode) {
+  if (viewMode === 'occupancy') return '#0b1220'
+  if (viewMode === 'temperature') return '#082f49'
+  return '#3f0f1d'
+}
+
+function Warehouse3DScene({ viewMode, zoom }: { viewMode: ViewMode; zoom: number }) {
+  const groupScale = zoom / 100
+
+  return (
+    <>
+      <fog attach="fog" args={['#0b1020', 40, 95]} />
+      <ambientLight intensity={0.55} color="#dbeafe" />
+      <directionalLight position={[14, 18, 6]} intensity={1.25} color="#ffffff" castShadow />
+      <pointLight position={[0, 10, -2]} intensity={0.8} color="#bae6fd" />
+      <pointLight position={[-10, 8, 8]} intensity={0.6} color="#e2e8f0" />
+
+      <group scale={groupScale}>
+        <mesh rotation-x={-Math.PI / 2} position={[0, -0.01, 0]} receiveShadow>
+          <planeGeometry args={[44, 30, 1, 1]} />
+          <meshStandardMaterial color="#1e293b" roughness={0.85} metalness={0.1} />
+        </mesh>
+        <mesh rotation-x={-Math.PI / 2} position={[0, 0, 0]}>
+          <planeGeometry args={[44, 30, 1, 1]} />
+          <meshStandardMaterial
+            color={sceneTint(viewMode)}
+            emissive={sceneTint(viewMode)}
+            emissiveIntensity={viewMode === 'occupancy' ? 0.1 : 0.18}
+            transparent
+            opacity={0.25}
+          />
+        </mesh>
+
+        <gridHelper args={[44, 44, '#334155', '#1e293b']} position={[0, 0.02, 0]} />
+
+        <mesh rotation-x={-Math.PI / 2} position={[0, 0.01, -0.5]}>
+          <planeGeometry args={[6.8, 20]} />
+          <meshStandardMaterial color="#38bdf8" transparent opacity={0.24} roughness={0.65} metalness={0.05} />
+        </mesh>
+
+        <mesh position={[0, 4, -14.8]}>
+          <boxGeometry args={[44, 8, 0.45]} />
+          <meshStandardMaterial color="#273449" roughness={0.92} metalness={0.1} />
+        </mesh>
+        <mesh position={[-21.8, 4, 0]}>
+          <boxGeometry args={[0.45, 8, 30]} />
+          <meshStandardMaterial color="#273449" roughness={0.92} metalness={0.1} />
+        </mesh>
+        <mesh position={[21.8, 4, 0]}>
+          <boxGeometry args={[0.45, 8, 30]} />
+          <meshStandardMaterial color="#273449" roughness={0.92} metalness={0.1} />
+        </mesh>
+
+        <mesh position={[-6.8, 2.4, -14.2]}>
+          <boxGeometry args={[4.6, 4.8, 1.1]} />
+          <meshStandardMaterial color="#334155" roughness={0.4} metalness={0.35} />
+        </mesh>
+        <mesh position={[6.8, 2.4, -14.2]}>
+          <boxGeometry args={[4.6, 4.8, 1.1]} />
+          <meshStandardMaterial color="#334155" roughness={0.4} metalness={0.35} />
+        </mesh>
+
+        {RACKS.map((rack) => {
+          const color = rackColor(rack, viewMode)
+          const emissive = rackEmissive(rack, viewMode)
+          const fillHeight = Math.max(0.25, rack.occupancy * 3.6)
+          const level = activityLevel(rack)
+          const isBusy = level === 'high'
+          const isMediumBusy = level === 'medium'
+
+          return (
+            <group key={rack.id} position={[rack.x, 0, rack.z]}>
+              <mesh position={[0, 1.9, 0]} castShadow receiveShadow>
+                <boxGeometry args={[3.2, 3.8, 1.8]} />
+                <meshStandardMaterial color="#3f4f67" roughness={0.4} metalness={0.4} />
+              </mesh>
+
+              {[-1.2, -0.4, 0.4, 1.2].map((shelf) => (
+                <mesh key={shelf} position={[0, 1.9 + shelf, 0]} castShadow>
+                  <boxGeometry args={[3.05, 0.08, 1.72]} />
+                  <meshStandardMaterial color="#64748b" roughness={0.4} metalness={0.42} />
+                </mesh>
+              ))}
+
+              <mesh position={[0, fillHeight / 2 + 0.15, 0]} castShadow>
+                <boxGeometry args={[2.7, fillHeight, 1.4]} />
+                <meshStandardMaterial
+                  color={color}
+                  roughness={0.35}
+                  metalness={0.18}
+                  emissive={emissive}
+                  emissiveIntensity={viewMode === 'activity' && isBusy ? 1.25 : viewMode === 'temperature' ? 0.7 : 0.45}
+                />
+              </mesh>
+
+              <mesh position={[0, fillHeight + 0.28, 0]}>
+                <boxGeometry args={[2.35, 0.14, 1.12]} />
+                <meshStandardMaterial
+                  color={color}
+                  emissive={emissive}
+                  emissiveIntensity={viewMode === 'activity' ? 1.1 : 0.65}
+                  roughness={0.25}
+                  metalness={0.22}
+                />
+              </mesh>
+
+              <mesh position={[0, 0.08, 0]}>
+                <boxGeometry args={[3.4, 0.16, 2]} />
+                <meshStandardMaterial color="#7c2d12" roughness={0.9} metalness={0.05} />
+              </mesh>
+
+              <mesh position={[0, 4.05, 0]}>
+                <sphereGeometry args={[0.2, 16, 16]} />
+                <meshStandardMaterial color={color} emissive={emissive} emissiveIntensity={0.95} />
+              </mesh>
+
+              {viewMode === 'activity' && (isBusy || isMediumBusy) && (
+                <>
+                  <pointLight position={[0, 2.8, 0]} intensity={isBusy ? 2.2 : 1.25} color={isBusy ? '#ef4444' : '#f59e0b'} distance={7} />
+                  <mesh position={[0, 2.8, 0]}>
+                    <sphereGeometry args={[0.32, 16, 16]} />
+                    <meshStandardMaterial color={isBusy ? '#ef4444' : '#f59e0b'} emissive={isBusy ? '#ef4444' : '#f59e0b'} emissiveIntensity={1.2} />
+                  </mesh>
+                </>
+              )}
+            </group>
+          )
+        })}
+      </group>
+
+      <OrbitControls
+        makeDefault
+        enableDamping
+        dampingFactor={0.08}
+        minDistance={22}
+        maxDistance={70}
+        minPolarAngle={Math.PI / 4.2}
+        maxPolarAngle={Math.PI / 2.05}
+        target={[-2, 0.8, -1]}
+      />
+    </>
+  )
+}
+
 export default function WarehouseFloorMap() {
-  const [viewMode, setViewMode] = useState<'occupancy' | 'temperature' | 'activity'>('occupancy')
+  const [viewMode, setViewMode] = useState<ViewMode>('occupancy')
   const [zoom, setZoom] = useState(100)
   const [is3D, setIs3D] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const mapShellRef = useRef<HTMLDivElement>(null)
 
-  const handleZoomIn = () => setZoom((prev) => Math.min(prev + 10, 180))
-  const handleZoomOut = () => setZoom((prev) => Math.max(prev - 10, 50))
+  const handleZoomIn = () => setZoom((prev) => Math.min(prev + 10, 190))
+  const handleZoomOut = () => setZoom((prev) => Math.max(prev - 10, 45))
 
   const handleToggleFullscreen = async () => {
     if (!mapShellRef.current) return
@@ -33,9 +247,29 @@ export default function WarehouseFloorMap() {
     return () => document.removeEventListener('fullscreenchange', onChange)
   }, [])
 
-  const mapTransform = is3D
-    ? `scale(${zoom / 100}) perspective(1400px) rotateX(16deg) rotateZ(-6deg)`
-    : `scale(${zoom / 100})`
+  const legendItems = useMemo(() => {
+    if (viewMode === 'occupancy') {
+      return [
+        { color: 'bg-red-500', label: '90-100% (만석)' },
+        { color: 'bg-yellow-400', label: '60-89% (보통)' },
+        { color: 'bg-green-500', label: '1-59% (여유)' },
+      ]
+    }
+
+    if (viewMode === 'temperature') {
+      return [
+        { color: 'bg-orange-400', label: '상온 (15°C~25°C)' },
+        { color: 'bg-sky-400', label: '냉장 (0°C~10°C)' },
+        { color: 'bg-blue-700', label: '냉동 (-18°C 이하)' },
+      ]
+    }
+
+    return [
+      { color: 'bg-red-500', label: '고밀집 병목 구역' },
+      { color: 'bg-amber-400', label: '중간 밀집 구역' },
+      { color: 'bg-green-500', label: '저밀집 일반 구역' },
+    ]
+  }, [viewMode])
 
   return (
     <Layout>
@@ -46,7 +280,7 @@ export default function WarehouseFloorMap() {
               <h1 className="text-2xl font-bold text-gray-900">창고 레이아웃 맵 (Floor Map)</h1>
               <LanguageToggle />
             </div>
-            <p className="text-sm text-gray-500 mt-1">창고(랙/존)의 사용률, 재고 분포, 혼잡도 스파크를 시각화합니다.</p>
+            <p className="text-sm text-gray-500 mt-1">실제 3D 뷰 기반으로 랙/도크/작업 밀집도를 시각화합니다.</p>
           </div>
           <div className="flex space-x-2">
             <div className="bg-white rounded-lg p-1 border border-gray-200 flex">
@@ -77,125 +311,56 @@ export default function WarehouseFloorMap() {
 
           <div
             ref={mapShellRef}
-            className={`relative bg-slate-800 w-full p-8 overflow-hidden flex flex-col cursor-move ${isFullscreen ? 'h-screen' : 'h-[600px]'}`}
-            style={{ backgroundImage: 'radial-gradient(#334155 1px, transparent 1px)', backgroundSize: '24px 24px' }}
+            className={`relative bg-slate-900 w-full overflow-hidden ${isFullscreen ? 'h-screen' : 'h-[640px]'}`}
           >
-            <div className="absolute top-4 left-4 z-20 bg-slate-900/80 px-2.5 py-1 rounded border border-slate-700 text-xs text-slate-200">
-              Zoom {zoom}%
+            <div className="absolute left-4 top-4 z-30 bg-slate-900/80 px-2.5 py-1 rounded border border-slate-700 text-xs text-slate-200">
+              Zoom {zoom}% {is3D ? '| Orbit: Drag + Scroll' : ''}
             </div>
 
-            <div
-              className="relative w-full h-full origin-center transition-transform duration-300"
-              style={{ transform: mapTransform, transformStyle: is3D ? 'preserve-3d' : 'flat' }}
-            >
-              <div className="absolute top-4 right-4 bg-slate-900/80 p-3 rounded-lg border border-slate-700 backdrop-blur-sm text-xs text-slate-300">
-                <div className="font-bold text-white mb-2 pb-1 border-b border-slate-700">{viewMode === 'occupancy' ? '점유율 범례' : viewMode === 'temperature' ? '보관 온도 범례' : '작업 혼잡도'}</div>
-                {viewMode === 'occupancy' ? (
-                  <div className="space-y-1.5">
-                    <div className="flex items-center"><div className="w-3 h-3 rounded mr-2 bg-red-500" /> 90-100% (만석)</div>
-                    <div className="flex items-center"><div className="w-3 h-3 rounded mr-2 bg-yellow-400" /> 60-89% (보통)</div>
-                    <div className="flex items-center"><div className="w-3 h-3 rounded mr-2 bg-green-500" /> 1-59% (여유)</div>
-                    <div className="flex items-center"><div className="w-3 h-3 rounded mr-2 border border-slate-600 bg-transparent" /> 0% (비어있음)</div>
+            <div className="absolute right-4 top-4 z-30 bg-slate-900/75 p-3 rounded-lg border border-slate-700 text-xs text-slate-200">
+              <div className="font-semibold mb-2">{viewMode === 'occupancy' ? '점유율 범례' : viewMode === 'temperature' ? '온도 범례' : '작업 범례'}</div>
+              <div className="space-y-1.5">
+                {legendItems.map((item) => (
+                  <div key={item.label} className="flex items-center gap-2">
+                    <span className={`h-3 w-3 rounded ${item.color}`} />
+                    <span>{item.label}</span>
                   </div>
-                ) : viewMode === 'temperature' ? (
-                  <div className="space-y-1.5">
-                    <div className="flex items-center"><div className="w-3 h-3 rounded mr-2 bg-red-400" /> 상온 (15°C~25°C)</div>
-                    <div className="flex items-center"><div className="w-3 h-3 rounded mr-2 bg-blue-300" /> 냉장 (0°C~10°C)</div>
-                    <div className="flex items-center"><div className="w-3 h-3 rounded mr-2 bg-blue-600" /> 냉동 (-18°C 이하)</div>
-                  </div>
-                ) : (
-                  <div className="space-y-1.5">
-                    <div className="flex items-center"><div className="w-3 h-3 rounded-full mr-2 bg-red-500 shadow-[0_0_10px_2px_rgba(239,68,68,0.6)]" /> 병목/혼잡 극심</div>
-                    <div className="flex items-center"><div className="w-3 h-3 rounded-full mr-2 bg-orange-400" /> 진행 중 활발</div>
-                    <div className="flex items-center"><div className="w-3 h-3 rounded-full mr-2 bg-green-400 opacity-50" /> 조용함</div>
-                  </div>
-                )}
-              </div>
-
-              <div className="absolute top-4 left-4 bg-slate-900/80 px-4 py-2 rounded-lg border border-slate-700 text-slate-300 text-sm font-bold flex items-center shadow-lg">
-                도크 A (입고)
-                <span className="ml-3 flex space-x-1">
-                  <div className="w-8 h-4 bg-slate-700 border border-slate-500 rounded-sm flex items-center justify-center text-[8px] text-white/50">TR-1</div>
-                  <div className="w-8 h-4 bg-slate-700 border border-slate-500 rounded-sm"></div>
-                </span>
-              </div>
-
-              <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900/80 px-4 py-2 rounded-lg border border-slate-700 text-slate-300 text-sm font-bold flex items-center shadow-lg">
-                도크 B (출고)
-                <span className="ml-3 flex space-x-1">
-                  <div className="w-8 h-4 bg-slate-700 border border-slate-500 rounded-sm overflow-hidden"><div className="w-full h-full bg-blue-500/30"></div></div>
-                  <div className="w-8 h-4 bg-slate-700 border border-slate-500 rounded-sm"></div>
-                  <div className="w-8 h-4 bg-slate-700 border border-slate-500 rounded-sm"></div>
-                </span>
-              </div>
-
-              <div className="flex-1 mt-14 mb-10 w-full flex flex-col space-y-8">
-                <div className="flex justify-around items-center h-24">
-                  {[1, 2, 3, 4, 5].map((rack) => (
-                    <div key={`r1-${rack}`} className="w-32 h-full border-2 border-slate-600 rounded flex flex-col justify-end p-1 relative group cursor-pointer hover:border-blue-400">
-                      <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-slate-500 font-mono">Row-A{rack}</span>
-                      {viewMode === 'occupancy' ? (
-                        <div className={`w-full ${rack === 2 ? 'h-[95%] bg-red-500/80' : rack === 4 ? 'h-[20%] bg-green-500/80' : 'h-[65%] bg-yellow-400/80'} rounded-sm transition-all duration-500`}></div>
-                      ) : viewMode === 'temperature' ? (
-                        <div className="w-full h-full bg-red-400/40 rounded-sm"></div>
-                      ) : (
-                        <div className="w-full h-full bg-slate-700/50 rounded-sm flex items-center justify-center">
-                          {rack === 2 && <div className="absolute w-8 h-8 rounded-full bg-orange-500/40 animate-ping"></div>}
-                          {rack === 2 && <div className="absolute w-4 h-4 rounded-full bg-orange-500 shadow-[0_0_15px_rgba(249,115,22,1)]"></div>}
-                        </div>
-                      )}
-
-                      <div className="absolute inset-0 bg-slate-900/90 text-white text-[10px] p-2 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center rounded z-10 pointer-events-none border border-slate-600">
-                        <p className="font-bold text-blue-300 mb-1">Row-A{rack} 상세</p>
-                        <p>점유율: {rack === 2 ? '95%' : rack === 4 ? '20%' : '65%'}</p>
-                        <p>보관: 전자제품류</p>
-                        <p>LPN 수량: {rack * 15} EA</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="h-10 w-full flex items-center justify-center">
-                  <div className="border-t border-dashed border-slate-500 w-full relative">
-                    <span className="absolute left-1/2 -translate-x-1/2 -top-3 px-2 bg-slate-800 text-xs text-slate-500">메인 통로 (Aisle)</span>
-                    {viewMode === 'activity' && (
-                      <div className="absolute left-1/3 -top-2 w-4 h-4 rounded bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,1)] flex items-center justify-center text-[7px] font-bold text-white z-20" title="지게차 #3">FK</div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex justify-around items-center h-24">
-                  {[1, 2, 3, 4, 5].map((rack) => (
-                    <div key={`r2-${rack}`} className="w-32 h-full border-2 border-slate-600 rounded flex flex-col justify-end p-1 relative group cursor-pointer hover:border-blue-400">
-                      <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-slate-500 font-mono">Row-B{rack}</span>
-                      {viewMode === 'occupancy' ? (
-                        <div className={`w-full ${rack === 1 ? 'h-[10%] bg-green-500/80' : rack === 3 ? 'h-[100%] bg-red-500/80' : 'h-[45%] bg-green-500/80'} rounded-sm transition-all duration-500`}></div>
-                      ) : viewMode === 'temperature' ? (
-                        <div className={`w-full h-full ${rack > 3 ? 'bg-blue-300/60' : 'bg-red-400/40'} rounded-sm`}></div>
-                      ) : (
-                        <div className="w-full h-full bg-slate-700/50 rounded-sm flex items-center justify-center relative">
-                          {rack === 3 && <div className="absolute w-12 h-12 rounded-full bg-red-500/40 animate-ping"></div>}
-                          {rack === 3 && <div className="absolute w-6 h-6 rounded-full bg-red-500 shadow-[0_0_20px_rgba(239,68,68,1)]"></div>}
-                        </div>
-                      )}
-
-                      <div className="absolute inset-0 bg-slate-900/90 text-white text-[10px] p-2 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center rounded z-10 pointer-events-none border border-slate-600">
-                        <p className="font-bold text-blue-300 mb-1">Row-B{rack} 상세</p>
-                        <p>점유율: {rack === 3 ? '100%' : rack === 1 ? '10%' : '45%'}</p>
-                        <p>보관: {rack > 3 ? '화장품(냉장)' : '의류'}</p>
-                        <p>예상 병목: {rack === 3 ? '높음' : '낮음'}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="absolute bottom-4 left-4 bg-slate-900/80 px-4 py-2 rounded-lg border border-slate-700 text-slate-300 text-sm font-bold flex items-center shadow-lg">
-                포장 구역 (Packing)
+                ))}
               </div>
             </div>
 
-            <div className="absolute bottom-4 right-4 z-20 flex space-x-2">
+            {is3D ? (
+              <Canvas
+                shadows
+                camera={{ position: [16, 15, 22], fov: 48 }}
+                gl={{ antialias: true }}
+                style={{ width: '100%', height: '100%' }}
+              >
+                <Warehouse3DScene viewMode={viewMode} zoom={zoom} />
+              </Canvas>
+            ) : (
+              <div className="h-full p-8 text-slate-200">
+                <div className="h-full rounded-xl border border-slate-700 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:18px_18px] p-6">
+                  <div className="text-sm text-slate-300 mb-4">2D 모드에서는 기본 배치 뷰를 제공합니다. 3D View를 켜면 실시간 3D 렌더링으로 전환됩니다.</div>
+                  <div className="grid grid-cols-5 gap-3 mt-8">
+                    {RACKS.slice(0, 5).map((rack) => (
+                      <div key={rack.id} className="h-24 rounded border border-slate-600 bg-slate-700/60 p-1">
+                        <div className={`w-full rounded ${viewMode === 'occupancy' ? (rack.occupancy > 0.9 ? 'bg-red-500' : rack.occupancy > 0.6 ? 'bg-yellow-400' : 'bg-green-500') : viewMode === 'temperature' ? (rack.zone === 'chilled' ? 'bg-sky-400' : 'bg-orange-400') : (rack.id === 'A2' || rack.id === 'B3' ? 'bg-rose-400' : 'bg-slate-500')}`} style={{ height: `${Math.max(12, Math.round(rack.occupancy * 100))}%` }} />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-5 gap-3 mt-10">
+                    {RACKS.slice(5).map((rack) => (
+                      <div key={rack.id} className="h-24 rounded border border-slate-600 bg-slate-700/60 p-1">
+                        <div className={`w-full rounded ${viewMode === 'occupancy' ? (rack.occupancy > 0.9 ? 'bg-red-500' : rack.occupancy > 0.6 ? 'bg-yellow-400' : 'bg-green-500') : viewMode === 'temperature' ? (rack.zone === 'chilled' ? 'bg-sky-400' : 'bg-orange-400') : (rack.id === 'A2' || rack.id === 'B3' ? 'bg-rose-400' : 'bg-slate-500')}`} style={{ height: `${Math.max(12, Math.round(rack.occupancy * 100))}%` }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="absolute bottom-4 right-4 z-30 flex space-x-2">
               <button onClick={handleZoomIn} className="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-center text-white shadow" aria-label="확대"><span className="text-xl leading-none">+</span></button>
               <button onClick={handleZoomOut} className="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-center text-white shadow" aria-label="축소"><span className="text-xl leading-none">-</span></button>
               <button onClick={handleToggleFullscreen} className="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-center text-white shadow" aria-label="전체화면">
