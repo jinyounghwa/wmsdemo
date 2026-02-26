@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import LanguageToggle from './components/LanguageToggle'
+import DomI18nBridge from './i18n/DomI18nBridge'
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Inbound from './pages/Inbound'
@@ -17,6 +19,8 @@ import LogicExplanation from './pages/LogicExplanation'
 function App() {
   return (
     <BrowserRouter>
+      <LanguageToggle />
+      <DomI18nBridge />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/dashboard" element={<Dashboard />} />
