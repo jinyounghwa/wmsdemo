@@ -176,8 +176,8 @@ export default function PageDetailGuide() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 lg:items-start">
-          <div className="rounded-2xl border border-slate-700/50 bg-[#1e293b] p-4 lg:max-h-[calc(100vh-230px)] lg:overflow-y-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 lg:h-[calc(100vh-230px)]">
+          <div className="rounded-2xl border border-slate-700/50 bg-[#1e293b] p-4 lg:h-full lg:overflow-y-auto">
             <div className="flex items-center gap-2 text-slate-200 text-sm font-semibold mb-3">
               <LayoutList className="w-4 h-4 text-cyan-300" />
               {locale === 'ko' ? '전체 메뉴 목록' : 'All Menu Pages'}
@@ -204,7 +204,7 @@ export default function PageDetailGuide() {
           </div>
 
           {activeData && (
-            <div className="rounded-2xl border border-slate-700/50 bg-[#1e293b] p-6 md:p-7 space-y-6">
+            <div className="rounded-2xl border border-slate-700/50 bg-[#1e293b] p-6 md:p-7 space-y-6 lg:h-full lg:overflow-y-auto">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-300">
                   <BookText className="w-5 h-5" />
