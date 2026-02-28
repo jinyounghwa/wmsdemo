@@ -5,12 +5,6 @@ import { usePartnerStore } from '../store/partnerStore'
 import { useMovementOpsStore } from '../store/movementOpsStore'
 import { useLanguage } from '../i18n/LanguageContext'
 
-const tabStatus = {
-  waiting: ['waiting'] as const,
-  moving: ['moving'] as const,
-  done: ['done'] as const,
-}
-
 export default function MovementExecution() {
   const { locale } = useLanguage()
   const orders = useMovementOpsStore((state) => state.orders)
@@ -22,7 +16,7 @@ export default function MovementExecution() {
   const [owner, setOwner] = useState('all')
   const [orderId, setOrderId] = useState('')
   const [sku, setSku] = useState('')
-  const [tab, setTab] = useState<keyof typeof tabStatus>('waiting')
+  const [tab, setTab] = useState<'waiting' | 'moving' | 'done'>('waiting')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [message, setMessage] = useState('')
 
@@ -34,7 +28,7 @@ export default function MovementExecution() {
 
   const targets = useMemo(() => {
     return orders.filter((order) => {
-      const tabOk = tabStatus[tab].includes(order.status as 'waiting' | 'moving' | 'done')
+      const tabOk = order.status === tab
       const dateOk = !instructedDate || (order.instructedAt ?? '') >= instructedDate
       const ownerOk = owner === 'all' || order.owner === owner
       const idOk = !orderId || order.id.toLowerCase().includes(orderId.toLowerCase())
