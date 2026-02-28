@@ -115,29 +115,29 @@ export const useWarehouseSettingsStore = create<WarehouseSettingsStore>((set) =>
   ],
   accounts: [],
   shops: [
-    { id: 'SH-1', owner: 'onedns_test', name: '기타1', category: '기타', active: true },
-    { id: 'SH-2', owner: 'onedns_test', name: '전화주문', category: '전화', active: true },
+    { id: 'SH-1', owner: 'nexlink_test', name: '기타1', category: '기타', active: true },
+    { id: 'SH-2', owner: 'nexlink_test', name: '전화주문', category: '전화', active: true },
   ],
   suppliers: [
-    { id: 'SP-1', owner: 'onedns_test', category: '자사', name: 'onedns_test', code: '1', phone: '010-7000-0001', location: '경기', address: '경기도 고양시 물류로 100' },
+    { id: 'SP-1', owner: 'nexlink_test', category: '자사', name: 'nexlink_test', code: '1', phone: '010-7000-0001', location: '경기', address: '경기도 고양시 물류로 100' },
   ],
   products: Array.from({ length: 12 }).map((_, idx) => ({
     id: `P-${idx + 1}`,
-    owner: 'onedns_test',
+    owner: 'nexlink_test',
     sku: idx < 10 ? `WMS-SKU-${idx + 1}` : `test${idx - 9}`,
     name: idx < 10 ? `WMS 상품${idx + 1}` : `test${idx - 9}`,
     attr: `STYLE-${idx + 1} / COLOR-${(idx % 3) + 1} / SIZE-${['S', 'M', 'L'][idx % 3]}`,
-    supplier: 'onedns_test',
+    supplier: 'nexlink_test',
     category: '일반',
     salePrice: 10000 + idx * 1500,
     cost: 7000 + idx * 1100,
     createdAt: '2025-11-20',
   })),
   rules: [
-    { id: 'R-1', priority: 100, name: '기본 할당 룰', strategyName: '기본 할당 전략', ownerScope: '전체 화주', shopCount: 0, worker: '김수빈' },
+    { id: 'R-1', priority: 100, name: '기본 할당 룰', strategyName: '기본 할당 전략', ownerScope: '전체 화주', shopCount: 0, worker: '이준호' },
   ],
   strategies: [
-    { id: 'S-1', name: '기본 할당 전략', description: '기본 선입선출', worker: '김수빈', createdAt: '2025-11-18' },
+    { id: 'S-1', name: '기본 할당 전략', description: '기본 선입선출', worker: '이준호', createdAt: '2025-11-18' },
   ],
   templates: [
     { id: 'T-1', type: '품목 바코드', name: '품목 바코드 샘플', isDefault: true, paperType: '전용 라벨', createdAt: '2025-11-20' },

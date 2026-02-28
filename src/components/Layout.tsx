@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 import { LayoutDashboard, Package, Truck, ClipboardList, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History, Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Activity, Map as MapIcon, Users, Scale, Network, Pickaxe, Recycle, ShieldAlert, BarChart3, Clock, BookText } from 'lucide-react'
 import { useAdjustmentStore } from '../store/adjustmentStore'
 
@@ -88,6 +88,7 @@ const navItems = [
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation()
   const pendingAdjustments = useAdjustmentStore((state) => state.pendingCount())
+  const navRef = useRef<HTMLElement | null>(null)
   const isActive = (path: string) => {
     if (location.pathname === path) return true
     if (path === '/shipping/post-process') return location.pathname === '/shipping/post-process'
@@ -99,17 +100,36 @@ export default function Layout({ children }: { children: ReactNode }) {
     return false
   }
 
+  useEffect(() => {
+    const navEl = navRef.current
+    if (!navEl) return
+
+    const activeEl = navEl.querySelector<HTMLElement>('[data-active="true"]')
+    if (!activeEl) return
+
+    const navRect = navEl.getBoundingClientRect()
+    const activeRect = activeEl.getBoundingClientRect()
+    const offsetTop = activeRect.top - navRect.top + navEl.scrollTop
+    const targetTop = offsetTop - navEl.clientHeight / 2 + activeEl.clientHeight / 2
+
+    navEl.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: 'smooth',
+    })
+  }, [location.pathname])
+
   return (
     <div className="flex h-screen bg-[#0f172a] text-white">
       <aside className="w-60 bg-[#1e293b] flex flex-col flex-shrink-0 h-screen">
         <div className="p-6 border-b border-slate-700">
           <Link to="/" className="text-xl font-bold text-blue-400">WMS Demo</Link>
         </div>
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        <nav ref={navRef} className="flex-1 p-4 space-y-1 overflow-y-auto">
           {navItems.map(item => (
             <Link
               key={item.path}
               to={item.path}
+              data-active={isActive(item.path) ? 'true' : 'false'}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors ${
                 isActive(item.path)
                   ? 'bg-blue-600 text-white'

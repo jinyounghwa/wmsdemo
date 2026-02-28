@@ -64,21 +64,21 @@ interface LogisticsSettingsStore {
 
 export const useLogisticsSettingsStore = create<LogisticsSettingsStore>((set) => ({
   warehouses: [
-    { id: 'WH-L-1', name: '승승창고', code: 'WHS-SG-01', address: '경기도 고양시 물류로 21', manager: '김수빈', phone: '010-1111-2222' },
-    { id: 'WH-L-2', name: '기본 창고', code: 'WHS-BASE-01', address: '경기도 파주시 창고길 100', manager: '박현우', phone: '010-3333-4444' },
+    { id: 'WH-L-1', name: '승승창고', code: 'WHS-SG-01', address: '경기도 고양시 물류로 21', manager: '이준호', phone: '010-1111-2222' },
+    { id: 'WH-L-2', name: '기본 창고', code: 'WHS-BASE-01', address: '경기도 파주시 창고길 100', manager: '정민석', phone: '010-3333-4444' },
   ],
   users: [
-    { id: 'U-1', name: '김수빈', phone: '010-1111-2222', email: 'sbkim@onedns.co.kr', userType: '물류사', userCode: 'LG001', roleName: '최고 권한', joinedAt: '2025-10-15' },
-    { id: 'U-2', name: '박현우', phone: '010-3333-4444', email: 'hwpark@onedns.co.kr', userType: '물류사', userCode: 'LG002', roleName: '최고 권한', joinedAt: '2025-09-02' },
-    { id: 'U-3', name: '셀메이트개발', phone: '010-5555-1111', email: 'dev@sellmate.co.kr', userType: '파트너', userCode: 'LG003', roleName: '최고 권한', joinedAt: '2025-05-29' },
-    { id: 'U-4', name: '윤의원', phone: '010-7777-1111', email: 'ewyun@onedns.co.kr', userType: '물류사', userCode: 'LG004', roleName: '최고 권한', joinedAt: '2025-09-24' },
-    { id: 'U-5', name: '하수철', phone: '010-8888-1111', email: 'scha@onedns.co.kr', userType: '물류사', userCode: 'LG005', roleName: '최고 권한', joinedAt: '2025-09-01' },
+    { id: 'U-1', name: '이준호', phone: '010-1111-2222', email: 'sbkim@nexlink.co.kr', userType: '물류사', userCode: 'LG001', roleName: '최고 권한', joinedAt: '2025-10-15' },
+    { id: 'U-2', name: '정민석', phone: '010-3333-4444', email: 'hwpark@nexlink.co.kr', userType: '물류사', userCode: 'LG002', roleName: '최고 권한', joinedAt: '2025-09-02' },
+    { id: 'U-3', name: '파트너운영팀', phone: '010-5555-1111', email: 'dev@sellmate.co.kr', userType: '파트너', userCode: 'LG003', roleName: '최고 권한', joinedAt: '2025-05-29' },
+    { id: 'U-4', name: '서이안', phone: '010-7777-1111', email: 'ewyun@nexlink.co.kr', userType: '물류사', userCode: 'LG004', roleName: '최고 권한', joinedAt: '2025-09-24' },
+    { id: 'U-5', name: '강도윤', phone: '010-8888-1111', email: 'scha@nexlink.co.kr', userType: '물류사', userCode: 'LG005', roleName: '최고 권한', joinedAt: '2025-09-01' },
   ],
   shippers: [
-    { id: 'S-1', name: '원차일드', domain: 'onechild_onedns', manager: '장유진', email: 'owner@onechild.kr', phone: '010-1234-5678', integration: 'required', createdAt: '2025-12-01' },
-    { id: 'S-2', name: 'onedns_test', domain: 'onedns_test', manager: '이현지', email: 'test@onedns.co.kr', phone: '010-2234-5678', integration: 'completed', createdAt: '2025-11-20' },
+    { id: 'S-1', name: '블루트리', domain: 'onechild_nexlink', manager: '장유진', email: 'owner@onechild.kr', phone: '010-1234-5678', integration: 'required', createdAt: '2025-12-01' },
+    { id: 'S-2', name: 'nexlink_test', domain: 'nexlink_test', manager: '이현지', email: 'test@nexlink.co.kr', phone: '010-2234-5678', integration: 'completed', createdAt: '2025-11-20' },
     { id: 'S-3', name: '테스트', domain: 'api_test', manager: '박지훈', email: 'api@test.com', phone: '010-3234-5678', integration: 'required', createdAt: '2025-11-12' },
-    { id: 'S-4', name: '안나앤모드', domain: 'annanmode', manager: '정다은', email: 'ops@annanmode.com', phone: '010-4234-5678', integration: 'required', createdAt: '2025-10-28' },
+    { id: 'S-4', name: '라라앤코', domain: 'laranco', manager: '정다은', email: 'ops@laranco.com', phone: '010-4234-5678', integration: 'required', createdAt: '2025-10-28' },
   ],
   carriers: [
     { id: 'C-1', type: 'parcel', name: 'CJ대한통운', managerName: 'CJ 관리자', carrierCode: 'CJ', manager: '송민수', phone: '02-111-0001', note: '기본 택배사' },
