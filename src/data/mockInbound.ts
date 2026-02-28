@@ -1,10 +1,29 @@
+export type InboundOrderStatus =
+  | 'scheduled'
+  | 'waiting'
+  | 'inProgress'
+  | 'confirmed'
+  | 'putawayPlanned'
+  | 'putawayInProgress'
+  | 'putawayDone'
+  | 'canceled'
+  | 'inspecting'
+  | 'completed'
+  | 'defect'
+
 export interface InboundOrder {
   id: string
   vendor: string
   items: { sku: string; name: string; qty: number }[]
+  receivedDate?: string
   scheduledDate: string
-  status: 'scheduled' | 'inspecting' | 'completed' | 'defect'
+  instructedDate?: string
+  confirmedDate?: string
+  status: InboundOrderStatus
   actualQty?: number
+  transportType?: 'direct' | 'courier' | 'linehaul'
+  transportCost?: number
+  note?: string
 }
 
 export const mockInboundOrders: InboundOrder[] = [

@@ -5,6 +5,7 @@ interface InboundStore {
   orders: InboundOrder[]
   addOrder: (order: InboundOrder) => void
   updateStatus: (id: string, status: InboundOrder['status'], actualQty?: number) => void
+  patchOrder: (id: string, patch: Partial<InboundOrder>) => void
 }
 
 export const useInboundStore = create<InboundStore>((set) => ({
@@ -15,5 +16,9 @@ export const useInboundStore = create<InboundStore>((set) => ({
       orders: state.orders.map((o) =>
         o.id === id ? { ...o, status, ...(actualQty !== undefined ? { actualQty } : {}) } : o
       ),
+    })),
+  patchOrder: (id, patch) =>
+    set((state) => ({
+      orders: state.orders.map((o) => (o.id === id ? { ...o, ...patch } : o)),
     })),
 }))
