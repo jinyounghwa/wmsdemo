@@ -191,6 +191,11 @@ npm run preview  # 빌드 산출물 로컬 미리보기
 | `/dispatch` | 반출 오더 목록 |
 | `/dispatch/execution/barcode` | 반출 실행(바코드) |
 | `/dispatch/execution/search-file` | 반출 실행(검색/파일) |
+| `/return/b2c` | B2C 반품 오더 목록 |
+| `/return/b2c/execution` | B2C 반품 실행 |
+| `/return/b2b` | B2B 반품 오더 목록 |
+| `/return/b2b/instruction` | B2B 반품 입고 지시 |
+| `/return/b2b/execution` | B2B 반품 입고 실행 |
 | `/inventory-aging` | 재고 에이징 분석 |
 | `/items/new` | 품목 등록 |
 | `/stock-control` | 재고 통제 |

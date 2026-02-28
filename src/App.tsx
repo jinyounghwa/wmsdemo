@@ -58,6 +58,11 @@ import MovementManual from './pages/MovementManual'
 import DispatchOrderList from './pages/DispatchOrderList'
 import DispatchExecutionBarcode from './pages/DispatchExecutionBarcode'
 import DispatchExecutionSearchFile from './pages/DispatchExecutionSearchFile'
+import ReturnB2COrderList from './pages/ReturnB2COrderList'
+import ReturnB2CExecution from './pages/ReturnB2CExecution'
+import ReturnB2BOrderList from './pages/ReturnB2BOrderList'
+import ReturnB2BInstruction from './pages/ReturnB2BInstruction'
+import ReturnB2BExecution from './pages/ReturnB2BExecution'
 
 function App() {
   return (
@@ -120,6 +125,11 @@ function App() {
         <Route path="/dispatch" element={<DispatchOrderList />} />
         <Route path="/dispatch/execution/barcode" element={<DispatchExecutionBarcode />} />
         <Route path="/dispatch/execution/search-file" element={<DispatchExecutionSearchFile />} />
+        <Route path="/return/b2c" element={<ReturnB2COrderList />} />
+        <Route path="/return/b2c/execution" element={<ReturnB2CExecution />} />
+        <Route path="/return/b2b" element={<ReturnB2BOrderList />} />
+        <Route path="/return/b2b/instruction" element={<ReturnB2BInstruction />} />
+        <Route path="/return/b2b/execution" element={<ReturnB2BExecution />} />
         <Route path="/shipping" element={<ShippingWorkbench />} />
         <Route path="/shipping/instruction" element={<ShippingWorkbench />} />
         <Route path="/shipping/waybill" element={<ShippingWorkbench />} />

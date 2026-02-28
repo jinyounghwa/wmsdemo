@@ -21,6 +21,11 @@ const navItems = [
   { path: '/dispatch', label: '반출 오더 목록', icon: <Truck size={20} /> },
   { path: '/dispatch/execution/barcode', label: '반출 실행(바코드)', icon: <ScanLine size={20} /> },
   { path: '/dispatch/execution/search-file', label: '반출 실행(검색/파일)', icon: <ClipboardList size={20} /> },
+  { path: '/return/b2c', label: 'B2C 반품 오더 목록', icon: <RotateCcw size={20} /> },
+  { path: '/return/b2c/execution', label: 'B2C 반품 실행', icon: <ScanLine size={20} /> },
+  { path: '/return/b2b', label: 'B2B 반품 오더 목록', icon: <RotateCcw size={20} /> },
+  { path: '/return/b2b/instruction', label: 'B2B 반품 입고 지시', icon: <ListTodo size={20} /> },
+  { path: '/return/b2b/execution', label: 'B2B 반품 입고 실행', icon: <PackageCheck size={20} /> },
   { path: '/inventory-aging', label: '재고 에이징 분석', icon: <Clock size={20} /> },
   { path: '/items/new', label: '품목 등록', icon: <Plus size={20} /> },
   { path: '/stock-control', label: '재고 통제', icon: <SlidersHorizontal size={20} /> },
@@ -70,6 +75,8 @@ export default function Layout({ children }: { children: ReactNode }) {
     if (path === '/shipping' && location.pathname.startsWith('/shipping/')) return true
     if (path === '/movement' && location.pathname.startsWith('/movement/')) return true
     if (path === '/dispatch' && location.pathname.startsWith('/dispatch/')) return true
+    if (path === '/return/b2c' && location.pathname.startsWith('/return/b2c/')) return true
+    if (path === '/return/b2b' && location.pathname.startsWith('/return/b2b/')) return true
     return false
   }
 
