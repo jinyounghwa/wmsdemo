@@ -5,6 +5,8 @@ import { usePartnerStore } from '../store/partnerStore'
 import { useMovementOpsStore } from '../store/movementOpsStore'
 import { useLanguage } from '../i18n/LanguageContext'
 
+const PAGE_SIZES = [20, 50, 100]
+
 export default function MovementInstruction() {
   const { locale } = useLanguage()
   const orders = useMovementOpsStore((state) => state.orders)
@@ -18,6 +20,8 @@ export default function MovementInstruction() {
   const [sku, setSku] = useState('')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [message, setMessage] = useState('')
+  const [page, setPage] = useState(1)
+  const [rowsPerPage, setRowsPerPage] = useState(50)
 
   const targets = useMemo(
     () =>
@@ -30,6 +34,9 @@ export default function MovementInstruction() {
       }),
     [orders, createdDate, owner, orderId, sku],
   )
+
+  const totalPages = Math.max(1, Math.ceil(targets.length / rowsPerPage))
+  const paged = targets.slice((page - 1) * rowsPerPage, page * rowsPerPage)
 
   return (
     <Layout>
@@ -54,10 +61,16 @@ export default function MovementInstruction() {
           </select>
           <input value={orderId} onChange={(e) => setOrderId(e.target.value)} placeholder={locale === 'ko' ? '이동 오더 번호' : 'Movement order no.'} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
           <input value={sku} onChange={(e) => setSku(e.target.value)} placeholder={locale === 'ko' ? '품목 코드' : 'Item code'} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
-          <button onClick={() => { setOwner('all'); setOrderId(''); setSku(''); setSelected(new Set()); setMessage('') }} className="px-3 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm">
+          <button onClick={() => { setOwner('all'); setOrderId(''); setSku(''); setSelected(new Set()); setMessage(''); setPage(1) }} className="px-3 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm">
             {locale === 'ko' ? '검색 초기화' : 'Reset'}
           </button>
           <div className="flex gap-2">
+            <button
+              onClick={() => setMessage(locale === 'ko' ? `작업 지시서 출력: ${selected.size}건` : `Work order printed: ${selected.size}`)}
+              className="px-3 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm"
+            >
+              {locale === 'ko' ? '작업 지시서 출력' : 'Print Work Order'}
+            </button>
             <button
               onClick={() => {
                 const ids = Array.from(selected)
@@ -79,6 +92,12 @@ export default function MovementInstruction() {
               className="px-3 py-2.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm"
             >
               {locale === 'ko' ? '이동 지시' : 'Issue Instruction'}
+            </button>
+            <button
+              onClick={() => setMessage(locale === 'ko' ? '파일 등록(데모): CSV 일괄 이동 지시 요청' : 'File upload (demo): batch movement instruction request')}
+              className="px-3 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm"
+            >
+              {locale === 'ko' ? '파일로 등록' : 'Upload File'}
             </button>
           </div>
         </div>
@@ -103,7 +122,7 @@ export default function MovementInstruction() {
               </tr>
             </thead>
             <tbody>
-              {targets.map((order) => (
+              {paged.map((order) => (
                 <tr key={order.id} className="border-b border-slate-700/40 hover:bg-slate-700/30">
                   <td className="px-4 py-3">
                     <input
@@ -127,7 +146,41 @@ export default function MovementInstruction() {
               ))}
             </tbody>
           </table>
-          {targets.length === 0 && <div className="p-10 text-center text-slate-500">{locale === 'ko' ? '데이터가 없습니다.' : 'No data.'}</div>}
+          {paged.length === 0 && <div className="p-10 text-center text-slate-500">{locale === 'ko' ? '데이터가 없습니다.' : 'No data.'}</div>}
+        </div>
+
+        <div className="flex items-center justify-between text-sm">
+          <div className="text-slate-400">
+            {locale === 'ko' ? `페이지 ${page} / ${totalPages}` : `Page ${page} / ${totalPages}`}
+          </div>
+          <div className="flex items-center gap-2">
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value))
+                setPage(1)
+              }}
+              className="px-3 py-1.5 bg-slate-700 border border-slate-600 rounded-lg"
+            >
+              {PAGE_SIZES.map((size) => (
+                <option key={size} value={size}>
+                  {locale === 'ko' ? `${size}개씩 보기` : `${size} rows`}
+                </option>
+              ))}
+            </select>
+            <button disabled={page <= 1} onClick={() => setPage(1)} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">
+              {locale === 'ko' ? '처음' : 'First'}
+            </button>
+            <button disabled={page <= 1} onClick={() => setPage((prev) => Math.max(1, prev - 1))} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">
+              {locale === 'ko' ? '이전' : 'Prev'}
+            </button>
+            <button disabled={page >= totalPages} onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">
+              {locale === 'ko' ? '다음' : 'Next'}
+            </button>
+            <button disabled={page >= totalPages} onClick={() => setPage(totalPages)} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">
+              {locale === 'ko' ? '마지막' : 'Last'}
+            </button>
+          </div>
         </div>
       </div>
     </Layout>

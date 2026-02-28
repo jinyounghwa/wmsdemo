@@ -55,6 +55,9 @@ import MovementOrderList from './pages/MovementOrderList'
 import MovementInstruction from './pages/MovementInstruction'
 import MovementExecution from './pages/MovementExecution'
 import MovementManual from './pages/MovementManual'
+import DispatchOrderList from './pages/DispatchOrderList'
+import DispatchExecutionBarcode from './pages/DispatchExecutionBarcode'
+import DispatchExecutionSearchFile from './pages/DispatchExecutionSearchFile'
 
 function App() {
   return (
@@ -114,6 +117,9 @@ function App() {
         <Route path="/movement/instruction" element={<MovementInstruction />} />
         <Route path="/movement/execution" element={<MovementExecution />} />
         <Route path="/movement/manual" element={<MovementManual />} />
+        <Route path="/dispatch" element={<DispatchOrderList />} />
+        <Route path="/dispatch/execution/barcode" element={<DispatchExecutionBarcode />} />
+        <Route path="/dispatch/execution/search-file" element={<DispatchExecutionSearchFile />} />
         <Route path="/shipping" element={<ShippingWorkbench />} />
         <Route path="/shipping/instruction" element={<ShippingWorkbench />} />
         <Route path="/shipping/waybill" element={<ShippingWorkbench />} />

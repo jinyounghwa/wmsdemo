@@ -5,6 +5,8 @@ import { usePartnerStore } from '../store/partnerStore'
 import { useMovementOpsStore } from '../store/movementOpsStore'
 import { useLanguage } from '../i18n/LanguageContext'
 
+const PAGE_SIZES = [20, 50, 100]
+
 export default function MovementExecution() {
   const { locale } = useLanguage()
   const orders = useMovementOpsStore((state) => state.orders)
@@ -19,6 +21,10 @@ export default function MovementExecution() {
   const [tab, setTab] = useState<'waiting' | 'moving' | 'done'>('waiting')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [message, setMessage] = useState('')
+  const [extraFilters, setExtraFilters] = useState<Array<'fromLocation'>>([])
+  const [fromLocation, setFromLocation] = useState('')
+  const [page, setPage] = useState(1)
+  const [rowsPerPage, setRowsPerPage] = useState(50)
 
   const counts = {
     waiting: orders.filter((o) => o.status === 'waiting').length,
@@ -33,9 +39,12 @@ export default function MovementExecution() {
       const ownerOk = owner === 'all' || order.owner === owner
       const idOk = !orderId || order.id.toLowerCase().includes(orderId.toLowerCase())
       const skuOk = !sku || order.sku.toLowerCase().includes(sku.toLowerCase())
-      return tabOk && dateOk && ownerOk && idOk && skuOk
+      const fromLocOk = !fromLocation || order.fromLocation.toLowerCase().includes(fromLocation.toLowerCase())
+      return tabOk && dateOk && ownerOk && idOk && skuOk && fromLocOk
     })
-  }, [orders, tab, instructedDate, owner, orderId, sku])
+  }, [orders, tab, instructedDate, owner, orderId, sku, fromLocation])
+  const totalPages = Math.max(1, Math.ceil(targets.length / rowsPerPage))
+  const paged = targets.slice((page - 1) * rowsPerPage, page * rowsPerPage)
 
   return (
     <Layout>
@@ -60,7 +69,7 @@ export default function MovementExecution() {
           </select>
           <input value={orderId} onChange={(e) => setOrderId(e.target.value)} placeholder={locale === 'ko' ? '이동 오더 번호' : 'Movement order no.'} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
           <input value={sku} onChange={(e) => setSku(e.target.value)} placeholder={locale === 'ko' ? '품목 코드' : 'Item code'} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
-          <button onClick={() => { setOwner('all'); setOrderId(''); setSku(''); setSelected(new Set()) }} className="px-3 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm">
+          <button onClick={() => { setOwner('all'); setOrderId(''); setSku(''); setFromLocation(''); setExtraFilters([]); setSelected(new Set()); setPage(1) }} className="px-3 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm">
             {locale === 'ko' ? '검색 초기화' : 'Reset'}
           </button>
           <div className="flex gap-2">
@@ -95,15 +104,34 @@ export default function MovementExecution() {
             )}
           </div>
         </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              if (extraFilters.includes('fromLocation')) return
+              setExtraFilters((prev) => [...prev, 'fromLocation'])
+            }}
+            className="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm"
+          >
+            {locale === 'ko' ? '+ 필터추가' : '+ Add Filter'}
+          </button>
+          {extraFilters.includes('fromLocation') && (
+            <input
+              value={fromLocation}
+              onChange={(e) => setFromLocation(e.target.value)}
+              placeholder={locale === 'ko' ? '출발 로케이션명' : 'From location'}
+              className="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-sm"
+            />
+          )}
+        </div>
 
         <div className="flex gap-1 bg-[#1e293b] border border-slate-700/50 rounded-lg p-1 w-fit">
-          <button onClick={() => setTab('waiting')} className={`px-4 py-2 rounded text-sm ${tab === 'waiting' ? 'bg-blue-600' : 'text-slate-400'}`}>
+          <button onClick={() => { setTab('waiting'); setPage(1) }} className={`px-4 py-2 rounded text-sm ${tab === 'waiting' ? 'bg-blue-600' : 'text-slate-400'}`}>
             {locale === 'ko' ? '이동대기' : 'Waiting'} ({counts.waiting})
           </button>
-          <button onClick={() => setTab('moving')} className={`px-4 py-2 rounded text-sm ${tab === 'moving' ? 'bg-blue-600' : 'text-slate-400'}`}>
+          <button onClick={() => { setTab('moving'); setPage(1) }} className={`px-4 py-2 rounded text-sm ${tab === 'moving' ? 'bg-blue-600' : 'text-slate-400'}`}>
             {locale === 'ko' ? '이동중' : 'Moving'} ({counts.moving})
           </button>
-          <button onClick={() => setTab('done')} className={`px-4 py-2 rounded text-sm ${tab === 'done' ? 'bg-blue-600' : 'text-slate-400'}`}>
+          <button onClick={() => { setTab('done'); setPage(1) }} className={`px-4 py-2 rounded text-sm ${tab === 'done' ? 'bg-blue-600' : 'text-slate-400'}`}>
             {locale === 'ko' ? '이동완료' : 'Done'} ({counts.done})
           </button>
         </div>
@@ -128,7 +156,7 @@ export default function MovementExecution() {
               </tr>
             </thead>
             <tbody>
-              {targets.map((order) => (
+              {paged.map((order) => (
                 <tr key={order.id} className="border-b border-slate-700/40 hover:bg-slate-700/30">
                   <td className="px-4 py-3">
                     <input
@@ -153,7 +181,41 @@ export default function MovementExecution() {
               ))}
             </tbody>
           </table>
-          {targets.length === 0 && <div className="p-10 text-center text-slate-500">{locale === 'ko' ? '데이터가 없습니다.' : 'No data.'}</div>}
+          {paged.length === 0 && <div className="p-10 text-center text-slate-500">{locale === 'ko' ? '데이터가 없습니다.' : 'No data.'}</div>}
+        </div>
+
+        <div className="flex items-center justify-between text-sm">
+          <div className="text-slate-400">
+            {locale === 'ko' ? `페이지 ${page} / ${totalPages}` : `Page ${page} / ${totalPages}`}
+          </div>
+          <div className="flex items-center gap-2">
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value))
+                setPage(1)
+              }}
+              className="px-3 py-1.5 bg-slate-700 border border-slate-600 rounded-lg"
+            >
+              {PAGE_SIZES.map((size) => (
+                <option key={size} value={size}>
+                  {locale === 'ko' ? `${size}개씩 보기` : `${size} rows`}
+                </option>
+              ))}
+            </select>
+            <button disabled={page <= 1} onClick={() => setPage(1)} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">
+              {locale === 'ko' ? '처음' : 'First'}
+            </button>
+            <button disabled={page <= 1} onClick={() => setPage((prev) => Math.max(1, prev - 1))} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">
+              {locale === 'ko' ? '이전' : 'Prev'}
+            </button>
+            <button disabled={page >= totalPages} onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">
+              {locale === 'ko' ? '다음' : 'Next'}
+            </button>
+            <button disabled={page >= totalPages} onClick={() => setPage(totalPages)} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">
+              {locale === 'ko' ? '마지막' : 'Last'}
+            </button>
+          </div>
         </div>
       </div>
     </Layout>

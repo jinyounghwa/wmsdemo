@@ -18,6 +18,9 @@ const navItems = [
   { path: '/movement/instruction', label: '이동 지시', icon: <ListTodo size={20} /> },
   { path: '/movement/execution', label: '이동 실행', icon: <PackageCheck size={20} /> },
   { path: '/movement/manual', label: '임의 이동', icon: <ArrowLeftRight size={20} /> },
+  { path: '/dispatch', label: '반출 오더 목록', icon: <Truck size={20} /> },
+  { path: '/dispatch/execution/barcode', label: '반출 실행(바코드)', icon: <ScanLine size={20} /> },
+  { path: '/dispatch/execution/search-file', label: '반출 실행(검색/파일)', icon: <ClipboardList size={20} /> },
   { path: '/inventory-aging', label: '재고 에이징 분석', icon: <Clock size={20} /> },
   { path: '/items/new', label: '품목 등록', icon: <Plus size={20} /> },
   { path: '/stock-control', label: '재고 통제', icon: <SlidersHorizontal size={20} /> },
@@ -66,6 +69,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     if (path === '/shipping/post-process') return location.pathname === '/shipping/post-process'
     if (path === '/shipping' && location.pathname.startsWith('/shipping/')) return true
     if (path === '/movement' && location.pathname.startsWith('/movement/')) return true
+    if (path === '/dispatch' && location.pathname.startsWith('/dispatch/')) return true
     return false
   }
 
