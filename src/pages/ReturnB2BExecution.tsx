@@ -3,13 +3,14 @@ import Layout from '../components/Layout'
 import LanguageToggle from '../components/LanguageToggle'
 import { useLanguage } from '../i18n/LanguageContext'
 import { usePartnerStore } from '../store/partnerStore'
-import { B2BStatus, useReturnOpsStore } from '../store/returnOpsStore'
+import { useReturnOpsStore } from '../store/returnOpsStore'
 import { useInventoryStore } from '../store/inventoryStore'
 
 const PAGE_SIZES = [20, 50, 100]
 const today = new Date().toISOString().slice(0, 10)
+type ExecutionTabStatus = 'waiting' | 'receiving' | 'confirmed' | 'putaway-scheduled' | 'putaway' | 'putaway-done'
 
-const TABS: Array<{ key: B2BStatus; ko: string; en: string }> = [
+const TABS: Array<{ key: ExecutionTabStatus; ko: string; en: string }> = [
   { key: 'waiting', ko: '반품입고대기', en: 'Waiting' },
   { key: 'receiving', ko: '반품입고중', en: 'Receiving' },
   { key: 'confirmed', ko: '반품입고확정', en: 'Confirmed' },
@@ -40,13 +41,13 @@ export default function ReturnB2BExecution() {
   const [sku, setSku] = useState('')
   const [name, setName] = useState('')
   const [attr, setAttr] = useState('')
-  const [tab, setTab] = useState<B2BStatus>('waiting')
+  const [tab, setTab] = useState<ExecutionTabStatus>('waiting')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [message, setMessage] = useState('')
   const [page, setPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(50)
 
-  const counts = useMemo(() => {
+  const counts = useMemo<Record<ExecutionTabStatus, number>>(() => {
     return {
       waiting: orders.filter((row) => row.status === 'waiting').length,
       receiving: orders.filter((row) => row.status === 'receiving').length,
