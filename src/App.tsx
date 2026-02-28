@@ -45,6 +45,11 @@ import WarehouseFloorMap from './pages/WarehouseFloorMap'
 import UserManagement from './pages/UserManagement'
 import IntegrationMonitor from './pages/IntegrationMonitor'
 import SystemAuditLog from './pages/SystemAuditLog'
+import StockItemList from './pages/StockItemList'
+import StockLocationList from './pages/StockLocationList'
+import ItemBarcodePrint from './pages/ItemBarcodePrint'
+import ShippingWorkbench from './pages/ShippingWorkbench'
+import ShippingPostProcess from './pages/ShippingPostProcess'
 
 function App() {
   return (
@@ -96,6 +101,19 @@ function App() {
         <Route path="/user-management" element={<UserManagement />} />
         <Route path="/integration-monitor" element={<IntegrationMonitor />} />
         <Route path="/system-audit-log" element={<SystemAuditLog />} />
+        <Route path="/stock/items" element={<StockItemList />} />
+        <Route path="/stock/locations" element={<StockLocationList />} />
+        <Route path="/stock/barcode" element={<ItemBarcodePrint />} />
+        <Route path="/shipping" element={<ShippingWorkbench />} />
+        <Route path="/shipping/instruction" element={<ShippingWorkbench />} />
+        <Route path="/shipping/waybill" element={<ShippingWorkbench />} />
+        <Route path="/shipping/picking/order" element={<ShippingWorkbench />} />
+        <Route path="/shipping/picking/single" element={<ShippingWorkbench />} />
+        <Route path="/shipping/picking/batch" element={<ShippingWorkbench />} />
+        <Route path="/shipping/picking/total" element={<ShippingWorkbench />} />
+        <Route path="/shipping/inspection" element={<ShippingWorkbench />} />
+        <Route path="/shipping/integration" element={<ShippingWorkbench />} />
+        <Route path="/shipping/post-process" element={<ShippingPostProcess />} />
         <Route path="*" element={<Landing />} />
       </Routes>
     </BrowserRouter>

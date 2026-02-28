@@ -129,6 +129,64 @@ export const logicData: LogicItem[] = [
     ]
   },
   {
+    id: 'shipping-workbench',
+    title: { ko: '출고 워크벤치', en: 'Shipping Workbench' },
+    description: {
+      ko: '출고 오더 목록부터 출고 지시, 운송장, 피킹, 검수 발송, 출고 연동까지 Sellmate형 단계 탭을 통합 운영합니다.',
+      en: 'Operates Sellmate-style stage tabs from order list to instruction, waybill, picking, inspection, and integration.'
+    },
+    icon: <Truck className="w-6 h-6" />,
+    color: 'text-cyan-300',
+    bgColor: 'bg-cyan-500/10',
+    steps: [
+      {
+        name: { ko: '단계별 탭 축소', en: 'Progressive Tab Narrowing' },
+        desc: { ko: '현재 단계 이후 탭만 노출해 작업자가 다음 공정에 집중하도록 유도합니다.', en: 'Shows only current-and-after tabs so operators stay focused on downstream tasks.' }
+      },
+      {
+        name: { ko: '출고 지시 제약 검증', en: 'Instruction Constraint Validation' },
+        desc: { ko: '복수 출고 지시 시 동일 운송사 조건을 검사하고 위배 시 지시를 차단합니다.', en: 'Validates same-carrier rule for multi-instruction and blocks invalid instruction sets.' }
+      },
+      {
+        name: { ko: '피킹 방식 분기', en: 'Picking Mode Branching' },
+        desc: { ko: '오더/단건/배치/토탈 피킹별 컬럼과 출력 동작을 다르게 제공해 작업 특성을 반영합니다.', en: 'Applies different table/output behavior per order/single/batch/total picking mode.' }
+      },
+      {
+        name: { ko: '검수 발송 2패널', en: 'Two-Panel Inspection Dispatch' },
+        desc: { ko: '좌측 대상 오더 선택 + 우측 바코드 스캔 검수 구조로 발송 확정 품질을 통제합니다.', en: 'Controls dispatch quality via two-panel flow: target order selection and barcode-based inspection.' }
+      },
+      {
+        name: { ko: '출고 연동 실행', en: 'Outbound Integration Run' },
+        desc: { ko: '송장번호가 있는 출고건만 추려 외부 채널 연동 대상으로 일괄 전송합니다.', en: 'Filters shipped records with tracking numbers and bulk-sends them to external channels.' }
+      }
+    ]
+  },
+  {
+    id: 'shipping-post-process',
+    title: { ko: '송장 후처리', en: 'Shipping Post-Process' },
+    description: {
+      ko: '송장 삭제, 스캔 오류 체크, 떠 있는 송장 정리를 분리된 탭으로 처리해 마감 품질을 보장합니다.',
+      en: 'Ensures closeout quality with dedicated tabs for waybill deletion, scan-error check, and floating-waybill cleanup.'
+    },
+    icon: <Trash2 className="w-6 h-6" />,
+    color: 'text-rose-300',
+    bgColor: 'bg-rose-500/10',
+    steps: [
+      {
+        name: { ko: '송장 삭제', en: 'Waybill Deletion' },
+        desc: { ko: '실물 미발송 건을 선택해 송장 레코드를 삭제 상태로 전환합니다.', en: 'Selects non-shipped physical labels and moves records into deleted state.' }
+      },
+      {
+        name: { ko: '스캔 오류 보정', en: 'Scan Error Correction' },
+        desc: { ko: '택배사 스캔 기준으로 상태 불일치 건을 보정하고 메모를 남깁니다.', en: 'Corrects status mismatches against carrier scan data and stores correction notes.' }
+      },
+      {
+        name: { ko: '떠 있는 송장 정리', en: 'Floating Waybill Resolution' },
+        desc: { ko: '오류 보정 후에도 남은 미정리 송장을 resolved 상태로 마감합니다.', en: 'Closes unresolved floating waybills into resolved status after scan-error processing.' }
+      }
+    ]
+  },
+  {
     id: 'inventory',
     title: { ko: '재고 현황 (Inventory)', en: 'Inventory Status' },
     description: {
@@ -154,6 +212,81 @@ export const logicData: LogicItem[] = [
       {
         name: { ko: '이동 및 입출고 이력', en: 'Movement & Transaction History' },
         desc: { ko: '해당 품목에서 발생한 플러스(+), 마이너스(-) 증감 이력을 카드 뷰 및 테이블 뷰에서 확인', en: 'Shows plus/minus quantity changes in card and table views.' }
+      }
+    ]
+  },
+  {
+    id: 'stock-items',
+    title: { ko: '품목별 재고 목록', en: 'Item Stock List' },
+    description: {
+      ko: 'SKU 단위 통합 재고를 조회하고 상태별 수량(총재고/예약/가용)을 엑셀로 내보냅니다.',
+      en: 'Queries integrated stock by SKU and exports status quantities (on-hand/reserved/available).'
+    },
+    icon: <ClipboardList className="w-6 h-6" />,
+    color: 'text-indigo-300',
+    bgColor: 'bg-indigo-500/10',
+    steps: [
+      {
+        name: { ko: '검색 필터 적용', en: 'Search Filter Application' },
+        desc: { ko: '화주명, 품목코드, 품목명, 품목속성 조건으로 대상 SKU를 필터링합니다.', en: 'Filters target SKUs by owner, item code, name, and attribute conditions.' }
+      },
+      {
+        name: { ko: '상태 수량 집계', en: 'Status Quantity Aggregation' },
+        desc: { ko: 'SKU별 총재고/예약/가용 수량을 계산해 출고 가능성을 즉시 판단합니다.', en: 'Calculates on-hand, reserved, and available quantities per SKU for immediate shipability checks.' }
+      },
+      {
+        name: { ko: 'CSV 추출', en: 'CSV Export' },
+        desc: { ko: '현재 조회 결과를 CSV로 내려받아 보고서/외부 분석에 활용합니다.', en: 'Downloads current query results as CSV for reporting and external analytics.' }
+      }
+    ]
+  },
+  {
+    id: 'stock-locations',
+    title: { ko: '로케이션별 재고 목록', en: 'Location Stock List' },
+    description: {
+      ko: '로케이션 단위 재고 명세를 로트/유통기한/공급처와 함께 조회해 위치 추적성을 강화합니다.',
+      en: 'Provides location-level stock details with lot/expiry/vendor context to strengthen traceability.'
+    },
+    icon: <MapPinned className="w-6 h-6" />,
+    color: 'text-emerald-300',
+    bgColor: 'bg-emerald-500/10',
+    steps: [
+      {
+        name: { ko: '로케이션 기준 조회', en: 'Location-Oriented Query' },
+        desc: { ko: '로케이션명, 품목코드, 품목명 조건으로 위치별 재고행을 추출합니다.', en: 'Extracts location rows by location name, item code, and item name filters.' }
+      },
+      {
+        name: { ko: '로트/유통기한 확인', en: 'Lot/Expiry Verification' },
+        desc: { ko: '로트번호와 유통기한 정보를 함께 확인해 FIFO/FEFO 운영 판단을 지원합니다.', en: 'Reviews lot and expiry data to support FIFO/FEFO operation decisions.' }
+      },
+      {
+        name: { ko: '예약 포함 명세 내보내기', en: 'Export with Reservation Detail' },
+        desc: { ko: '총재고와 예약수량을 동시에 출력해 피킹/보충 의사결정 데이터로 사용합니다.', en: 'Exports on-hand and reserved quantities together for picking/replenishment decisions.' }
+      }
+    ]
+  },
+  {
+    id: 'stock-barcode',
+    title: { ko: '품목 바코드 출력', en: 'Item Barcode Print' },
+    description: {
+      ko: '화주 조건 기반으로 품목을 선택해 바코드 라벨을 출력하고 템플릿 관리로 연결합니다.',
+      en: 'Selects items by owner condition, prints barcode labels, and links to template management.'
+    },
+    icon: <ScanLine className="w-6 h-6" />,
+    color: 'text-blue-300',
+    bgColor: 'bg-blue-500/10',
+    steps: [
+      {
+        name: { ko: '화주 필수 조건 확인', en: 'Owner Required Condition' },
+        desc: { ko: '화주를 선택해야만 데이터가 조회되도록 강제해 대량 오조회 위험을 줄입니다.', en: 'Requires owner selection before query to reduce large-scale accidental retrieval.' }
+      },
+      {
+        name: { ko: '출력 대상 선택', en: 'Select Print Targets' },
+        desc: { ko: '개별 체크 또는 전체 선택으로 라벨 인쇄 대상을 확정합니다.', en: 'Finalizes label-print targets using row selection or select-all.' }
+      },
+      {
+        name: { ko: '라벨 출력/템플릿 관리', en: 'Label Print & Template Control' },
+        desc: { ko: '출력 실행 후 템플릿 관리 화면과 연계해 라벨 레이아웃을 관리합니다.', en: 'Executes print and links to template control for label layout management.' }
       }
     ]
   },
@@ -1080,7 +1213,12 @@ const pageOrder = [
   'warehouse-floor-map',
   'inbound',
   'outbound',
+  'shipping-workbench',
+  'shipping-post-process',
   'inventory',
+  'stock-items',
+  'stock-locations',
+  'stock-barcode',
   'i18n-bilingual',
   'fashion-core',
   'inventory-aging',

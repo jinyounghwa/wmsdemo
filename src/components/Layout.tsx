@@ -7,7 +7,12 @@ const navItems = [
   { path: '/warehouse-floor-map', label: '창고 레이아웃 맵', icon: <MapIcon size={20} /> },
   { path: '/inbound', label: '입고 관리', icon: <Package size={20} /> },
   { path: '/outbound', label: '출고 관리', icon: <Truck size={20} /> },
+  { path: '/shipping', label: '출고 워크벤치', icon: <Truck size={20} /> },
+  { path: '/shipping/post-process', label: '송장 후처리', icon: <FileChartColumnIncreasing size={20} /> },
   { path: '/inventory', label: '재고 현황', icon: <ClipboardList size={20} /> },
+  { path: '/stock/items', label: '품목별 재고 목록', icon: <ClipboardList size={20} /> },
+  { path: '/stock/locations', label: '로케이션별 재고 목록', icon: <MapPinned size={20} /> },
+  { path: '/stock/barcode', label: '품목 바코드 출력', icon: <ScanLine size={20} /> },
   { path: '/inventory-aging', label: '재고 에이징 분석', icon: <Clock size={20} /> },
   { path: '/items/new', label: '품목 등록', icon: <Plus size={20} /> },
   { path: '/stock-control', label: '재고 통제', icon: <SlidersHorizontal size={20} /> },
@@ -51,6 +56,12 @@ const navItems = [
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation()
+  const isActive = (path: string) => {
+    if (location.pathname === path) return true
+    if (path === '/shipping/post-process') return location.pathname === '/shipping/post-process'
+    if (path === '/shipping' && location.pathname.startsWith('/shipping/')) return true
+    return false
+  }
 
   return (
     <div className="flex h-screen bg-[#0f172a] text-white">
@@ -64,7 +75,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               key={item.path}
               to={item.path}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors ${
-                location.pathname === item.path
+                isActive(item.path)
                   ? 'bg-blue-600 text-white'
                   : 'text-slate-300 hover:bg-slate-700'
               }`}

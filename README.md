@@ -177,7 +177,12 @@ npm run preview  # 빌드 산출물 로컬 미리보기
 | `/warehouse-floor-map` | 창고 레이아웃 맵 |
 | `/inbound` | 입고 관리 |
 | `/outbound` | 출고 관리 |
+| `/shipping` | 출고 워크벤치 (출고 오더~출고 연동 탭) |
+| `/shipping/post-process` | 송장 후처리 (송장 삭제/스캔 오류/떠있는 송장) |
 | `/inventory` | 재고 현황 |
+| `/stock/items` | 품목별 재고 목록 |
+| `/stock/locations` | 로케이션별 재고 목록 |
+| `/stock/barcode` | 품목 바코드 출력 |
 | `/inventory-aging` | 재고 에이징 분석 |
 | `/items/new` | 품목 등록 |
 | `/stock-control` | 재고 통제 |
