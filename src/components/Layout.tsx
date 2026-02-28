@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ReactNode } from 'react'
 import { LayoutDashboard, Package, Truck, ClipboardList, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History, Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Activity, Map as MapIcon, Users, Scale, Network, Pickaxe, Recycle, ShieldAlert, BarChart3, Clock, BookText } from 'lucide-react'
+import { useAdjustmentStore } from '../store/adjustmentStore'
 
 const navItems = [
   { path: '/dashboard', label: '대시보드', icon: <LayoutDashboard size={20} /> },
@@ -26,6 +27,23 @@ const navItems = [
   { path: '/return/b2b', label: 'B2B 반품 오더 목록', icon: <RotateCcw size={20} /> },
   { path: '/return/b2b/instruction', label: 'B2B 반품 입고 지시', icon: <ListTodo size={20} /> },
   { path: '/return/b2b/execution', label: 'B2B 반품 입고 실행', icon: <PackageCheck size={20} /> },
+  { path: '/adjustment', label: '조정 오더 목록', icon: <SlidersHorizontal size={20} /> },
+  { path: '/adjustment/request', label: '조정 요청', icon: <ListTodo size={20} /> },
+  { path: '/adjustment/request-list', label: '조정 승인', icon: <ShieldCheck size={20} /> },
+  { path: '/adjustment/inbound', label: '조정 입고', icon: <PackageCheck size={20} /> },
+  { path: '/warehouse/location', label: '로케이션 관리', icon: <MapPinned size={20} /> },
+  { path: '/warehouse/accounts', label: '출고처 관리', icon: <Truck size={20} /> },
+  { path: '/warehouse/shop', label: '판매처 관리', icon: <ShoppingCart size={20} /> },
+  { path: '/warehouse/supplier', label: '공급처 관리', icon: <Container size={20} /> },
+  { path: '/warehouse/product', label: '품목 관리', icon: <ClipboardList size={20} /> },
+  { path: '/warehouse/assignment', label: '할당 조건 관리', icon: <Pickaxe size={20} /> },
+  { path: '/warehouse/total-picking', label: '토탈 피킹 설정', icon: <PackageCheck size={20} /> },
+  { path: '/warehouse/template', label: '출력 템플릿 관리', icon: <FileChartColumnIncreasing size={20} /> },
+  { path: '/logistics/warehouse', label: '창고 관리', icon: <Building2 size={20} /> },
+  { path: '/logistics/user', label: '사용자 관리', icon: <Users size={20} /> },
+  { path: '/logistics/shipper', label: '화주 관리', icon: <Database size={20} /> },
+  { path: '/logistics/carrier', label: '운송사 관리', icon: <Send size={20} /> },
+  { path: '/logistics/role', label: '통합 권한 관리', icon: <ShieldAlert size={20} /> },
   { path: '/inventory-aging', label: '재고 에이징 분석', icon: <Clock size={20} /> },
   { path: '/items/new', label: '품목 등록', icon: <Plus size={20} /> },
   { path: '/stock-control', label: '재고 통제', icon: <SlidersHorizontal size={20} /> },
@@ -69,6 +87,7 @@ const navItems = [
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation()
+  const pendingAdjustments = useAdjustmentStore((state) => state.pendingCount())
   const isActive = (path: string) => {
     if (location.pathname === path) return true
     if (path === '/shipping/post-process') return location.pathname === '/shipping/post-process'
@@ -98,7 +117,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               }`}
             >
               <span>{item.icon}</span>
-              {item.label}
+              {item.path === '/adjustment/request-list' ? `${item.label} (${pendingAdjustments})` : item.label}
             </Link>
           ))}
         </nav>

@@ -196,6 +196,23 @@ npm run preview  # 빌드 산출물 로컬 미리보기
 | `/return/b2b` | B2B 반품 오더 목록 |
 | `/return/b2b/instruction` | B2B 반품 입고 지시 |
 | `/return/b2b/execution` | B2B 반품 입고 실행 |
+| `/adjustment` | 조정 오더 목록 |
+| `/adjustment/request` | 조정 요청 |
+| `/adjustment/request-list` | 조정 승인 |
+| `/adjustment/inbound` | 조정 입고 |
+| `/warehouse/location` | 로케이션 관리 |
+| `/warehouse/accounts` | 출고처 관리 |
+| `/warehouse/shop` | 판매처 관리 |
+| `/warehouse/supplier` | 공급처 관리 |
+| `/warehouse/product` | 품목 관리 |
+| `/warehouse/assignment` | 할당 조건 관리 |
+| `/warehouse/total-picking` | 토탈 피킹 설정 |
+| `/warehouse/template` | 출력 템플릿 관리 |
+| `/logistics/warehouse` | 물류사-창고 관리 |
+| `/logistics/user` | 물류사-사용자 관리 |
+| `/logistics/shipper` | 물류사-화주 관리 |
+| `/logistics/carrier` | 물류사-운송사 관리 |
+| `/logistics/role` | 물류사-통합 권한 관리 |
 | `/inventory-aging` | 재고 에이징 분석 |
 | `/items/new` | 품목 등록 |
 | `/stock-control` | 재고 통제 |

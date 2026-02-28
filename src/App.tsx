@@ -63,6 +63,9 @@ import ReturnB2CExecution from './pages/ReturnB2CExecution'
 import ReturnB2BOrderList from './pages/ReturnB2BOrderList'
 import ReturnB2BInstruction from './pages/ReturnB2BInstruction'
 import ReturnB2BExecution from './pages/ReturnB2BExecution'
+import LogisticsSettings from './pages/LogisticsSettings'
+import AdjustmentModule from './pages/AdjustmentModule'
+import WarehouseSettings from './pages/WarehouseSettings'
 
 function App() {
   return (
@@ -130,6 +133,23 @@ function App() {
         <Route path="/return/b2b" element={<ReturnB2BOrderList />} />
         <Route path="/return/b2b/instruction" element={<ReturnB2BInstruction />} />
         <Route path="/return/b2b/execution" element={<ReturnB2BExecution />} />
+        <Route path="/logistics/warehouse" element={<LogisticsSettings />} />
+        <Route path="/logistics/user" element={<LogisticsSettings />} />
+        <Route path="/logistics/shipper" element={<LogisticsSettings />} />
+        <Route path="/logistics/carrier" element={<LogisticsSettings />} />
+        <Route path="/logistics/role" element={<LogisticsSettings />} />
+        <Route path="/adjustment" element={<AdjustmentModule />} />
+        <Route path="/adjustment/request" element={<AdjustmentModule />} />
+        <Route path="/adjustment/request-list" element={<AdjustmentModule />} />
+        <Route path="/adjustment/inbound" element={<AdjustmentModule />} />
+        <Route path="/warehouse/location" element={<WarehouseSettings />} />
+        <Route path="/warehouse/accounts" element={<WarehouseSettings />} />
+        <Route path="/warehouse/shop" element={<WarehouseSettings />} />
+        <Route path="/warehouse/supplier" element={<WarehouseSettings />} />
+        <Route path="/warehouse/product" element={<WarehouseSettings />} />
+        <Route path="/warehouse/assignment" element={<WarehouseSettings />} />
+        <Route path="/warehouse/total-picking" element={<WarehouseSettings />} />
+        <Route path="/warehouse/template" element={<WarehouseSettings />} />
         <Route path="/shipping" element={<ShippingWorkbench />} />
         <Route path="/shipping/instruction" element={<ShippingWorkbench />} />
         <Route path="/shipping/waybill" element={<ShippingWorkbench />} />
