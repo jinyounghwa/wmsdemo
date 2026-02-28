@@ -183,6 +183,11 @@ npm run preview  # 빌드 산출물 로컬 미리보기
 | `/stock/items` | 품목별 재고 목록 |
 | `/stock/locations` | 로케이션별 재고 목록 |
 | `/stock/barcode` | 품목 바코드 출력 |
+| `/stock/history` | 입출고 및 이동 내역 |
+| `/movement` | 이동 오더 목록 |
+| `/movement/instruction` | 이동 지시 |
+| `/movement/execution` | 이동 실행 |
+| `/movement/manual` | 임의 이동 |
 | `/inventory-aging` | 재고 에이징 분석 |
 | `/items/new` | 품목 등록 |
 | `/stock-control` | 재고 통제 |

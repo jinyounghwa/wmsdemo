@@ -291,6 +291,115 @@ export const logicData: LogicItem[] = [
     ]
   },
   {
+    id: 'stock-history',
+    title: { ko: '입출고 및 이동 내역', en: 'Inbound/Outbound & Movement History' },
+    description: {
+      ko: '입고·출고·이동·조정 등 재고 트랜잭션을 단일 화면에서 통합 조회하고 감사용으로 추출합니다.',
+      en: 'Queries inbound, outbound, movement, and adjustment transactions in one page and exports audit-ready data.'
+    },
+    icon: <History className="w-6 h-6" />,
+    color: 'text-slate-200',
+    bgColor: 'bg-slate-500/10',
+    steps: [
+      {
+        name: { ko: '기간/유형 필터', en: 'Date/Type Filtering' },
+        desc: { ko: '오늘/7일/30일/사용자 지정 기간과 트랜잭션 구분 필터로 이력을 세분 조회합니다.', en: 'Uses today/7d/30d/custom period and transaction-type filters for precise history queries.' }
+      },
+      {
+        name: { ko: '오더 추적 필터', en: 'Order Trace Filters' },
+        desc: { ko: '추가 필터(오더번호/송장번호)로 특정 작업 건의 이력만 추적합니다.', en: 'Applies extra filters (order/tracking ids) to trace specific operation records.' }
+      },
+      {
+        name: { ko: '감사 추출', en: 'Audit Export' },
+        desc: { ko: '조회 결과를 CSV로 다운로드해 외부 감사/분석 자료로 활용합니다.', en: 'Downloads filtered rows as CSV for external audit and analysis.' }
+      }
+    ]
+  },
+  {
+    id: 'movement-orders',
+    title: { ko: '이동 오더 목록', en: 'Movement Order List' },
+    description: {
+      ko: '이동 오더의 생성·지시·완료 일자와 상태를 기준으로 이동 작업 현황을 모니터링합니다.',
+      en: 'Monitors movement order status using created, instructed, and completed dates.'
+    },
+    icon: <Move3D className="w-6 h-6" />,
+    color: 'text-blue-300',
+    bgColor: 'bg-blue-500/10',
+    steps: [
+      {
+        name: { ko: '상태 기반 조회', en: 'Status-based Query' },
+        desc: { ko: '이동예정/대기/이동중/완료/취소 상태로 작업 진행률을 확인합니다.', en: 'Checks operation progress via planned, waiting, moving, done, and canceled states.' }
+      },
+      {
+        name: { ko: '일자별 모니터링', en: 'Date-wise Monitoring' },
+        desc: { ko: '생성일/지시일/완료일 기준으로 특정 기간의 이동 실적을 조회합니다.', en: 'Queries movement performance by created, instructed, and completed dates.' }
+      }
+    ]
+  },
+  {
+    id: 'movement-instruction',
+    title: { ko: '이동 지시', en: 'Movement Instruction' },
+    description: {
+      ko: '이동 오더를 선택해 이동 예정 등록과 이동 지시 발행을 수행합니다.',
+      en: 'Selects movement orders and executes planned-registration and instruction issuance.'
+    },
+    icon: <ListTodo className="w-6 h-6" />,
+    color: 'text-indigo-300',
+    bgColor: 'bg-indigo-500/10',
+    steps: [
+      {
+        name: { ko: '대상 선택', en: 'Target Selection' },
+        desc: { ko: '체크박스로 이동 오더를 선택하고 선택 건수를 관리합니다.', en: 'Selects movement orders via checkboxes and manages selected counts.' }
+      },
+      {
+        name: { ko: '지시 발행', en: 'Instruction Issuance' },
+        desc: { ko: '이동 지시 버튼으로 상태를 이동대기로 전환해 실행 단계로 전달합니다.', en: 'Moves selected orders into waiting state and forwards them to execution stage.' }
+      }
+    ]
+  },
+  {
+    id: 'movement-execution',
+    title: { ko: '이동 실행', en: 'Movement Execution' },
+    description: {
+      ko: '이동대기/이동중/이동완료 탭으로 진행 상태를 관리하고 이동 확정을 처리합니다.',
+      en: 'Controls progress through waiting/moving/done tabs and confirms movement completion.'
+    },
+    icon: <PackageCheck className="w-6 h-6" />,
+    color: 'text-emerald-300',
+    bgColor: 'bg-emerald-500/10',
+    steps: [
+      {
+        name: { ko: '상태 탭 전환', en: 'Status Tab Transition' },
+        desc: { ko: '이동대기, 이동중, 이동완료 탭에서 단계별 작업 건수를 확인합니다.', en: 'Verifies workload counts by stage in waiting, moving, and done tabs.' }
+      },
+      {
+        name: { ko: '이동 확정', en: 'Movement Confirmation' },
+        desc: { ko: '확정 처리 시 대상 SKU의 로케이션을 갱신하고 이동 트랜잭션을 기록합니다.', en: 'On confirmation, updates SKU location and writes movement transactions.' }
+      }
+    ]
+  },
+  {
+    id: 'movement-manual',
+    title: { ko: '임의 이동', en: 'Manual Movement' },
+    description: {
+      ko: '화주 필수 선택 조건으로 오더 없이 즉시 재고 이동을 실행합니다.',
+      en: 'Executes immediate stock moves without orders, with owner selection as required condition.'
+    },
+    icon: <ArrowLeftRight className="w-6 h-6" />,
+    color: 'text-cyan-300',
+    bgColor: 'bg-cyan-500/10',
+    steps: [
+      {
+        name: { ko: '화주 필수 조회', en: 'Owner-required Query' },
+        desc: { ko: '화주를 선택해야만 로케이션별 재고 목록을 조회할 수 있습니다.', en: 'Enables location stock query only after selecting an owner.' }
+      },
+      {
+        name: { ko: '즉시 이동 처리', en: 'Immediate Move Execution' },
+        desc: { ko: '선택 재고를 목적 로케이션으로 즉시 이동하고 완료 이력을 생성합니다.', en: 'Moves selected stock to target location instantly and creates completion history.' }
+      }
+    ]
+  },
+  {
     id: 'item-registration',
     title: { ko: '품목 등록 (Items)', en: 'Item Registration' },
     description: {
@@ -1215,6 +1324,11 @@ const pageOrder = [
   'outbound',
   'shipping-workbench',
   'shipping-post-process',
+  'stock-history',
+  'movement-orders',
+  'movement-instruction',
+  'movement-execution',
+  'movement-manual',
   'inventory',
   'stock-items',
   'stock-locations',

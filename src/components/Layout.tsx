@@ -13,6 +13,11 @@ const navItems = [
   { path: '/stock/items', label: '품목별 재고 목록', icon: <ClipboardList size={20} /> },
   { path: '/stock/locations', label: '로케이션별 재고 목록', icon: <MapPinned size={20} /> },
   { path: '/stock/barcode', label: '품목 바코드 출력', icon: <ScanLine size={20} /> },
+  { path: '/stock/history', label: '입출고 및 이동 내역', icon: <History size={20} /> },
+  { path: '/movement', label: '이동 오더 목록', icon: <Move3D size={20} /> },
+  { path: '/movement/instruction', label: '이동 지시', icon: <ListTodo size={20} /> },
+  { path: '/movement/execution', label: '이동 실행', icon: <PackageCheck size={20} /> },
+  { path: '/movement/manual', label: '임의 이동', icon: <ArrowLeftRight size={20} /> },
   { path: '/inventory-aging', label: '재고 에이징 분석', icon: <Clock size={20} /> },
   { path: '/items/new', label: '품목 등록', icon: <Plus size={20} /> },
   { path: '/stock-control', label: '재고 통제', icon: <SlidersHorizontal size={20} /> },
@@ -60,6 +65,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     if (location.pathname === path) return true
     if (path === '/shipping/post-process') return location.pathname === '/shipping/post-process'
     if (path === '/shipping' && location.pathname.startsWith('/shipping/')) return true
+    if (path === '/movement' && location.pathname.startsWith('/movement/')) return true
     return false
   }
 

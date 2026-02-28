@@ -50,6 +50,11 @@ import StockLocationList from './pages/StockLocationList'
 import ItemBarcodePrint from './pages/ItemBarcodePrint'
 import ShippingWorkbench from './pages/ShippingWorkbench'
 import ShippingPostProcess from './pages/ShippingPostProcess'
+import StockHistory from './pages/StockHistory'
+import MovementOrderList from './pages/MovementOrderList'
+import MovementInstruction from './pages/MovementInstruction'
+import MovementExecution from './pages/MovementExecution'
+import MovementManual from './pages/MovementManual'
 
 function App() {
   return (
@@ -104,6 +109,11 @@ function App() {
         <Route path="/stock/items" element={<StockItemList />} />
         <Route path="/stock/locations" element={<StockLocationList />} />
         <Route path="/stock/barcode" element={<ItemBarcodePrint />} />
+        <Route path="/stock/history" element={<StockHistory />} />
+        <Route path="/movement" element={<MovementOrderList />} />
+        <Route path="/movement/instruction" element={<MovementInstruction />} />
+        <Route path="/movement/execution" element={<MovementExecution />} />
+        <Route path="/movement/manual" element={<MovementManual />} />
         <Route path="/shipping" element={<ShippingWorkbench />} />
         <Route path="/shipping/instruction" element={<ShippingWorkbench />} />
         <Route path="/shipping/waybill" element={<ShippingWorkbench />} />
