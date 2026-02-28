@@ -27,7 +27,7 @@ const statusLabel: Record<PostStatus, { ko: string; en: string }> = {
   normal: { ko: '정상', en: 'Normal' },
   deleted: { ko: '삭제', en: 'Deleted' },
   'scan-fixed': { ko: '오류보정', en: 'Scan-fixed' },
-  floating: { ko: '떠있는 송장', en: 'Floating waybill' },
+  floating: { ko: '남은 송장', en: 'Floating waybill' },
   resolved: { ko: '해결', en: 'Resolved' },
 }
 
@@ -75,14 +75,14 @@ export default function ShippingPostProcess() {
         </div>
         <p className="text-sm text-slate-400">
           {locale === 'ko'
-            ? '회의정리 문서 반영: 송장 삭제, 스캔 오류 체크, 떠 있는 송장 최종 정리.'
+            ? '회의정리 문서 반영: 송장 삭제, 스캔 오류 체크, 남은 송장 최종 정리.'
             : 'Post-processing for waybill deletion, scan error correction, and floating-waybill cleanup.'}
         </p>
 
         <div className="flex gap-1 bg-[#1e293b] border border-slate-700/50 rounded-lg p-1 w-fit">
           <button onClick={() => setTab('delete')} className={`px-4 py-2 rounded text-sm ${tab === 'delete' ? 'bg-blue-600' : 'text-slate-400'}`}>{locale === 'ko' ? '송장 삭제' : 'Delete Waybill'}</button>
           <button onClick={() => setTab('scan-error')} className={`px-4 py-2 rounded text-sm ${tab === 'scan-error' ? 'bg-blue-600' : 'text-slate-400'}`}>{locale === 'ko' ? '스캔 오류 체크' : 'Scan Error Check'}</button>
-          <button onClick={() => setTab('floating')} className={`px-4 py-2 rounded text-sm ${tab === 'floating' ? 'bg-blue-600' : 'text-slate-400'}`}>{locale === 'ko' ? '떠 있는 송장' : 'Floating Waybills'}</button>
+          <button onClick={() => setTab('floating')} className={`px-4 py-2 rounded text-sm ${tab === 'floating' ? 'bg-blue-600' : 'text-slate-400'}`}>{locale === 'ko' ? '남은 송장' : 'Floating Waybills'}</button>
         </div>
 
         <div className="flex items-center gap-2 justify-end">
@@ -117,7 +117,7 @@ export default function ShippingPostProcess() {
               onClick={() => {
                 if (selected.size === 0) return
                 setRecords((prev) => prev.map((record) => (selected.has(record.orderId) ? { ...record, status: 'resolved', note: '최종 정리 완료' } : record)))
-                setMessage(locale === 'ko' ? `떠 있는 송장 정리: ${selected.size}건` : `Floating waybills resolved: ${selected.size}`)
+                setMessage(locale === 'ko' ? `남은 송장 정리: ${selected.size}건` : `Floating waybills resolved: ${selected.size}`)
                 setSelected(new Set())
               }}
               className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-sm"

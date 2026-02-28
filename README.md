@@ -178,7 +178,7 @@ npm run preview  # 빌드 산출물 로컬 미리보기
 | `/inbound` | 입고 관리 |
 | `/outbound` | 출고 관리 |
 | `/shipping` | 출고 워크벤치 (출고 오더~출고 연동 탭) |
-| `/shipping/post-process` | 송장 후처리 (송장 삭제/스캔 오류/떠있는 송장) |
+| `/shipping/post-process` | 송장 후처리 (송장 삭제/스캔 오류/남은 송장) |
 | `/inventory` | 재고 현황 |
 | `/stock/items` | 품목별 재고 목록 |
 | `/stock/locations` | 로케이션별 재고 목록 |

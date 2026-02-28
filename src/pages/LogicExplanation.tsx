@@ -165,7 +165,7 @@ export const logicData: LogicItem[] = [
     id: 'shipping-post-process',
     title: { ko: '송장 후처리', en: 'Shipping Post-Process' },
     description: {
-      ko: '송장 삭제, 스캔 오류 체크, 떠 있는 송장 정리를 분리된 탭으로 처리해 마감 품질을 보장합니다.',
+      ko: '송장 삭제, 스캔 오류 체크, 남은 송장 정리를 분리된 탭으로 처리해 마감 품질을 보장합니다.',
       en: 'Ensures closeout quality with dedicated tabs for waybill deletion, scan-error check, and floating-waybill cleanup.'
     },
     icon: <Trash2 className="w-6 h-6" />,
@@ -181,7 +181,7 @@ export const logicData: LogicItem[] = [
         desc: { ko: '택배사 스캔 기준으로 상태 불일치 건을 보정하고 메모를 남깁니다.', en: 'Corrects status mismatches against carrier scan data and stores correction notes.' }
       },
       {
-        name: { ko: '떠 있는 송장 정리', en: 'Floating Waybill Resolution' },
+        name: { ko: '남은 송장 정리', en: 'Floating Waybill Resolution' },
         desc: { ko: '오류 보정 후에도 남은 미정리 송장을 resolved 상태로 마감합니다.', en: 'Closes unresolved floating waybills into resolved status after scan-error processing.' }
       }
     ]
