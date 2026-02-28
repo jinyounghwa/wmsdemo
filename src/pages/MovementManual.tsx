@@ -4,8 +4,10 @@ import LanguageToggle from '../components/LanguageToggle'
 import { useInventoryStore } from '../store/inventoryStore'
 import { usePartnerStore } from '../store/partnerStore'
 import { useMovementOpsStore } from '../store/movementOpsStore'
+import { useLanguage } from '../i18n/LanguageContext'
 
 export default function MovementManual() {
+  const { locale } = useLanguage()
   const items = useInventoryStore((state) => state.items)
   const getReservedQty = useInventoryStore((state) => state.getReservedQty)
   const customers = usePartnerStore((state) => state.customers)
@@ -53,32 +55,44 @@ export default function MovementManual() {
       <div className="p-6 space-y-5">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">임의 이동</h1>
+            <h1 className="text-2xl font-bold">{locale === 'ko' ? '임의 이동' : 'Manual Movement'}</h1>
             <LanguageToggle />
           </div>
-          <p className="text-sm text-slate-400 mt-1">오더 없이 즉시 재고를 이동 처리합니다. (`/movement/manual`)</p>
+          <p className="text-sm text-slate-400 mt-1">
+            {locale === 'ko'
+              ? '오더 없이 즉시 재고를 이동 처리합니다. (`/movement/manual`)'
+              : 'Move stock immediately without creating an order. (`/movement/manual`)'}
+          </p>
         </div>
 
         <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-4 grid grid-cols-1 lg:grid-cols-6 gap-2">
           <select value={owner} onChange={(e) => setOwner(e.target.value)} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm">
-            <option value="">화주명 선택(필수)</option>
+            <option value="">{locale === 'ko' ? '화주명 선택(필수)' : 'Select owner (required)'}</option>
             {customers.map((c) => <option key={c}>{c}</option>)}
           </select>
-          <input value={locationKeyword} onChange={(e) => setLocationKeyword(e.target.value)} placeholder="로케이션명" className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
-          <input value={skuKeyword} onChange={(e) => setSkuKeyword(e.target.value)} placeholder="품목코드" className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
-          <input value={nameKeyword} onChange={(e) => setNameKeyword(e.target.value)} placeholder="품목명" className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
-          <input value={attrKeyword} onChange={(e) => setAttrKeyword(e.target.value)} placeholder="품목 속성" className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
-          <button onClick={() => { setLocationKeyword(''); setSkuKeyword(''); setNameKeyword(''); setAttrKeyword(''); setSelected(new Set()); setMessage('') }} className="px-3 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm">검색 초기화</button>
+          <input value={locationKeyword} onChange={(e) => setLocationKeyword(e.target.value)} placeholder={locale === 'ko' ? '로케이션명' : 'Location'} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
+          <input value={skuKeyword} onChange={(e) => setSkuKeyword(e.target.value)} placeholder={locale === 'ko' ? '품목코드' : 'Item code'} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
+          <input value={nameKeyword} onChange={(e) => setNameKeyword(e.target.value)} placeholder={locale === 'ko' ? '품목명' : 'Item name'} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
+          <input value={attrKeyword} onChange={(e) => setAttrKeyword(e.target.value)} placeholder={locale === 'ko' ? '품목 속성' : 'Item attributes'} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
+          <button onClick={() => { setLocationKeyword(''); setSkuKeyword(''); setNameKeyword(''); setAttrKeyword(''); setSelected(new Set()); setMessage('') }} className="px-3 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm">
+            {locale === 'ko' ? '검색 초기화' : 'Reset'}
+          </button>
         </div>
 
         {!owner ? (
-          <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-12 text-center text-slate-400">데이터를 불러오기 위해, 검색 조건 설정이 필요합니다. (화주명 필수)</div>
+          <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-12 text-center text-slate-400">
+            {locale === 'ko'
+              ? '데이터를 불러오기 위해, 검색 조건 설정이 필요합니다. (화주명 필수)'
+              : 'Search conditions are required to load data. (Owner required)'}
+          </div>
         ) : (
           <>
             <div className="flex items-center justify-between gap-2">
-              <div className="text-sm text-slate-300">총 {rows.length}건 / 선택 {selected.size}건</div>
+              <div className="text-sm text-slate-300">
+                {locale === 'ko' ? `총 ${rows.length}건 / 선택 ${selected.size}건` : `Total ${rows.length} / Selected ${selected.size}`}
+              </div>
               <div className="flex items-center gap-2">
-                <input value={targetLocation} onChange={(e) => setTargetLocation(e.target.value.toUpperCase())} placeholder="목적 로케이션" className="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-sm" />
+                <input value={targetLocation} onChange={(e) => setTargetLocation(e.target.value.toUpperCase())} placeholder={locale === 'ko' ? '목적 로케이션' : 'Destination location'} className="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-sm" />
                 <button
                   onClick={() => {
                     const ids = Array.from(selected)
@@ -93,17 +107,19 @@ export default function MovementManual() {
                         qty: Math.max(1, Math.min(5, row.available || 1)),
                         fromLocation: row.location,
                         toLocation: targetLocation,
-                        note: '임의 이동 실행',
+                        note: locale === 'ko' ? '임의 이동 실행' : 'Manual move executed',
                       })
                     })
-                    setMessage(`임의 이동 처리 완료: ${ids.length}건`)
+                    setMessage(locale === 'ko' ? `임의 이동 처리 완료: ${ids.length}건` : `Manual movement completed: ${ids.length}`)
                     setSelected(new Set())
                   }}
                   className="px-3 py-2 bg-blue-600 hover:bg-blue-500 rounded text-sm"
                 >
-                  임의 이동
+                  {locale === 'ko' ? '임의 이동' : 'Move'}
                 </button>
-                <button onClick={() => setMessage('파일 등록(데모): CSV 일괄 임의 이동 요청')} className="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm">파일로 등록</button>
+                <button onClick={() => setMessage(locale === 'ko' ? '파일 등록(데모): CSV 일괄 임의 이동 요청' : 'File upload (demo): batch CSV movement request')} className="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm">
+                  {locale === 'ko' ? '파일로 등록' : 'Upload File'}
+                </button>
               </div>
             </div>
 
@@ -113,19 +129,19 @@ export default function MovementManual() {
               <table className="w-full text-sm min-w-[1350px]">
                 <thead>
                   <tr className="border-b border-slate-700 text-slate-400">
-                    <th className="text-left px-4 py-3 font-medium">선택</th>
-                    <th className="text-left px-4 py-3 font-medium">화주명</th>
-                    <th className="text-left px-4 py-3 font-medium">품목 코드</th>
-                    <th className="text-left px-4 py-3 font-medium">품목명/품목 속성</th>
-                    <th className="text-left px-4 py-3 font-medium">공급처</th>
-                    <th className="text-left px-4 py-3 font-medium">로케이션</th>
-                    <th className="text-left px-4 py-3 font-medium">유통기한</th>
-                    <th className="text-left px-4 py-3 font-medium">로트번호</th>
-                    <th className="text-right px-4 py-3 font-medium">가용</th>
-                    <th className="text-right px-4 py-3 font-medium">예약</th>
-                    <th className="text-right px-4 py-3 font-medium">검수대기</th>
-                    <th className="text-right px-4 py-3 font-medium">불량</th>
-                    <th className="text-right px-4 py-3 font-medium">특수</th>
+                    <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '선택' : 'Select'}</th>
+                    <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '화주명' : 'Owner'}</th>
+                    <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '품목 코드' : 'Item code'}</th>
+                    <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '품목명/품목 속성' : 'Item/Attributes'}</th>
+                    <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '공급처' : 'Vendor'}</th>
+                    <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '로케이션' : 'Location'}</th>
+                    <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '유통기한' : 'Expiry'}</th>
+                    <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '로트번호' : 'Lot'}</th>
+                    <th className="text-right px-4 py-3 font-medium">{locale === 'ko' ? '가용' : 'Available'}</th>
+                    <th className="text-right px-4 py-3 font-medium">{locale === 'ko' ? '예약' : 'Reserved'}</th>
+                    <th className="text-right px-4 py-3 font-medium">{locale === 'ko' ? '검수대기' : 'Inspection'}</th>
+                    <th className="text-right px-4 py-3 font-medium">{locale === 'ko' ? '불량' : 'Defect'}</th>
+                    <th className="text-right px-4 py-3 font-medium">{locale === 'ko' ? '특수' : 'Special'}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -159,7 +175,7 @@ export default function MovementManual() {
                   ))}
                 </tbody>
               </table>
-              {rows.length === 0 && <div className="p-10 text-center text-slate-500">데이터가 없습니다.</div>}
+              {rows.length === 0 && <div className="p-10 text-center text-slate-500">{locale === 'ko' ? '데이터가 없습니다.' : 'No data.'}</div>}
             </div>
           </>
         )}

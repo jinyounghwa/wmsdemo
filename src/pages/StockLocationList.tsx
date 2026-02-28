@@ -3,6 +3,7 @@ import Layout from '../components/Layout'
 import LanguageToggle from '../components/LanguageToggle'
 import { useInventoryStore } from '../store/inventoryStore'
 import { usePartnerStore } from '../store/partnerStore'
+import { useLanguage } from '../i18n/LanguageContext'
 
 const PAGE_SIZES = [20, 50, 100]
 
@@ -33,6 +34,7 @@ const downloadCsv = (rows: string[][], filename: string) => {
 }
 
 export default function StockLocationList() {
+  const { locale } = useLanguage()
   const items = useInventoryStore((state) => state.items)
   const getReservedQty = useInventoryStore((state) => state.getReservedQty)
   const vendors = usePartnerStore((state) => state.vendors)
@@ -85,10 +87,14 @@ export default function StockLocationList() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold">로케이션별 재고 목록</h1>
+              <h1 className="text-2xl font-bold">{locale === 'ko' ? '로케이션별 재고 목록' : 'Location Stock List'}</h1>
               <LanguageToggle />
             </div>
-            <p className="text-sm text-slate-400 mt-1">위치 단위 재고 명세 조회 · 문서 경로 `/stock/locations` 반영</p>
+            <p className="text-sm text-slate-400 mt-1">
+              {locale === 'ko'
+                ? '위치 단위 재고 명세 조회 · 문서 경로 `/stock/locations` 반영'
+                : 'Location-based stock details (`/stock/locations`).'}
+            </p>
           </div>
           <button
             onClick={() =>
@@ -114,7 +120,7 @@ export default function StockLocationList() {
             }
             className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm"
           >
-            엑셀 다운로드(CSV)
+            {locale === 'ko' ? '엑셀 다운로드(CSV)' : 'Download CSV'}
           </button>
         </div>
 
@@ -124,9 +130,9 @@ export default function StockLocationList() {
               <option key={customer} value={customer}>{customer}</option>
             ))}
           </select>
-          <input value={locationKeyword} onChange={(e) => { setLocationKeyword(e.target.value); setPage(1) }} placeholder="로케이션명" className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
-          <input value={skuKeyword} onChange={(e) => { setSkuKeyword(e.target.value); setPage(1) }} placeholder="품목코드" className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
-          <input value={nameKeyword} onChange={(e) => { setNameKeyword(e.target.value); setPage(1) }} placeholder="품목명" className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
+          <input value={locationKeyword} onChange={(e) => { setLocationKeyword(e.target.value); setPage(1) }} placeholder={locale === 'ko' ? '로케이션명' : 'Location'} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
+          <input value={skuKeyword} onChange={(e) => { setSkuKeyword(e.target.value); setPage(1) }} placeholder={locale === 'ko' ? '품목코드' : 'Item code'} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
+          <input value={nameKeyword} onChange={(e) => { setNameKeyword(e.target.value); setPage(1) }} placeholder={locale === 'ko' ? '품목명' : 'Item name'} className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-sm" />
           <button
             onClick={() => {
               setLocationKeyword('')
@@ -136,27 +142,31 @@ export default function StockLocationList() {
             }}
             className="px-3 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm"
           >
-            검색 초기화
+            {locale === 'ko' ? '검색 초기화' : 'Reset'}
           </button>
         </div>
 
-        <div className="text-sm text-slate-300">총 {filtered.length.toLocaleString()}건 · 총 재고 {totalQty.toLocaleString()} EA</div>
+        <div className="text-sm text-slate-300">
+          {locale === 'ko'
+            ? `총 ${filtered.length.toLocaleString()}건 · 총 재고 ${totalQty.toLocaleString()} EA`
+            : `Total ${filtered.length.toLocaleString()} · Qty ${totalQty.toLocaleString()} EA`}
+        </div>
 
         <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl overflow-x-auto">
           <table className="w-full text-sm min-w-[980px]">
             <thead>
               <tr className="border-b border-slate-700 text-slate-400">
-                <th className="text-left px-4 py-3 font-medium">화주명</th>
+                <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '화주명' : 'Owner'}</th>
                 <th className="text-left px-4 py-3 font-medium">Zone</th>
-                <th className="text-left px-4 py-3 font-medium">로케이션</th>
-                <th className="text-left px-4 py-3 font-medium">상태</th>
-                <th className="text-left px-4 py-3 font-medium">품목코드</th>
-                <th className="text-left px-4 py-3 font-medium">품목명</th>
-                <th className="text-left px-4 py-3 font-medium">공급처</th>
-                <th className="text-left px-4 py-3 font-medium">유통기한</th>
-                <th className="text-left px-4 py-3 font-medium">로트번호</th>
-                <th className="text-right px-4 py-3 font-medium">총 재고</th>
-                <th className="text-right px-4 py-3 font-medium">예약</th>
+                <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '로케이션' : 'Location'}</th>
+                <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '상태' : 'Status'}</th>
+                <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '품목코드' : 'Item code'}</th>
+                <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '품목명' : 'Item name'}</th>
+                <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '공급처' : 'Vendor'}</th>
+                <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '유통기한' : 'Expiry'}</th>
+                <th className="text-left px-4 py-3 font-medium">{locale === 'ko' ? '로트번호' : 'Lot'}</th>
+                <th className="text-right px-4 py-3 font-medium">{locale === 'ko' ? '총 재고' : 'Total qty'}</th>
+                <th className="text-right px-4 py-3 font-medium">{locale === 'ko' ? '예약' : 'Reserved'}</th>
               </tr>
             </thead>
             <tbody>
@@ -165,7 +175,9 @@ export default function StockLocationList() {
                   <td className="px-4 py-3">{row.owner}</td>
                   <td className="px-4 py-3">{row.zone}</td>
                   <td className="px-4 py-3 font-mono text-blue-300">{row.location}</td>
-                  <td className="px-4 py-3">{row.status}</td>
+                  <td className="px-4 py-3">
+                    {locale === 'ko' ? row.status : ({ 가용: 'Available', '검수 대기': 'Inspection', 불량: 'Defect' }[row.status] ?? row.status)}
+                  </td>
                   <td className="px-4 py-3 font-mono">{row.sku}</td>
                   <td className="px-4 py-3">{row.name}</td>
                   <td className="px-4 py-3">{row.vendor}</td>
@@ -177,11 +189,11 @@ export default function StockLocationList() {
               ))}
             </tbody>
           </table>
-          {paged.length === 0 && <div className="p-10 text-center text-slate-500">검색 결과가 없습니다.</div>}
+          {paged.length === 0 && <div className="p-10 text-center text-slate-500">{locale === 'ko' ? '검색 결과가 없습니다.' : 'No results.'}</div>}
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <div className="text-slate-400">페이지 {page} / {totalPages}</div>
+          <div className="text-slate-400">{locale === 'ko' ? `페이지 ${page} / ${totalPages}` : `Page ${page} / ${totalPages}`}</div>
           <div className="flex items-center gap-2">
             <select
               value={rowsPerPage}
@@ -193,11 +205,15 @@ export default function StockLocationList() {
               className="px-3 py-1.5 bg-slate-700 border border-slate-600 rounded-lg"
             >
               {PAGE_SIZES.map((size) => (
-                <option key={size} value={size}>{size}개씩 보기</option>
+                <option key={size} value={size}>{locale === 'ko' ? `${size}개씩 보기` : `${size} rows`}</option>
               ))}
             </select>
-            <button disabled={page <= 1} onClick={() => setPage((prev) => Math.max(1, prev - 1))} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">이전</button>
-            <button disabled={page >= totalPages} onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">다음</button>
+            <button disabled={page <= 1} onClick={() => setPage((prev) => Math.max(1, prev - 1))} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">
+              {locale === 'ko' ? '이전' : 'Prev'}
+            </button>
+            <button disabled={page >= totalPages} onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))} className="px-3 py-1.5 bg-slate-700 rounded disabled:opacity-40">
+              {locale === 'ko' ? '다음' : 'Next'}
+            </button>
           </div>
         </div>
       </div>
