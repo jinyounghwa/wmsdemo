@@ -34,9 +34,9 @@ export default function ShippingPostProcess() {
   const orders = useOutboundStore((state) => state.orders)
 
   const initial = useMemo<PostRecord[]>(() => {
-    const base = orders
+    const base: PostRecord[] = orders
       .filter((order) => order.trackingNumber)
-      .map((order, index) => ({
+      .map((order, index): PostRecord => ({
         orderId: order.id,
         customer: order.customer,
         trackingNo: order.trackingNumber ?? '',
