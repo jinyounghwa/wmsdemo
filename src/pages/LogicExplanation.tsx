@@ -400,6 +400,531 @@ export const logicData: LogicItem[] = [
     ]
   },
   {
+    id: 'dispatch-orders',
+    title: { ko: '반출 오더 목록', en: 'Dispatch Order List' },
+    description: {
+      ko: '반출 오더 상태와 주요 식별값을 조회해 반출 실행 대상과 진행 현황을 관리합니다.',
+      en: 'Tracks dispatch orders by status and identifiers to control execution targets and progress.'
+    },
+    icon: <Truck className="w-6 h-6" />,
+    color: 'text-cyan-300',
+    bgColor: 'bg-cyan-500/10',
+    steps: [
+      {
+        name: { ko: '오더 검색', en: 'Order Query' },
+        desc: { ko: '기간/상태/오더번호 조건으로 반출 대상 오더를 추출합니다.', en: 'Filters dispatch orders by date, status, and order number.' }
+      },
+      {
+        name: { ko: '실행 대상 선별', en: 'Execution Target Selection' },
+        desc: { ko: '대기 건을 확인해 바코드 또는 검색/파일 실행 화면으로 전달합니다.', en: 'Selects pending rows and routes them to barcode or search/file execution.' }
+      }
+    ]
+  },
+  {
+    id: 'dispatch-execution-barcode',
+    title: { ko: '반출 실행(바코드)', en: 'Dispatch Execution (Barcode)' },
+    description: {
+      ko: '바코드 스캔 중심으로 반출 확정 수량을 처리해 오출고를 방지합니다.',
+      en: 'Processes dispatch confirmation by barcode scan to prevent wrong shipment.'
+    },
+    icon: <ScanLine className="w-6 h-6" />,
+    color: 'text-emerald-300',
+    bgColor: 'bg-emerald-500/10',
+    steps: [
+      {
+        name: { ko: '스캔 검증', en: 'Scan Validation' },
+        desc: { ko: '오더 기준 SKU와 스캔값 일치 여부를 확인합니다.', en: 'Validates scanned values against order-level SKU targets.' }
+      },
+      {
+        name: { ko: '반출 확정', en: 'Dispatch Confirmation' },
+        desc: { ko: '확정 처리 시 반출 상태를 갱신하고 재고 변동 이력을 기록합니다.', en: 'On confirmation, updates dispatch state and writes stock movement history.' }
+      }
+    ]
+  },
+  {
+    id: 'dispatch-execution-search-file',
+    title: { ko: '반출 실행(검색/파일)', en: 'Dispatch Execution (Search/File)' },
+    description: {
+      ko: '검색 조건 또는 파일 업로드 방식으로 반출 실행 데이터를 일괄 처리합니다.',
+      en: 'Executes dispatch in batch using search conditions or file upload.'
+    },
+    icon: <ClipboardList className="w-6 h-6" />,
+    color: 'text-blue-300',
+    bgColor: 'bg-blue-500/10',
+    steps: [
+      {
+        name: { ko: '검색/파일 입력', en: 'Search/File Input' },
+        desc: { ko: '키워드 검색 또는 파일 업로드로 반출 대상을 불러옵니다.', en: 'Loads dispatch targets via keyword search or file upload.' }
+      },
+      {
+        name: { ko: '일괄 반출 처리', en: 'Bulk Dispatch Processing' },
+        desc: { ko: '검증된 건을 일괄 반출 확정해 처리 속도를 높입니다.', en: 'Confirms validated rows in bulk for faster processing.' }
+      }
+    ]
+  },
+  {
+    id: 'return-b2c-orders',
+    title: { ko: 'B2C 반품 오더 목록', en: 'B2C Return Order List' },
+    description: {
+      ko: 'B2C 반품 접수 건을 상태별로 조회하고 실행 대상 반품을 선별합니다.',
+      en: 'Queries B2C return intakes by status and selects executable returns.'
+    },
+    icon: <RotateCcw className="w-6 h-6" />,
+    color: 'text-rose-300',
+    bgColor: 'bg-rose-500/10',
+    steps: [
+      {
+        name: { ko: '반품 접수 조회', en: 'Return Intake Query' },
+        desc: { ko: '주문/송장/기간 조건으로 반품 오더를 필터링합니다.', en: 'Filters return orders by order, tracking, and date conditions.' }
+      },
+      {
+        name: { ko: '실행 단계 전달', en: 'Execution Hand-off' },
+        desc: { ko: '검수 대상 오더를 B2C 반품 실행 단계로 넘깁니다.', en: 'Sends inspectable orders to the B2C return execution stage.' }
+      }
+    ]
+  },
+  {
+    id: 'return-b2c-execution',
+    title: { ko: 'B2C 반품 실행', en: 'B2C Return Execution' },
+    description: {
+      ko: '스캔/검수 기반으로 반품 상태를 확정하고 재고 복귀 또는 격리 처리를 수행합니다.',
+      en: 'Finalizes B2C returns through scan/inspection and routes to restock or quarantine.'
+    },
+    icon: <PackageCheck className="w-6 h-6" />,
+    color: 'text-pink-300',
+    bgColor: 'bg-pink-500/10',
+    steps: [
+      {
+        name: { ko: '상태 판정', en: 'Condition Grading' },
+        desc: { ko: 'A/B/C/폐기 등급으로 반품 품질을 판정합니다.', en: 'Grades return quality into A/B/C/disposal classes.' }
+      },
+      {
+        name: { ko: '재고 반영', en: 'Inventory Reflection' },
+        desc: { ko: '등급에 따라 가용 복귀, 수선 대기, 폐기 경로로 분기합니다.', en: 'Routes by grade to available restock, rework queue, or disposal flow.' }
+      }
+    ]
+  },
+  {
+    id: 'return-b2b-orders',
+    title: { ko: 'B2B 반품 오더 목록', en: 'B2B Return Order List' },
+    description: {
+      ko: 'B2B 채널 반품 오더를 조회하고 입고 지시 대상 건을 관리합니다.',
+      en: 'Queries B2B return orders and manages targets for inbound instruction.'
+    },
+    icon: <RotateCcw className="w-6 h-6" />,
+    color: 'text-orange-300',
+    bgColor: 'bg-orange-500/10',
+    steps: [
+      {
+        name: { ko: '오더 식별', en: 'Order Identification' },
+        desc: { ko: '거래처/오더번호/상태 기준으로 반품 건을 선별합니다.', en: 'Selects return orders by account, order number, and state.' }
+      },
+      {
+        name: { ko: '입고 지시 준비', en: 'Inbound Instruction Prep' },
+        desc: { ko: '선택 건을 B2B 반품 입고 지시 단계로 이관합니다.', en: 'Transfers selected rows into B2B inbound instruction.' }
+      }
+    ]
+  },
+  {
+    id: 'return-b2b-instruction',
+    title: { ko: 'B2B 반품 입고 지시', en: 'B2B Return Inbound Instruction' },
+    description: {
+      ko: 'B2B 반품 오더를 기준으로 입고 작업 지시를 생성하고 우선순위를 할당합니다.',
+      en: 'Creates inbound work instructions from B2B return orders and assigns priorities.'
+    },
+    icon: <ListTodo className="w-6 h-6" />,
+    color: 'text-violet-300',
+    bgColor: 'bg-violet-500/10',
+    steps: [
+      {
+        name: { ko: '지시 대상 선택', en: 'Instruction Target Selection' },
+        desc: { ko: '반품 오더를 선택해 입고 지시 대상 목록을 구성합니다.', en: 'Selects return orders to build inbound instruction targets.' }
+      },
+      {
+        name: { ko: '지시 발행', en: 'Instruction Issue' },
+        desc: { ko: '입고 지시를 발행해 실행 페이지로 전달합니다.', en: 'Issues inbound instructions and forwards them to execution.' }
+      }
+    ]
+  },
+  {
+    id: 'return-b2b-execution',
+    title: { ko: 'B2B 반품 입고 실행', en: 'B2B Return Inbound Execution' },
+    description: {
+      ko: '지시된 B2B 반품을 입고 실행하고 상태·수량·처리 메모를 확정합니다.',
+      en: 'Executes instructed B2B returns and confirms status, quantities, and handling notes.'
+    },
+    icon: <PackageCheck className="w-6 h-6" />,
+    color: 'text-lime-300',
+    bgColor: 'bg-lime-500/10',
+    steps: [
+      {
+        name: { ko: '반품 검수 실행', en: 'Return Inspection Execution' },
+        desc: { ko: '지시 건의 입고 수량과 상태를 검증합니다.', en: 'Verifies inbound quantity and condition for instructed returns.' }
+      },
+      {
+        name: { ko: '입고 확정', en: 'Inbound Confirmation' },
+        desc: { ko: '확정 완료 시 반품 오더 상태를 완료로 전환합니다.', en: 'Completing confirmation moves B2B return orders to done status.' }
+      }
+    ]
+  },
+  {
+    id: 'adjustment-list',
+    title: { ko: '조정 오더 목록', en: 'Adjustment Order List' },
+    description: {
+      ko: '조정 요청일/확정일/상태 기준으로 전체 조정 오더 이력을 조회합니다.',
+      en: 'Lists full adjustment order history by request/confirmation date and status.'
+    },
+    icon: <SlidersHorizontal className="w-6 h-6" />,
+    color: 'text-amber-300',
+    bgColor: 'bg-amber-500/10',
+    steps: [
+      {
+        name: { ko: '필터 조회', en: 'Filtered Query' },
+        desc: { ko: '기간, 화주, 품목, 상태 조건으로 조정 이력을 검색합니다.', en: 'Searches adjustment history by period, owner, item, and status.' }
+      },
+      {
+        name: { ko: '이력 추출', en: 'History Export' },
+        desc: { ko: '조회 결과를 CSV로 내보내 감사 및 공유 자료로 사용합니다.', en: 'Exports current results as CSV for audit and sharing.' }
+      }
+    ]
+  },
+  {
+    id: 'adjustment-request',
+    title: { ko: '조정 요청', en: 'Adjustment Request' },
+    description: {
+      ko: '화주 선택 후 조정 가능 재고를 조회해 조정 요청을 생성합니다.',
+      en: 'After owner selection, queries adjustable stock and creates adjustment requests.'
+    },
+    icon: <ListTodo className="w-6 h-6" />,
+    color: 'text-sky-300',
+    bgColor: 'bg-sky-500/10',
+    steps: [
+      {
+        name: { ko: '화주 필수 선택', en: 'Owner Required Selection' },
+        desc: { ko: '화주를 선택해야 조회가 열려 타 화주 재고 오조정을 방지합니다.', en: 'Requires owner selection before query to prevent cross-owner misadjustment.' }
+      },
+      {
+        name: { ko: '조정 요청 생성', en: 'Create Adjustment Request' },
+        desc: { ko: '선택 품목의 조정 수량을 입력해 조정예정 상태 오더를 생성합니다.', en: 'Inputs quantities for selected rows and creates scheduled adjustment orders.' }
+      }
+    ]
+  },
+  {
+    id: 'adjustment-approval',
+    title: { ko: '조정 승인', en: 'Adjustment Approval' },
+    description: {
+      ko: '접수된 조정 요청을 승인 또는 반려해 재고 변경 권한을 통제합니다.',
+      en: 'Approves or rejects incoming adjustment requests to control stock-change authority.'
+    },
+    icon: <ShieldCheck className="w-6 h-6" />,
+    color: 'text-emerald-300',
+    bgColor: 'bg-emerald-500/10',
+    steps: [
+      {
+        name: { ko: '요청 검토', en: 'Request Review' },
+        desc: { ko: '요청자/품목/사유를 검토해 승인 적합성을 확인합니다.', en: 'Reviews requester, item, and reason to validate approval fit.' }
+      },
+      {
+        name: { ko: '승인/반려 처리', en: 'Approve/Reject' },
+        desc: { ko: '승인 시 조정확정으로 전환하고, 반려 시 진행을 차단합니다.', en: 'Approving moves rows to confirmed; rejecting blocks execution.' }
+      }
+    ]
+  },
+  {
+    id: 'adjustment-inbound',
+    title: { ko: '조정 입고', en: 'Adjustment Inbound' },
+    description: {
+      ko: '승인된 조정 오더를 개별 또는 파일 업로드로 재고에 반영합니다.',
+      en: 'Reflects approved adjustment orders to stock by row or file upload.'
+    },
+    icon: <PackageCheck className="w-6 h-6" />,
+    color: 'text-teal-300',
+    bgColor: 'bg-teal-500/10',
+    steps: [
+      {
+        name: { ko: '승인 건 조회', en: 'Approved Rows Query' },
+        desc: { ko: '화주 선택 후 조정확정 건만 조회해 실행 범위를 제한합니다.', en: 'After owner selection, queries only confirmed rows for controlled execution.' }
+      },
+      {
+        name: { ko: '입고 반영', en: 'Inbound Reflection' },
+        desc: { ko: '조정 입고 또는 파일 등록으로 재고 수량을 최종 반영합니다.', en: 'Finalizes quantity updates via manual inbound or file registration.' }
+      }
+    ]
+  },
+  {
+    id: 'warehouse-location',
+    title: { ko: '창고 설정 - 로케이션 관리', en: 'Warehouse Settings - Location Management' },
+    description: {
+      ko: 'Zone/로케이션 구조와 재고 상태 기준으로 창고 위치 마스터를 관리합니다.',
+      en: 'Manages warehouse location masters by zone/location structure and stock states.'
+    },
+    icon: <MapPinned className="w-6 h-6" />,
+    color: 'text-indigo-300',
+    bgColor: 'bg-indigo-500/10',
+    steps: [
+      {
+        name: { ko: '위치 필터 조회', en: 'Location Filter Query' },
+        desc: { ko: 'Zone, 로케이션명, 재고 상태로 위치 목록을 조회합니다.', en: 'Queries location rows by zone, location name, and stock state.' }
+      },
+      {
+        name: { ko: '등록/대량등록', en: 'Register/Bulk Register' },
+        desc: { ko: '개별 등록과 파일 등록으로 로케이션 마스터를 확장합니다.', en: 'Expands location masters by single and file-based registration.' }
+      }
+    ]
+  },
+  {
+    id: 'warehouse-accounts',
+    title: { ko: '창고 설정 - 출고처 관리', en: 'Warehouse Settings - Accounts Management' },
+    description: {
+      ko: '출고 거래처 정보를 코드/분류 단위로 등록하고 조회합니다.',
+      en: 'Registers and queries outbound account partners by code and category.'
+    },
+    icon: <Truck className="w-6 h-6" />,
+    color: 'text-cyan-300',
+    bgColor: 'bg-cyan-500/10',
+    steps: [
+      {
+        name: { ko: '출고처 검색', en: 'Account Search' },
+        desc: { ko: '화주, 코드, 출고처명 조건으로 거래처를 조회합니다.', en: 'Searches accounts by owner, code, and account name.' }
+      },
+      {
+        name: { ko: '등록 처리', en: 'Registration' },
+        desc: { ko: '개별 등록 또는 파일 등록으로 출고처를 생성합니다.', en: 'Creates accounts via single registration or bulk file upload.' }
+      }
+    ]
+  },
+  {
+    id: 'warehouse-shop',
+    title: { ko: '창고 설정 - 판매처 관리', en: 'Warehouse Settings - Shop Management' },
+    description: {
+      ko: '판매 채널별 판매처 정보를 조회하고 활성 상태를 확인합니다.',
+      en: 'Lists sales-channel shops and checks active/inactive states.'
+    },
+    icon: <ShoppingCart className="w-6 h-6" />,
+    color: 'text-sky-300',
+    bgColor: 'bg-sky-500/10',
+    steps: [
+      {
+        name: { ko: '화주 기준 조회', en: 'Owner-based Query' },
+        desc: { ko: '화주 조건으로 판매처 리스트를 필터링합니다.', en: 'Filters shop list by owner condition.' }
+      },
+      {
+        name: { ko: '채널 상태 확인', en: 'Channel State Check' },
+        desc: { ko: '판매처 분류와 사이트 사용 상태를 점검합니다.', en: 'Reviews shop category and site activation state.' }
+      }
+    ]
+  },
+  {
+    id: 'warehouse-supplier',
+    title: { ko: '창고 설정 - 공급처 관리', en: 'Warehouse Settings - Supplier Management' },
+    description: {
+      ko: '공급처 마스터를 조회하고 라벨 출력/템플릿 연동을 관리합니다.',
+      en: 'Manages supplier master rows with print and template linkage.'
+    },
+    icon: <Container className="w-6 h-6" />,
+    color: 'text-emerald-300',
+    bgColor: 'bg-emerald-500/10',
+    steps: [
+      {
+        name: { ko: '공급처 필터 조회', en: 'Supplier Filter Query' },
+        desc: { ko: '화주와 공급처명으로 대상 공급처를 조회합니다.', en: 'Queries suppliers by owner and supplier name.' }
+      },
+      {
+        name: { ko: '출력 설정 연동', en: 'Print Setting Linkage' },
+        desc: { ko: '출력/템플릿 관리 액션으로 문서 출력을 제어합니다.', en: 'Controls document output through print/template actions.' }
+      }
+    ]
+  },
+  {
+    id: 'warehouse-product',
+    title: { ko: '창고 설정 - 품목 관리', en: 'Warehouse Settings - Product Management' },
+    description: {
+      ko: '화주별 품목 코드/속성/단가를 포함한 품목 마스터를 조회합니다.',
+      en: 'Provides product masters by owner including item code, attributes, and pricing.'
+    },
+    icon: <Database className="w-6 h-6" />,
+    color: 'text-violet-300',
+    bgColor: 'bg-violet-500/10',
+    steps: [
+      {
+        name: { ko: '품목 검색', en: 'Product Search' },
+        desc: { ko: '화주, 품목코드, 품목명, 속성 조건으로 필터링합니다.', en: 'Filters products by owner, code, name, and attribute.' }
+      },
+      {
+        name: { ko: '마스터 검증', en: 'Master Validation' },
+        desc: { ko: '공급처/분류/단가를 확인해 기준정보 정합성을 점검합니다.', en: 'Validates supplier, category, and pricing for master-data integrity.' }
+      }
+    ]
+  },
+  {
+    id: 'warehouse-assignment',
+    title: { ko: '창고 설정 - 할당 조건 관리', en: 'Warehouse Settings - Assignment Management' },
+    description: {
+      ko: '할당 조건과 전략 탭을 분리해 적용 우선순위와 알고리즘을 관리합니다.',
+      en: 'Separates rule and strategy tabs to manage assignment priority and algorithms.'
+    },
+    icon: <SlidersHorizontal className="w-6 h-6" />,
+    color: 'text-orange-300',
+    bgColor: 'bg-orange-500/10',
+    steps: [
+      {
+        name: { ko: '할당 조건 설정', en: 'Rule Configuration' },
+        desc: { ko: '우선순위/대상 화주/판매처 범위를 지정해 적용 대상을 정의합니다.', en: 'Defines target scope by priority, owner, and shop coverage.' }
+      },
+      {
+        name: { ko: '할당 전략 관리', en: 'Strategy Management' },
+        desc: { ko: '전략명과 설명을 등록해 할당 로직을 버전처럼 관리합니다.', en: 'Registers strategy names and descriptions to manage assignment logic versions.' }
+      }
+    ]
+  },
+  {
+    id: 'warehouse-total-picking',
+    title: { ko: '창고 설정 - 토탈 피킹 설정', en: 'Warehouse Settings - Total Picking Settings' },
+    description: {
+      ko: '스테이션 수, 처리 송장 수, 잔여 블록, 기본 라벨 템플릿을 설정합니다.',
+      en: 'Configures stations, invoice limit, remain-block usage, and default label template.'
+    },
+    icon: <PackageCheck className="w-6 h-6" />,
+    color: 'text-lime-300',
+    bgColor: 'bg-lime-500/10',
+    steps: [
+      {
+        name: { ko: '작업 용량 설정', en: 'Capacity Setup' },
+        desc: { ko: '스테이션 수와 처리 송장 수로 토탈 피킹 처리 규모를 설정합니다.', en: 'Sets total-picking capacity by stations and invoice limit.' }
+      },
+      {
+        name: { ko: '출력 템플릿 지정', en: 'Template Selection' },
+        desc: { ko: '기본 토탈피킹 라벨 템플릿을 지정해 출력 표준을 고정합니다.', en: 'Pins the default total-picking label template for output standardization.' }
+      }
+    ]
+  },
+  {
+    id: 'warehouse-template',
+    title: { ko: '창고 설정 - 출력 템플릿 관리', en: 'Warehouse Settings - Template Management' },
+    description: {
+      ko: '품목/로케이션/토탈피킹 라벨 템플릿을 등록하고 기본 템플릿을 관리합니다.',
+      en: 'Registers item/location/total-picking templates and manages defaults.'
+    },
+    icon: <FileChartColumnIncreasing className="w-6 h-6" />,
+    color: 'text-fuchsia-300',
+    bgColor: 'bg-fuchsia-500/10',
+    steps: [
+      {
+        name: { ko: '템플릿 목록 관리', en: 'Template List Control' },
+        desc: { ko: '유형별 템플릿 목록과 기본 여부를 확인합니다.', en: 'Checks template lists by type and default flag.' }
+      },
+      {
+        name: { ko: '신규 템플릿 등록', en: 'New Template Registration' },
+        desc: { ko: '라벨 규격에 맞는 새 템플릿을 등록해 출력 품질을 유지합니다.', en: 'Registers new templates by label spec to keep print quality consistent.' }
+      }
+    ]
+  },
+  {
+    id: 'logistics-warehouse',
+    title: { ko: '물류사 설정 - 창고 관리', en: 'Logistics Settings - Warehouse Management' },
+    description: {
+      ko: '물류사 관점에서 운영 창고를 등록하고 창고 기본 정보를 관리합니다.',
+      en: 'Registers and manages operating warehouses from the 3PL perspective.'
+    },
+    icon: <Building2 className="w-6 h-6" />,
+    color: 'text-cyan-300',
+    bgColor: 'bg-cyan-500/10',
+    steps: [
+      {
+        name: { ko: '창고 조회/검색', en: 'Warehouse Query/Search' },
+        desc: { ko: '창고명 키워드로 등록 창고를 조회합니다.', en: 'Queries registered warehouses using name keywords.' }
+      },
+      {
+        name: { ko: '창고 등록', en: 'Warehouse Registration' },
+        desc: { ko: '창고 코드, 주소, 담당자 정보를 입력해 신규 창고를 등록합니다.', en: 'Registers new warehouse with code, address, and manager info.' }
+      }
+    ]
+  },
+  {
+    id: 'logistics-user',
+    title: { ko: '물류사 설정 - 사용자 관리', en: 'Logistics Settings - User Management' },
+    description: {
+      ko: '물류사 계정 초대, 사용자 분류, 권한 연결을 통해 운영 인력을 관리합니다.',
+      en: 'Manages workforce through user invitation, categorization, and role linkage.'
+    },
+    icon: <Fingerprint className="w-6 h-6" />,
+    color: 'text-indigo-300',
+    bgColor: 'bg-indigo-500/10',
+    steps: [
+      {
+        name: { ko: '사용자 목록 관리', en: 'User List Management' },
+        desc: { ko: '사용자 기본정보와 권한 그룹을 조회합니다.', en: 'Views user profile basics and assigned role groups.' }
+      },
+      {
+        name: { ko: '초대/분류 설정', en: 'Invite/Category Setup' },
+        desc: { ko: '신규 계정을 초대하고 사용자 분류 체계를 관리합니다.', en: 'Invites new users and maintains user category structure.' }
+      }
+    ]
+  },
+  {
+    id: 'logistics-shipper',
+    title: { ko: '물류사 설정 - 화주 관리', en: 'Logistics Settings - Shipper Management' },
+    description: {
+      ko: '화주 등록, 연동 요청/동기화, 창고/운송사 설정으로 화주 온보딩을 운영합니다.',
+      en: 'Handles shipper onboarding through registration, integration/sync, and warehouse/carrier setup.'
+    },
+    icon: <Database className="w-6 h-6" />,
+    color: 'text-emerald-300',
+    bgColor: 'bg-emerald-500/10',
+    steps: [
+      {
+        name: { ko: '화주 등록/조회', en: 'Shipper Registration/Query' },
+        desc: { ko: '화주명 기준으로 목록을 조회하고 신규 화주를 등록합니다.', en: 'Queries shippers by name and registers new shipper accounts.' }
+      },
+      {
+        name: { ko: '연동 상태 처리', en: 'Integration Status Handling' },
+        desc: { ko: '필요 상태는 연결 요청, 완료 상태는 동기화를 실행합니다.', en: 'Runs request integration for required state and sync for completed state.' }
+      }
+    ]
+  },
+  {
+    id: 'logistics-carrier',
+    title: { ko: '물류사 설정 - 운송사 관리', en: 'Logistics Settings - Carrier Management' },
+    description: {
+      ko: '운송 유형별 운송사 마스터를 관리하고 연동 설정을 수행합니다.',
+      en: 'Manages carrier masters by transport type and executes integration setup.'
+    },
+    icon: <Send className="w-6 h-6" />,
+    color: 'text-sky-300',
+    bgColor: 'bg-sky-500/10',
+    steps: [
+      {
+        name: { ko: '운송사 목록 운영', en: 'Carrier List Operation' },
+        desc: { ko: '택배/당일/해외/기타 유형으로 운송사를 관리합니다.', en: 'Controls carriers across parcel/same-day/overseas/other types.' }
+      },
+      {
+        name: { ko: '연동/기본값 설정', en: 'Integration/Default Setup' },
+        desc: { ko: '연동 설정과 기본 운송사 관리로 출고 연계를 표준화합니다.', en: 'Standardizes shipping linkage via integration setup and default-carrier control.' }
+      }
+    ]
+  },
+  {
+    id: 'logistics-role',
+    title: { ko: '물류사 설정 - 통합 권한 관리', en: 'Logistics Settings - Unified Role Management' },
+    description: {
+      ko: '페이지 접근 권한과 기능 권한을 권한 그룹 단위로 설계합니다.',
+      en: 'Designs page/function permissions at role-group level.'
+    },
+    icon: <ShieldCheck className="w-6 h-6" />,
+    color: 'text-amber-300',
+    bgColor: 'bg-amber-500/10',
+    steps: [
+      {
+        name: { ko: '권한 그룹 관리', en: 'Role Group Management' },
+        desc: { ko: '권한 그룹을 생성하고 잠금 권한(최고 권한)을 보호합니다.', en: 'Creates role groups and protects locked roles (top role).' }
+      },
+      {
+        name: { ko: '메뉴/기능 권한 설정', en: 'Menu/Feature Permission Setup' },
+        desc: { ko: '메뉴 접근과 주요 기능(지시/삭제/승인 등) 권한을 조합합니다.', en: 'Combines menu access and key feature permissions (instruction/delete/approve, etc.).' }
+      }
+    ]
+  },
+  {
     id: 'item-registration',
     title: { ko: '품목 등록 (Items)', en: 'Item Registration' },
     description: {
@@ -1329,6 +1854,31 @@ const pageOrder = [
   'movement-instruction',
   'movement-execution',
   'movement-manual',
+  'dispatch-orders',
+  'dispatch-execution-barcode',
+  'dispatch-execution-search-file',
+  'return-b2c-orders',
+  'return-b2c-execution',
+  'return-b2b-orders',
+  'return-b2b-instruction',
+  'return-b2b-execution',
+  'adjustment-list',
+  'adjustment-request',
+  'adjustment-approval',
+  'adjustment-inbound',
+  'warehouse-location',
+  'warehouse-accounts',
+  'warehouse-shop',
+  'warehouse-supplier',
+  'warehouse-product',
+  'warehouse-assignment',
+  'warehouse-total-picking',
+  'warehouse-template',
+  'logistics-warehouse',
+  'logistics-user',
+  'logistics-shipper',
+  'logistics-carrier',
+  'logistics-role',
   'inventory',
   'stock-items',
   'stock-locations',
