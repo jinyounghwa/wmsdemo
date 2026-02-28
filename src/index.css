@@ -17,3 +17,37 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* Make Windows scrollbar behavior closer to macOS overlay style */
+@media (hover: hover) and (pointer: fine) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border: 2px solid transparent;
+    border-radius: 9999px;
+    background-clip: content-box;
+    transition: background-color 0.2s ease;
+  }
+
+  *:hover::-webkit-scrollbar-thumb,
+  *:focus-within::-webkit-scrollbar-thumb {
+    background-color: rgba(51, 65, 85, 0.75);
+  }
+
+  html:hover {
+    scrollbar-color: rgba(51, 65, 85, 0.75) transparent;
+  }
+}
