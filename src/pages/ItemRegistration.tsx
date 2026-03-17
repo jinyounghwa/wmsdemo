@@ -91,7 +91,7 @@ const initialFormState: FormState = {
   heroImage: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',
   detailImages: ['', '', '', ''],
   memos: Array.from({ length: 15 }, (_, index) => (index === 0 ? '대표 컬러 우선노출' : '')),
-  designer: 'sbkim',
+  designer: 'opsmanager',
   registrar: 'younghwa',
   publishedAt: '2026-03-17',
   warehouse: '기본창고',

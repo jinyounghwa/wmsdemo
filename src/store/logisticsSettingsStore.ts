@@ -68,7 +68,7 @@ export const useLogisticsSettingsStore = create<LogisticsSettingsStore>((set) =>
     { id: 'WH-L-2', name: '기본 창고', code: 'WHS-BASE-01', address: '경기도 파주시 창고길 100', manager: '정민석', phone: '010-3333-4444' },
   ],
   users: [
-    { id: 'U-1', name: '이준호', phone: '010-1111-2222', email: 'sbkim@nexlink.co.kr', userType: '물류사', userCode: 'LG001', roleName: '최고 권한', joinedAt: '2025-10-15' },
+    { id: 'U-1', name: '이준호', phone: '010-1111-2222', email: 'opsmanager@nexlink.co.kr', userType: '물류사', userCode: 'LG001', roleName: '최고 권한', joinedAt: '2025-10-15' },
     { id: 'U-2', name: '정민석', phone: '010-3333-4444', email: 'hwpark@nexlink.co.kr', userType: '물류사', userCode: 'LG002', roleName: '최고 권한', joinedAt: '2025-09-02' },
     { id: 'U-3', name: '파트너운영팀', phone: '010-5555-1111', email: 'dev@sellmate.co.kr', userType: '파트너', userCode: 'LG003', roleName: '최고 권한', joinedAt: '2025-05-29' },
     { id: 'U-4', name: '서이안', phone: '010-7777-1111', email: 'ewyun@nexlink.co.kr', userType: '물류사', userCode: 'LG004', roleName: '최고 권한', joinedAt: '2025-09-24' },
