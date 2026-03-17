@@ -5,7 +5,7 @@ import {
   RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing,
   CheckCircle2, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, LayoutDashboard, Home,
   ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History, Languages,
-  Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Scale, TrendingUp
+  Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Scale, TrendingUp, MessageSquareText
 } from 'lucide-react'
 import Layout from '../components/Layout'
 import LanguageToggle from '../components/LanguageToggle'
@@ -1259,6 +1259,31 @@ export const logicData: LogicItem[] = [
     ]
   },
   {
+    id: 'cs-management',
+    title: { ko: 'CS 관리 (CS Management)', en: 'CS Management' },
+    description: {
+      ko: '주문 단위 CS 집계와 상세 히스토리 메모를 함께 보여주며, 교환/취소/배송 이슈가 주문 데이터에 미치는 영향을 추적합니다.',
+      en: 'Shows order-level CS aggregation with detailed memo history and tracks how exchange, cancel, and delivery issues affect order data.'
+    },
+    icon: <MessageSquareText className="w-6 h-6" />,
+    color: 'text-cyan-300',
+    bgColor: 'bg-cyan-500/10',
+    steps: [
+      {
+        name: { ko: '주문별 CS 현황', en: 'Order CS Overview' },
+        desc: { ko: '주문일자, CS일자, 지연일, CS수를 기준으로 우선 처리 대상 주문을 식별합니다.', en: 'Identifies priority CS orders by order date, CS date, overdue days, and CS count.' }
+      },
+      {
+        name: { ko: '히스토리 타임라인', en: 'History Timeline' },
+        desc: { ko: '교환요청, 취소복구, 배송지수정, 미배송생성 같은 이벤트를 시간순으로 검토합니다.', en: 'Reviews events such as exchange request, restore, address change, and non-delivery creation in time order.' }
+      },
+      {
+        name: { ko: '메모 기반 영향도 파악', en: 'Memo-Based Impact Analysis' },
+        desc: { ko: '메모 안의 금액변경, 옵션변경, 주소변경 정보를 통해 원주문과 생성주문의 관계를 해석합니다.', en: 'Interprets relationships between source and generated orders through memo details such as amount, option, and address changes.' }
+      }
+    ]
+  },
+  {
     id: 'cross-docking',
     title: { ko: '크로스도킹', en: 'Cross-Docking' },
     description: {
@@ -1904,6 +1929,7 @@ const pageOrder = [
   'lpn-equipment',
   'billing',
   'order-management',
+  'cs-management',
   'cross-docking',
   'lot-batch-expiry',
   'serial-tracking',

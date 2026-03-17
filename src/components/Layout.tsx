@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ReactNode, useEffect, useRef } from 'react'
-import { LayoutDashboard, Package, Truck, ClipboardList, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History, Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Activity, Map as MapIcon, Users, Scale, Network, Pickaxe, Recycle, ShieldAlert, BarChart3, Clock, BookText } from 'lucide-react'
+import { LayoutDashboard, Package, Truck, ClipboardList, Plus, SlidersHorizontal, RotateCcw, Layers, Siren, Database, ScanLine, FileChartColumnIncreasing, FileQuestion, MapPinned, Move3D, PackageCheck, ListTodo, Container, ReceiptText, ShoppingCart, ArrowLeftRight, CalendarClock, Fingerprint, TrafficCone, ClipboardClock, History, Trash2, BellRing, Settings, Building2, Wrench, ShieldCheck, Send, Activity, Map as MapIcon, Users, Scale, Network, Pickaxe, Recycle, ShieldAlert, BarChart3, Clock, BookText, MessageSquareText } from 'lucide-react'
 import { useAdjustmentStore } from '../store/adjustmentStore'
 
 const navItems = [
@@ -63,6 +63,7 @@ const navItems = [
   { path: '/lpn-equipment', label: 'LPN/설비 연동', icon: <Container size={20} /> },
   { path: '/billing', label: '정산 관리', icon: <ReceiptText size={20} /> },
   { path: '/order-management', label: '주문 관리', icon: <ShoppingCart size={20} /> },
+  { path: '/cs-management', label: 'CS 관리', icon: <MessageSquareText size={20} /> },
   { path: '/cross-docking', label: '크로스도킹', icon: <ArrowLeftRight size={20} /> },
   { path: '/lot-batch-expiry', label: '로트/유통기한', icon: <CalendarClock size={20} /> },
   { path: '/serial-tracking', label: '시리얼 추적', icon: <Fingerprint size={20} /> },

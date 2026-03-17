@@ -34,6 +34,7 @@ const exactMap: Record<string, string> = {
   'LPN/설비 연동': 'LPN/Equipment',
   '정산 관리': 'Billing',
   '주문 관리': 'Order Management',
+  'CS 관리': 'CS Management',
   '크로스도킹': 'Cross-Docking',
   '로트/유통기한': 'Lot/Expiry',
   '시리얼 추적': 'Serial Tracking',

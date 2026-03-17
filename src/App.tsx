@@ -66,6 +66,7 @@ import ReturnB2BExecution from './pages/ReturnB2BExecution'
 import LogisticsSettings from './pages/LogisticsSettings'
 import AdjustmentModule from './pages/AdjustmentModule'
 import WarehouseSettings from './pages/WarehouseSettings'
+import CsManagement from './pages/CsManagement'
 
 function App() {
   return (
@@ -90,6 +91,7 @@ function App() {
         <Route path="/lpn-equipment" element={<LpnEquipment />} />
         <Route path="/billing" element={<Billing />} />
         <Route path="/order-management" element={<OrderManagement />} />
+        <Route path="/cs-management" element={<CsManagement />} />
         <Route path="/cross-docking" element={<CrossDocking />} />
         <Route path="/lot-batch-expiry" element={<LotBatchExpiry />} />
         <Route path="/serial-tracking" element={<SerialTracking />} />
